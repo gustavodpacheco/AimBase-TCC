@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VAL Settings — Players</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <a class="logo" href="#"><span class="logo-dot">V</span> val<span>settings</span></a>
+    <nav class="top-nav" aria-label="Navegação principal"><a class="active" href="#inicio">Início</a><a href="#players">Jogadores</a></nav>
+    <div class="header-tools">
+      <label class="header-search"><span>⌕</span><input id="playerSearch" type="search" placeholder="Buscar jogador" aria-label="Buscar jogador"></label>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">◐</button>
+    </div>
+  </header>
+
+  <section class="home-hero" id="inicio">
+    <div class="hero-mark hero-mark-one"></div><div class="hero-mark hero-mark-two"></div>
+    <div class="home-copy"><p class="kicker">VALORANT // LOADOUT DATABASE</p><h1>ENCONTRE A<br><em>CONFIGURAÇÃO</em><br>CERTA.</h1><p class="home-description">Settings, retículas e periféricos de jogadores em um único lugar — feitos para você encontrar o seu próximo setup.</p><div class="home-actions"><a class="hero-cta" href="#players">Explorar jogadores <span>↓</span></a><a class="hero-text-link" href="#comments">Comunidade <span>↘</span></a></div></div>
+    <div class="hero-status"><span class="status-dot"></span> DATABASE ONLINE <b id="homePlayerCount">02</b> PERFIS ATIVOS</div>
+    <div class="home-cards"><article><small>PERFIS</small><strong id="heroProfileCount">02</strong><span>JOGADORES CADASTRADOS</span></article><article><small>FOCO</small><strong>VAL</strong><span>VALORANT SETTINGS</span></article></div>
+  </section>
+
+  <main class="layout" id="players">
+    <aside class="directory">
+      <div class="directory-head"><div><p class="kicker">DIRETÓRIO</p><h2>Jogadores</h2></div><button class="add-player" id="openModal" type="button" aria-label="Adicionar jogador">+</button></div>
+      <p class="directory-count" id="playerCount">1 jogador</p>
+      <div class="player-filters"><select id="roleFilter" aria-label="Filtrar por função"><option value="">Todas as funções</option><option>Duelista</option><option>Iniciador</option><option>Controlador</option><option>Sentinela</option></select><select id="teamFilter" aria-label="Filtrar por time"><option value="">Todos os times</option><option>Free Agent</option></select><select id="countryFilter" aria-label="Filtrar por país"><option value="">Todos os países</option><option>🇧🇷 Brasil</option></select><select id="dpiFilter" aria-label="Filtrar por DPI"><option value="">Todo DPI</option><option value="800">800 DPI</option><option value="1600">1600 DPI</option></select><select id="sensitivityFilter" aria-label="Filtrar por faixa de sensibilidade"><option value="">Toda sensibilidade</option><option value="low">Baixa (até 0.20)</option><option value="medium">Média (0.21–0.45)</option><option value="high">Alta (0.46+)</option></select></div>
+      <div class="player-list" id="playerList"></div>
+      <div class="directory-note"><strong>Seu perfil não está aqui?</strong><br>Use o botão <b>+</b> para adicionar um novo jogador.</div>
+    </aside>
+
+    <section class="content" id="settings">
+      <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName">PACHECO</b></div>
+      <article class="profile-card">
+        <div class="profile-photo" id="profilePhoto"></div>
+        <div class="profile-info"><p class="kicker">PERFIL DO JOGADOR</p><h1 id="playerName">Gustavo Pacheco</h1><p class="tag" id="playerTag">pacheco#ofGod</p><div class="profile-grid"><div><small>TIME</small><strong id="playerTeam">Free Agent</strong></div><div><small>FUNÇÃO</small><strong id="playerRole">Duelista</strong></div><div><small>PAÍS</small><strong id="playerCountry">🇧🇷 Brasil</strong></div></div></div>
+        <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
+      </article>
+
+      <section class="settings-block">
+        <div class="section-heading"><span class="section-icon">⌖</span><h2>Mouse settings</h2></div>
+        <div class="mouse-product"><span class="product-icon mouse-shape"></span><div><small>MOUSE</small><strong id="mouseName">ATK A9 Plus</strong></div><a id="mouseLink" href="#" target="_blank" rel="noopener">Ver produto ↗</a></div>
+        <div class="data-grid"><div><small>DPI</small><strong id="dpi">800</strong></div><div><small>SENSIBILIDADE</small><strong id="sensitivity">0.50</strong></div><div><small>eDPI</small><strong id="edpi">400</strong></div><div><small>SCOPED SENS</small><strong>1.00</strong></div></div>
+      </section>
+
+      <section class="settings-block crosshair-block">
+        <div class="section-heading"><span class="section-icon">⌖</span><h2>Retícula</h2><button class="copy-code" id="crosshairCode" type="button">Copiar código</button></div>
+        <div class="crosshair-preview"><img src="assets/mira.png?v=4" alt="Prévia da retícula" id="crosshairImage"></div>
+        <code id="crosshairText">0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0</code>
+      </section>
+
+      <section class="settings-block" id="gear">
+        <div class="section-heading"><span class="section-icon">◫</span><h2>Setup</h2></div>
+        <div class="gear-grid"><a class="gear-card" id="keyboardLink" href="#" target="_blank" rel="noopener"><small>TECLADO</small><strong id="keyboardName">Madlions 68 HE</strong><span>Ver produto ↗</span></a><a class="gear-card" id="mousepadLink" href="#" target="_blank" rel="noopener"><small>MOUSEPAD</small><strong id="mousepadName">ATK 99G X Soft</strong><span>Ver produto ↗</span></a><a class="gear-card" id="monitorLink" href="#" target="_blank" rel="noopener"><small>MONITOR</small><strong id="monitorName">SuperFrame SFP2415</strong><span>Ver produto ↗</span></a></div>
+      </section>
+    </section>
+
+  </main>
+
+  <footer class="site-footer"><div class="footer-brand"><a class="logo" href="#inicio"><span class="logo-dot">V</span> val<span>settings</span></a><p>Loadouts competitivos de VALORANT, feitos pela comunidade.</p></div><div><h3>Explorar</h3><a href="#players">Jogadores</a><a href="#settings">Settings</a></div><div><h3>Contato</h3><a href="mailto:contato@valsettings.gg">contato@valsettings.gg</a><a href="#players">Ver jogadores</a></div><div class="footer-credit"><span>© 2026 VAL SETTINGS</span><span>CRIADO PARA COMPETIR</span></div></footer>
+  <nav class="mobile-nav" aria-label="Navegação mobile"><a href="#inicio"><span>⌂</span>Início</a><a href="#players"><span>◫</span>Players</a><a href="#settings"><span>⌖</span>Setup</a><a href="#players"><span>☷</span>Diretório</a></nav>
+
+  <dialog class="player-modal" id="playerModal"><form id="playerForm"><div class="modal-head"><div><p class="kicker">NOVO PERFIL</p><h2>Adicionar jogador</h2></div><button type="button" class="close-modal" id="closeModal" aria-label="Fechar">×</button></div><div class="form-grid"><label>Nome<input name="name" required placeholder="Nome do jogador"></label><label>Nick<input name="tag" required placeholder="nick#tag"></label><label>Time<input name="team" value="Free Agent"></label><label>Função<input name="role" value="Duelista"></label><label>País<input name="country" value="🇧🇷 Brasil"></label><label>DPI<input name="dpi" type="number" value="800"></label><label>Sensibilidade<input name="sensitivity" type="number" step="0.01" value="0.50"></label><label>Mouse<input name="mouse" placeholder="Modelo do mouse"></label></div><button class="save-player" type="submit">Salvar jogador</button></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
