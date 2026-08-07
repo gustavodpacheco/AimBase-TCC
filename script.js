@@ -13,6 +13,16 @@ const defaultPlayers = [{
   photo: 'assets/tardus.jpeg', dpi: 1600, sensitivity: 0.32, mouse: 'Logitech G403 Hero', keyboard: 'Ajazz AK820', mousepad: 'Unknown', monitor: 'Duex DX270QGP165',
   crosshair: 'Não informado', crosshairImage: 'assets/mira.png?v=4',
   links: { mouse: 'https://www.kabum.com.br/produto/102649/mouse-gamer-logitech-g403-hero-com-rgb-lightsync-6-botoes-programaveis-ajuste-de-peso-e-sensor-hero-25k-910-005631', keyboard: 'https://pt.aliexpress.com/item/1005007805708183.html', mousepad: '', monitor: 'https://www.setupninja.com.br/monitor-gamer-duex-27-pol-eled-ips-2k-qhd-1ms-165hz-display-porthdmi-dx270qgp165?variation=29971648&utm_term=&ad_id=794568015039' }
+}, {
+  id: 'danilo-andrade', name: 'Danilo Andrade', tag: 'Danilo Andrade', team: 'Free Agent', role: 'Iniciador', country: '🇧🇷 Brasil',
+  photo: 'assets/danilo-andrade.jpg', dpi: 1600, sensitivity: 0.10, mouse: 'Delux M800 Pro PAW 3395', keyboard: 'Redragon Kumara K552RGB-1 Brown', mousepad: 'Desconhecido', monitor: 'LG UltraGear 27GS60F-B 27” 180Hz',
+  crosshair: 'Não informado', crosshairImage: 'assets/mira.png?v=4',
+  links: { mouse: 'https://www.mercadolivre.com.br/mouse-delux-m800-pro-paw-3395-cor-branco/up/MLBU4278007761?pdp_filters=item_id%3AMLB4881703977&from=gshop&matt_tool=13560550&matt_word=&matt_source=google&matt_campaign_id=22120855569&matt_ad_group_id=179138690771&matt_match_type=&matt_network=g&matt_device=c&matt_creative=729092955358&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=5824254113&matt_product_id=MLBU4278007761&matt_product_partition_id=2584316702352&matt_target_id=aud-2486208819580:pla-2584316702352&cq_src=google_ads&cq_cmp=22120855569&cq_net=g&cq_plt=gp&cq_med=pla', keyboard: 'https://www.kabum.com.br/produto/93160/teclado-mecanico-gamer-redragon-kumara-anti-ghosting-rgb-switch-outemu-brown-abnt2-preto-pt-k552rgb-1-pt-brown', mousepad: '', monitor: 'https://www.kabum.com.br/produto/620992/monitor-gamer-lg-ultragear-27-fhd-180hz-1ms-ips-dp-e-hdmi-hdr10-freesync-g-sync-27gs60f-b' }
+}, {
+  id: 'igor-gomes', name: 'Igor Gomes', tag: 'Igor Gomes', team: 'Free Agent', role: 'Player de CS', country: '🇧🇷 Brasil',
+  photo: 'assets/igao.jpeg', dpi: 400, sensitivity: 4.0, mouse: 'Redragon Stormrage M718', keyboard: 'Não informado', mousepad: 'Não informado', monitor: 'LG UltraGear 27GS60F-B 27” 180Hz',
+  crosshair: 'donk (CS2) — Classic Static | Ponto: sim | Comprimento: 1 | Espessura: 1 | Gap: -4 | RGB: 0, 255, 145', crosshairImage: 'assets/mira.png?v=4',
+  links: { mouse: 'https://www.kabum.com.br/produto/152313/mouse-gamer-redragon-stormrage-rgb-10000-dpi-ambidestro-7-botoes-preto-m718', keyboard: '', mousepad: '', monitor: 'https://www.kabum.com.br/produto/620992/monitor-gamer-lg-ultragear-27-fhd-180hz-1ms-ips-dp-e-hdmi-hdr10-freesync-g-sync-27gs60f-b' }
 }];
 
 if (document.body.dataset.page === 'profile') {
@@ -21,7 +31,7 @@ if (document.body.dataset.page === 'profile') {
   const profilePlayers = [...defaultPlayers, ...JSON.parse(localStorage.getItem('val-settings-players') || '[]')];
   const player = profilePlayers.find(item => item.id === id) || defaultPlayers[0];
   const showToast = text => { const toast = $('toast'); toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
-  document.title = `${player.tag} — VAL Settings`;
+  document.title = `${player.tag} — ProSens`;
   $('crumbName').textContent = player.tag.toUpperCase(); $('playerName').textContent = player.name; $('playerTag').textContent = player.tag; $('playerTeam').textContent = player.team; $('playerRole').textContent = player.role; $('playerCountry').textContent = player.country;
   $('profilePhoto').style.backgroundImage = `url("${player.photo}")`; $('dpi').textContent = player.dpi; $('sensitivity').textContent = Number(player.sensitivity).toFixed(2); $('edpi').textContent = Math.round(player.dpi * player.sensitivity);
   $('mouseName').textContent = player.mouse; $('keyboardName').textContent = player.keyboard; $('mousepadName').textContent = player.mousepad; $('monitorName').textContent = player.monitor; $('crosshairText').textContent = player.crosshair; $('crosshairImage').src = player.crosshairImage || 'assets/mira.png?v=4';
@@ -38,7 +48,7 @@ if (document.body.dataset.page === 'profile') {
   const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${escape(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${escape(comment.author)}</strong><time>${new Date(comment.date).toLocaleDateString('pt-BR')}</time><p>${escape(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
   $('commentForm').addEventListener('submit', event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.currentTarget)); comments.unshift({ author: data.author.trim(), message: data.message.trim(), date: new Date().toISOString() }); localStorage.setItem(commentsKey, JSON.stringify(comments)); event.currentTarget.reset(); renderComments(); showToast('Comentário publicado.'); });
   renderComments();
-  $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">V</span> val<span>settings</span></a><p>Loadouts competitivos de VALORANT, feitos pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@valsettings.gg">contato@valsettings.gg</a></div><div class="footer-credit"><span>© 2026 VAL SETTINGS</span><span>CRIADO PARA COMPETIR</span></div></footer>');
+  $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">P</span> Pro<span>Sens</span></a><p>Loadouts competitivos de VALORANT, feitos pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@prosens.gg">contato@prosens.gg</a></div><div class="footer-credit"><span>© 2026 PROSENS</span><span>CRIADO PARA COMPETIR</span></div></footer>');
 } else {
 const savedPlayers = JSON.parse(localStorage.getItem('val-settings-players') || '[]');
 const players = [...defaultPlayers, ...savedPlayers];
@@ -92,7 +102,19 @@ function renderProfile() {
 async function copy(text, success) { try { await navigator.clipboard.writeText(text); message(success); } catch { message('Não foi possível copiar.'); } }
 $('copySettings').addEventListener('click', () => { const p = getSelected(); copy(`${p.name} — ${p.tag}\nDPI: ${p.dpi}\nSensibilidade: ${p.sensitivity}\neDPI: ${Math.round(p.dpi * p.sensitivity)}\nRetícula: ${p.crosshair}`, 'Settings copiadas.'); });
 $('crosshairCode').addEventListener('click', () => copy(getSelected().crosshair, 'Código da retícula copiado.'));
-$('playerSearch').addEventListener('input', renderList);
+const headerSearch = $('playerSearch');
+const heroSearch = $('heroPlayerSearch');
+function updateSearch(event) {
+  const query = event.currentTarget.value;
+  const pairedSearch = event.currentTarget === headerSearch ? heroSearch : headerSearch;
+  pairedSearch.value = query;
+  renderList();
+}
+headerSearch.addEventListener('input', updateSearch);
+heroSearch.addEventListener('input', updateSearch);
+heroSearch.addEventListener('keydown', event => {
+  if (event.key === 'Enter') { event.preventDefault(); $('players').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+});
 ['roleFilter', 'teamFilter', 'countryFilter', 'dpiFilter', 'sensitivityFilter'].forEach(id => $(id).addEventListener('change', renderList));
 window.addEventListener('popstate', () => { const id = new URLSearchParams(window.location.search).get('player'); if (players.some(player => player.id === id)) { selectedId = id; renderList(); renderProfile(); } });
 
@@ -102,5 +124,7 @@ $('playerForm').addEventListener('submit', event => { event.preventDefault(); co
 
 function setTheme(theme) { document.body.classList.toggle('dark', theme === 'dark'); $('themeToggle').textContent = theme === 'dark' ? '☼' : '◐'; localStorage.setItem('val-tactical-theme', theme); }
 setTheme(localStorage.getItem('val-tactical-theme') || 'dark'); $('themeToggle').addEventListener('click', () => setTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+const updateHeaderSearch = () => document.body.classList.toggle('scrolled', window.scrollY > 110);
+updateHeaderSearch(); window.addEventListener('scroll', updateHeaderSearch, { passive: true });
 renderList(); renderProfile();
 }
