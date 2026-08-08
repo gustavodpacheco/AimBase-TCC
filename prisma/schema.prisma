@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EquipmentType {
+  MOUSE
+  KEYBOARD
+  HEADSET
+  MOUSEPAD
+  MONITOR
+}
+
+enum SocialPlatform {
+  DISCORD
+  INSTAGRAM
+  TWITCH
+  X
+  YOUTUBE
+  TIKTOK
+  VLR
+  TRACKER
+  WEBSITE
+}
+
+enum DisplayMode {
+  FULLSCREEN
+  WINDOWED
+  BORDERLESS
+}
+
+enum GraphicsQuality {
+  LOW
+  MEDIUM
+  HIGH
+  ULTRA
+  CUSTOM
+}
+
+model Country {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique @db.Char(2)
+  name      String
+  flagEmoji String?  @map("flag_emoji")
+  players   Player[]
+  teams     Team[]
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([name])
+  @@map("countries")
+}
+
+model Game {
+  id        String              @id @default(uuid()) @db.Uuid
+  slug      String              @unique
+  name      String
+  profiles  PlayerGameProfile[]
+  teams     Team[]
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([name])
+  @@map("games")
+}
+
+model Team {
+  id        String              @id @default(uuid()) @db.Uuid
+  gameId    String              @map("game_id") @db.Uuid
+  countryId String?             @map("country_id") @db.Uuid
+  name      String
+  slug      String
+  game      Game                @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  country   Country?            @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  profiles  PlayerGameProfile[]
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([gameId, slug])
+  @@index([countryId])
+  @@index([gameId, name])
+  @@map("teams")
+}
+
+model Player {
+  id        String              @id @default(uuid()) @db.Uuid
+  countryId String              @map("country_id") @db.Uuid
+  username  String              @unique
+  fullName  String?             @map("full_name")
+  photoUrl  String?             @map("photo_url")
+  country   Country             @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  profiles  PlayerGameProfile[]
+  socials   PlayerSocial[]
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([countryId])
+  @@index([fullName])
+  @@map("players")
+}
+
+// Perfil competitivo do jogador em um jogo. Separa os dados globais do jogador
+// (nome e país) dos dados específicos de cada jogo (time, tag e função).
+model PlayerGameProfile {
+  id        String                @id @default(uuid()) @db.Uuid
+  playerId  String                @map("player_id") @db.Uuid
+  gameId    String                @map("game_id") @db.Uuid
+  teamId    String?               @map("team_id") @db.Uuid
+  tag       String
+  role      String?
+  player    Player                @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  game      Game                  @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  team      Team?                 @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  settings  PlayerGameSettings?
+  createdAt DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime              @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([playerId, gameId])
+  @@unique([gameId, tag])
+  @@index([gameId, teamId])
+  @@index([gameId, role])
+  @@map("player_game_profiles")
+}
+
+// Um perfil por jogo possui no máximo um conjunto atual de configurações.
+model PlayerGameSettings {
+  id        String                  @id @default(uuid()) @db.Uuid
+  profileId String                  @unique @map("profile_id") @db.Uuid
+  profile   PlayerGameProfile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  mouse     MouseSettings?
+  video     VideoSettings?
+  crosshair Crosshair?
+  equipment PlayerEquipment[]
+  history   SettingsRevision[]
+  createdAt DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("player_game_settings")
+}
+
+model MouseSettings {
+  id               String              @id @default(uuid()) @db.Uuid
+  settingsId       String              @unique @map("settings_id") @db.Uuid
+  dpi              Int
+  sensitivity      Decimal             @db.Decimal(10, 4)
+  scopedSensitivity Decimal?           @map("scoped_sensitivity") @db.Decimal(10, 4)
+  pollingRateHz    Int?                @map("polling_rate_hz")
+  rawInput         Boolean?            @map("raw_input")
+  settings         PlayerGameSettings  @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([dpi])
+  @@index([dpi, sensitivity])
+  @@map("mouse_settings")
+}
+
+model VideoSettings {
+  id                    String              @id @default(uuid()) @db.Uuid
+  settingsId            String              @unique @map("settings_id") @db.Uuid
+  resolutionWidth       Int                 @map("resolution_width")
+  resolutionHeight      Int                 @map("resolution_height")
+  aspectRatio           String              @map("aspect_ratio") @db.VarChar(10)
+  displayMode           DisplayMode         @default(FULLSCREEN) @map("display_mode")
+  renderMethod          String?             @map("render_method")
+  multithreadRendering  Boolean?            @map("multithread_rendering")
+  materialQuality       GraphicsQuality?    @map("material_quality")
+  textureQuality        GraphicsQuality?    @map("texture_quality")
+  detailQuality         GraphicsQuality?    @map("detail_quality")
+  uiQuality             GraphicsQuality?    @map("ui_quality")
+  vignetteEnabled       Boolean?            @map("vignette_enabled")
+  vsyncEnabled          Boolean?            @map("vsync_enabled")
+  antiAliasing          String?             @map("anti_aliasing")
+  anisotropicFiltering  String?             @map("anisotropic_filtering")
+  improveClarityEnabled Boolean?            @map("improve_clarity_enabled")
+  sharpeningEnabled     Boolean?            @map("sharpening_enabled")
+  bloomEnabled          Boolean?            @map("bloom_enabled")
+  distortionEnabled     Boolean?            @map("distortion_enabled")
+  shadowsEnabled        Boolean?            @map("shadows_enabled")
+  enemyHighlightColor   String?             @map("enemy_highlight_color")
+  settings              PlayerGameSettings  @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  createdAt             DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([resolutionWidth, resolutionHeight])
+  @@index([displayMode])
+  @@map("video_settings")
+}
+
+model Crosshair {
+  id          String              @id @default(uuid()) @db.Uuid
+  settingsId  String              @unique @map("settings_id") @db.Uuid
+  code        String?             @db.Text
+  name        String?
+  description String?             @db.Text
+  config      Json?               // campos específicos de cada jogo, sem migração a cada formato novo
+  settings    PlayerGameSettings  @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([name])
+  @@map("crosshairs")
+}
+
+model Equipment {
+  id          String            @id @default(uuid()) @db.Uuid
+  type        EquipmentType
+  brand       String
+  model       String
+  slug        String            @unique
+  imageUrl    String?           @map("image_url")
+  productUrl  String?           @map("product_url")
+  specs       Json?
+  assignments PlayerEquipment[]
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([type, brand, model])
+  @@index([type, brand])
+  @@index([type, model])
+  @@map("equipment")
+}
+
+// A relação N:N é explícita para garantir uma peça de cada tipo por setup.
+model PlayerEquipment {
+  id          String              @id @default(uuid()) @db.Uuid
+  settingsId  String              @map("settings_id") @db.Uuid
+  equipmentId String              @map("equipment_id") @db.Uuid
+  type        EquipmentType       // deve espelhar Equipment.type; validado no serviço ou trigger SQL
+  settings    PlayerGameSettings  @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  equipment   Equipment           @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([settingsId, type])
+  @@index([equipmentId])
+  @@map("player_equipment")
+}
+
+model PlayerSocial {
+  id        String         @id @default(uuid()) @db.Uuid
+  playerId  String         @map("player_id") @db.Uuid
+  platform  SocialPlatform
+  url       String         @db.Text
+  handle    String?
+  player    Player         @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([playerId, platform])
+  @@index([platform])
+  @@map("player_socials")
+}
+
+model SettingsRevision {
+  id          String              @id @default(uuid()) @db.Uuid
+  settingsId  String              @map("settings_id") @db.Uuid
+  revision    Int
+  snapshot    Json                // retrato imutável de mouse, vídeo, crosshair e equipamentos
+  changedBy   String?             @map("changed_by")
+  changeNote  String?             @map("change_note") @db.Text
+  settings    PlayerGameSettings  @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([settingsId, revision])
+  @@index([settingsId, createdAt])
+  @@map("settings_revisions")
+}

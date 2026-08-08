@@ -21,6 +21,8 @@
     <div class="header-tools">
       <label class="header-search"><span>⌕</span><input id="playerSearch" type="search" placeholder="Buscar jogador"
           aria-label="Buscar jogador"></label>
+      <button class="auth-trigger" id="authTrigger" type="button">Entrar</button>
+      <button class="auth-logout" id="authLogout" type="button" hidden>Sair</button>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">◐</button>
     </div>
   </header>
@@ -29,7 +31,7 @@
     <div class="hero-mark hero-mark-one"></div>
     <div class="hero-mark hero-mark-two"></div>
     <div class="home-copy">
-      <p class="kicker">VALORANT // LOADOUT DATABASE</p>
+      <p class="kicker">MULTI-GAME // LOADOUT DATABASE</p>
       <h1>ENCONTRE A<br><em>CONFIGURAÇÃO</em><br>CERTA.</h1>
       <p class="home-description">Settings, retículas e periféricos de jogadores em um único lugar — feitos para você
         encontrar o seu próximo setup.</p>
@@ -45,7 +47,7 @@
     <div class="home-cards">
       <article><small>PERFIS</small><strong id="heroProfileCount">02</strong><span>JOGADORES CADASTRADOS</span>
       </article>
-      <article><small>FOCO</small><strong>VAL</strong><span>VALORANT SETTINGS</span></article>
+      <article><small>FOCO</small><strong>ALL</strong><span>CONFIGURAÇÕES DE JOGOS</span></article>
     </div>
   </section>
 
@@ -58,7 +60,12 @@
         </div><button class="add-player" id="openModal" type="button" aria-label="Adicionar jogador">+</button>
       </div>
       <p class="directory-count" id="playerCount">1 jogador</p>
-      <div class="player-filters"><select id="roleFilter" aria-label="Filtrar por função">
+      <div class="player-filters"><select id="gameFilter" aria-label="Filtrar por jogo">
+          <option value="">Todos os jogos</option>
+          <option value="VALORANT">Valorant</option>
+          <option value="Counter-Strike 2">Counter-Strike 2</option>
+          <option value="Rainbow Six">Rainbow Six</option>
+        </select><select id="roleFilter" aria-label="Filtrar por função">
           <option value="">Todas as funções</option>
           <option>Duelista</option>
           <option>Iniciador</option>
@@ -170,7 +177,7 @@
           <h2>Adicionar jogador</h2>
         </div><button type="button" class="close-modal" id="closeModal" aria-label="Fechar">×</button>
       </div>
-      <div class="form-grid"><label>Nome<input name="name" required
+      <div class="form-grid"><label>Jogo<select name="game" required><option value="VALORANT">Valorant</option><option value="Counter-Strike 2">Counter-Strike 2</option><option value="Rainbow Six">Rainbow Six</option></select></label><label>Nome<input name="name" required
             placeholder="Nome do jogador"></label><label>Nick<input name="tag" required
             placeholder="nick#tag"></label><label>Time<input name="team" value="Free Agent"></label><label>Função<input
             name="role" value="Duelista"></label><label>País<input name="country"
@@ -179,6 +186,24 @@
             value="0.50"></label><label>Mouse<input name="mouse" placeholder="Modelo do mouse"></label></div><button
         class="save-player" type="submit">Salvar jogador</button>
     </form>
+  </dialog>
+  <dialog class="auth-modal" id="authModal" aria-labelledby="authTitle">
+    <section class="auth-card">
+      <button class="auth-close" id="authClose" type="button" aria-label="Fechar">×</button>
+      <p class="kicker" id="authKicker">ÁREA DO JOGADOR</p>
+      <h2 id="authTitle">ENTRAR</h2>
+      <p class="auth-intro" id="authIntro">Acesse sua conta para personalizar sua experiência.</p>
+      <form id="authForm">
+        <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username" autocomplete="username" placeholder="Username"></label>
+        <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username" required placeholder="E-mail ou username"></label>
+        <label class="auth-field"><span>⌑</span><input id="authPassword" name="password" type="password" autocomplete="current-password" required placeholder="Senha"></label>
+        <button class="auth-submit" id="authSubmit" type="submit">ENTRAR</button>
+      </form>
+      <div class="auth-divider"><span>OU CONTINUE COM</span></div>
+      <div class="auth-providers"><button type="button" data-provider="Discord"><b>◉</b> Continuar com Discord</button><button type="button" data-provider="Google"><b>G</b> Continuar com Google</button></div>
+      <div class="auth-footer"><button id="forgotPassword" type="button">Esqueceu a senha?</button><span id="authSwitchCopy">Não tem conta? <button id="authSwitch" type="button">Cadastre-se</button></span></div>
+      <p class="auth-message" id="authMessage" role="status"></p>
+    </section>
   </dialog>
   <div class="toast" id="toast" role="status"></div>
   <script src="script.js"></script>
