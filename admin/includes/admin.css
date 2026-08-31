@@ -1,0 +1,45 @@
+/* ============================================================
+   Painel administrativo ProSens - estilos específicos do admin
+   ============================================================ */
+.admin-header{display:flex;align-items:center;gap:26px;height:64px;padding:0 clamp(16px,4vw,48px);border-bottom:1px solid var(--line);background:#03080d;position:sticky;top:0;z-index:20}
+.admin-header .logo small{color:var(--red);font:700 9px var(--mono);letter-spacing:.08em;margin-left:6px}
+.admin-nav{display:flex;gap:4px;margin-left:12px}
+.admin-nav a{color:var(--muted);text-decoration:none;font:800 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:10px 12px;border-bottom:2px solid transparent}
+.admin-nav a:hover,.admin-nav a.active{color:var(--text);border-color:var(--red)}
+.admin-home{margin-left:auto;color:var(--red);text-decoration:none;font:800 10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.admin-main{max-width:1180px;margin:0 auto;padding:34px clamp(16px,4vw,40px) 70px}
+.admin-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.admin-title h1{margin:0;font-size:30px;letter-spacing:-1px;text-transform:uppercase}
+.admin-title .kicker{color:var(--red)}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:30px}
+.admin-stat{border:1px solid var(--line);background:var(--panel);padding:18px}
+.admin-stat small{color:var(--muted);font:9px var(--mono);letter-spacing:.08em;display:block;text-transform:uppercase}
+.admin-stat strong{font:800 38px var(--mono);display:block;margin-top:8px}
+.admin-panel{border:1px solid var(--line);background:var(--panel-2);margin-bottom:26px}
+.admin-panel-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.admin-panel-head h2{font-size:15px;letter-spacing:-.3px;text-transform:uppercase;margin:0}
+.admin-form{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:18px}
+.admin-form label{display:grid;gap:6px;color:var(--muted);font:700 9px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.admin-form input,.admin-form select,.admin-form textarea{width:100%;border:1px solid var(--line);background:#0a141e;color:var(--text);padding:10px;font:13px var(--sans);outline:0}
+.admin-form input:focus,.admin-form select:focus,.admin-form textarea:focus{border-color:var(--red)}
+.admin-form .full{grid-column:1/-1}
+.btn{border:1px solid var(--line);background:#0b2030;color:var(--text);padding:11px 16px;cursor:pointer;font:800 10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.btn-primary{background:var(--red);border-color:var(--red);color:#03101a}
+.btn-danger{background:transparent;border-color:#e5556a;color:#ff8a9a}
+.btn:hover{filter:brightness(1.1)}
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table th{text-align:left;color:var(--muted);font:800 9px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;border-bottom:1px solid var(--line)}
+.admin-table td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+.admin-table tr:hover td{background:rgba(25,167,255,.05)}
+.admin-table .actions{display:flex;gap:6px}
+.admin-avatar{width:34px;height:34px;object-fit:cover;border:1px solid var(--line);clip-path:polygon(0 0,100% 0,100% 76%,76% 100%,0 100%)}
+.admin-badge{font:700 9px var(--mono);letter-spacing:.05em;padding:4px 7px;border:1px solid var(--line)}
+.admin-badge.ok{color:#5dd98a;border-color:#227a45}
+.admin-badge.gnd{color:var(--muted)}
+.admin-toast{position:fixed;right:16px;bottom:16px;z-index:99;max-width:340px;border:1px solid var(--line);background:#0b2030;color:var(--text);padding:13px 16px;font:13px var(--sans);box-shadow:0 14px 40px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);transition:.25s}
+.admin-toast.show{opacity:1;transform:none}
+.admin-form .inline-settings{border-top:1px solid var(--line);margin-top:6px;padding-top:14px;grid-column:1/-1}
+.loading{padding:40px;text-align:center;color:var(--muted);font:11px var(--mono)}
+.loading .spin{display:inline-block;width:26px;height:26px;border:2px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:aspin .8s linear infinite;margin-right:10px;vertical-align:middle}
+@keyframes aspin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.admin-form{grid-template-columns:1fr}.admin-header{gap:10px}.admin-nav{display:flex;overflow-x:auto}.admin-table{display:block;overflow-x:auto;white-space:nowrap}}

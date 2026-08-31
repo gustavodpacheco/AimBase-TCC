@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player — ProSens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="profile" class="dark">
+<header class="site-header">
+  <a class="logo" href="index.html"><span class="logo-dot">P</span> Pro<span>Sens</span></a>
+  <nav class="top-nav"><a href="index.html">Início</a><a class="active" href="#settings">Jogador</a></nav>
+  <div class="header-tools"><button class="theme-toggle" id="themeToggle" type="button">☼</button></div>
+</header>
+<main class="profile-layout">
+  <a class="back-link" href="index.html#playerGrid">← Voltar para jogadores</a>
+  <section class="content" id="settings">
+    <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName"></b></div>
+    <article class="profile-card">
+      <div class="profile-photo" id="profilePhoto"></div>
+      <div class="profile-info">
+        <p class="kicker">PERFIL DO JOGADOR</p>
+        <h1 id="playerName"></h1>
+        <p class="tag" id="playerTag"></p>
+        <div class="profile-grid">
+          <div><small>TIME</small><strong id="playerTeam"></strong></div>
+          <div><small>FUNÇÃO</small><strong id="playerRole"></strong></div>
+          <div><small>PAÍS</small><strong id="playerCountry"></strong></div>
+        </div>
+      </div>
+      <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
+    </article>
+    <section class="settings-block">
+      <div class="section-heading"><span class="section-icon">⌖</span><h2>Mouse settings</h2></div>
+      <div class="mouse-product"><span class="product-icon mouse-shape"></span><div><small>MOUSE</small><strong id="mouseName"></strong></div><a id="mouseLink" href="#" target="_blank" rel="noopener">Ver produto ↗</a></div>
+      <div class="data-grid">
+        <div><small>DPI</small><strong id="dpi"></strong></div>
+        <div><small>SENSIBILIDADE</small><strong id="sensitivity"></strong></div>
+        <div><small>eDPI</small><strong id="edpi"></strong></div>
+        <div><small>SCOPED SENS</small><strong>1.00</strong></div>
+      </div>
+    </section>
+    <section class="settings-block crosshair-block">
+      <div class="section-heading"><span class="section-icon">⌖</span><h2>Retícula</h2><button class="copy-code" id="crosshairCode" type="button">Copiar código</button></div>
+      <div class="crosshair-preview"><img src="" alt="Prévia da retícula" id="crosshairImage"></div>
+      <code id="crosshairText"></code>
+    </section>
+    <section class="settings-block" id="gear">
+      <div class="section-heading"><span class="section-icon">◫</span><h2>Setup</h2></div>
+      <div class="gear-grid">
+        <a class="gear-card" id="keyboardLink" href="#" target="_blank" rel="noopener"><small>TECLADO</small><strong id="keyboardName"></strong><span>Ver produto ↗</span></a>
+        <a class="gear-card" id="mousepadLink" href="#" target="_blank" rel="noopener"><small>MOUSEPAD</small><strong id="mousepadName"></strong><span>Ver produto ↗</span></a>
+        <a class="gear-card" id="monitorLink" href="#" target="_blank" rel="noopener"><small>MONITOR</small><strong id="monitorName"></strong><span>Ver produto ↗</span></a>
+      </div>
+    </section>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="api.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
