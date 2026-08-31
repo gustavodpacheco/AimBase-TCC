@@ -23,10 +23,13 @@ C:\laragon\www\prosettings-page-main\
 ├── database\            # schema.sql e seed.sql
 ├── includes\            # Helpers PHP
 ├── assets\              # Imagens
+├── data.js              # Dados estáticos/fallback (defaultPlayers, savedPlayers)
+├── shared.js            # Helpers compartilhados (esc, safeUrl, tema, toast)
 ├── api.js               # Cliente JS da API
+├── script.js            # Lógica da página inicial (index.html)
+├── profile.js           # Lógica da página de perfil (player.html)
 ├── index.html
 ├── player.html
-├── script.js
 └── style.css
 ```
 
