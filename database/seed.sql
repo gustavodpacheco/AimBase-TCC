@@ -130,3 +130,18 @@ INSERT INTO player_pc_specs (player_id, spec_type, label, link, image, sort_orde
 SELECT p.id, 'Processador', 'AMD Ryzen 5 5600 (exemplo)', 'https://www.pichau.com.br/processador-amd-ryzen-5-5600', 'assets/rzn.jpg', 1
 FROM players p WHERE p.slug='pacheco'
 ON DUPLICATE KEY UPDATE label = VALUES(label);
+
+-- ============================================================
+-- USERS (demo) - username: demo / senha: demo1234
+-- ============================================================
+INSERT INTO users (username, email, password_hash)
+VALUES ('demo', 'demo@prosens.gg', '$2y$10$b/ax6g2wC7ISyq0xubQ.HeUHi.wLIKAy4eBaqT8aRWIQZjPajSOtW')
+ON DUPLICATE KEY UPDATE username = VALUES(username);
+
+-- ============================================================
+-- COMMENTS (exemplos)
+-- ============================================================
+INSERT INTO comments (player_id, author, message)
+SELECT p.id, 'Comunidade', 'Setup de exemplo para teste.'
+FROM players p WHERE p.slug='pacheco'
+ON DUPLICATE KEY UPDATE message = VALUES(message);

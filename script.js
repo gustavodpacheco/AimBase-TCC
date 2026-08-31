@@ -190,12 +190,43 @@ if (document.body.dataset.page === 'profile') {
   }
 
   function setupComments($, player, showToast) {
-    $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel"><form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="Seu nome"><textarea name="message" maxlength="300" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar comentário</button></form><div class="comment-list" id="commentList"></div></div></section>');
+    const isDb = apiActive && /^\d+$/.test(String(player.id));
+    $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel"><form class="comment-form" id="commentForm"><div class="comment-fields">' + (isDb ? '' : '<input name="author" maxlength="32" required placeholder="Seu nome">') + '<textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar comentário</button></form><div class="comment-list" id="commentList"></div></div></section>');
     const commentsKey = `val-tactical-comments-${player.id}`;
-    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
-    $('commentForm').addEventListener('submit', event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.currentTarget)); comments.unshift({ author: data.author.trim(), message: data.message.trim(), date: new Date().toISOString() }); localStorage.setItem(commentsKey, JSON.stringify(comments)); event.currentTarget.reset(); renderComments(); showToast('Comentário publicado.'); });
-    renderComments();
+    let comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+    const playerId = isDb ? Number(player.id) : null;
+
+    async function reload() {
+      if (isDb) {
+        try {
+          const res = await API.listComments(playerId);
+          comments = (res.data && res.data.comments) || [];
+        } catch { /* mantém vazio */ }
+      }
+      renderComments();
+    }
+    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.created_at || comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
+    $('commentForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      if (isDb) {
+        try {
+          await API.createComment({ player_id: playerId, author: data.author ? data.author.trim() : 'Visitante', message: data.message.trim() });
+          event.currentTarget.reset();
+          await reload();
+          showToast('Comentário publicado.');
+        } catch (err) {
+          showToast(err.message || 'Não foi possível publicar o comentário.');
+        }
+      } else {
+        comments.unshift({ author: (data.author || 'Visitante').trim(), message: data.message.trim(), date: new Date().toISOString() });
+        localStorage.setItem(commentsKey, JSON.stringify(comments));
+        event.currentTarget.reset();
+        renderComments();
+        showToast('Comentário publicado.');
+      }
+    });
+    reload();
   }
 } else {
 const requestedPlayer = new URLSearchParams(window.location.search).get('player');
@@ -289,16 +320,29 @@ async function resolveGameId(gameName) {
   } catch { return null; }
 }
 
+function populateSelect(select, items, valueKey, labelKey) {
+  const existing = Array.from(select.options).map(o => o.value);
+  items.forEach(item => {
+    const value = valueKey ? item[valueKey] : item;
+    const label = labelKey ? item[labelKey] : item;
+    if (!existing.includes(String(value))) {
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = label;
+      select.appendChild(opt);
+    }
+  });
+}
+
 async function loadFilters() {
   try {
-    const games = await API.listGames();
-    const gameSelect = $('gameFilter');
-    (games.data.games || []).forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g.slug;
-      opt.textContent = g.name;
-      if (!Array.from(gameSelect.options).some(o => o.value === g.slug && o.textContent === g.name)) gameSelect.appendChild(opt);
-    });
+    const res = await API.listFilters();
+    const data = res.data || {};
+    // Jogos: mantém o valor como o NOME (pra casar com player.game da API)
+    populateSelect($('gameFilter'), data.games || [], 'name', 'name');
+    populateSelect($('teamFilter'), data.teams || [], 'name', 'name');
+    populateSelect($('roleFilter'), data.roles || [], null, null);
+    populateSelect($('countryFilter'), data.countries || [], null, null);
   } catch { /* mantém filtros estáticos */ }
 }
 
@@ -318,15 +362,12 @@ async function refreshPlayers() {
   renderList();
 })();
 
-// ---- Autenticação mockada ----
+// ---- Autenticação (via API + sessão) ----
 const authModal = $('authModal');
-const authStateKey = 'prosens-auth-user';
-const authAccountsKey = 'prosens-auth-accounts';
 let authMode = 'login';
-const getAccounts = () => JSON.parse(localStorage.getItem(authAccountsKey) || '[]');
 const setAuthMessage = text => { $('authMessage').textContent = text; };
 function renderAuth() {
-  const user = JSON.parse(localStorage.getItem(authStateKey) || 'null');
+  const user = currentUser;
   $('authTrigger').hidden = Boolean(user);
   $('authLogout').hidden = !user;
   if (user) $('authTrigger').textContent = user.username;
@@ -348,33 +389,39 @@ function setAuthMode(mode) {
 }
 function openAuth(mode = 'login') { setAuthMode(mode); authModal.showModal(); $('authEmail').focus(); }
 $('authTrigger').addEventListener('click', () => openAuth());
-$('authLogout').addEventListener('click', () => { localStorage.removeItem(authStateKey); renderAuth(); message('Sessão encerrada.'); });
+$('authLogout').addEventListener('click', async () => {
+  try { await API.logout(); } catch { /* ignora */ }
+  currentUser = null;
+  renderAuth();
+  message('Sessão encerrada.');
+});
 $('authClose').addEventListener('click', () => authModal.close());
 $('forgotPassword').addEventListener('click', () => setAuthMessage('Em uma integração real, enviaremos um link de recuperação para seu e-mail.'));
 document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(`Login com ${button.dataset.provider} é uma demonstração nesta versão.`)));
-$('authForm').addEventListener('submit', event => {
+$('authForm').addEventListener('submit', async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget));
-  const accounts = getAccounts();
-  if (authMode === 'register') {
-    const username = data.username.trim();
-    const email = data.email.trim().toLowerCase();
-    if (accounts.some(account => account.email === email || account.username.toLowerCase() === username.toLowerCase())) { setAuthMessage('Este e-mail ou username já está em uso.'); return; }
-    accounts.push({ username, email, password: data.password });
-    localStorage.setItem(authAccountsKey, JSON.stringify(accounts));
-    localStorage.setItem(authStateKey, JSON.stringify({ username, email }));
+  setAuthMessage('');
+  try {
+    const res = authMode === 'register'
+      ? await API.register({ username: data.username, email: data.email, password: data.password })
+      : await API.login({ email: data.email, password: data.password });
+    currentUser = res.data.user;
     authModal.close();
     renderAuth();
-    message('Conta criada. Boas-vindas ao ProSens.');
-  } else {
-    const identifier = data.email.trim().toLowerCase();
-    const account = accounts.find(item => item.email === identifier || item.username.toLowerCase() === identifier);
-    if (!account || account.password !== data.password) { setAuthMessage('E-mail, username ou senha inválidos.'); return; }
-    localStorage.setItem(authStateKey, JSON.stringify({ username: account.username, email: account.email }));
-    authModal.close();
-    renderAuth();
-    message(`Bem-vindo, ${account.username}.`);
+    message(authMode === 'register' ? 'Conta criada. Boas-vindas ao ProSens.' : `Bem-vindo, ${currentUser.username}.`);
+  } catch (err) {
+    setAuthMessage(err.message || 'Não foi possível concluir a operação.');
   }
 });
-renderAuth();
+
+let currentUser = null;
+async function initAuth() {
+  try {
+    const res = await API.me();
+    currentUser = res.data && res.data.user;
+  } catch { currentUser = null; }
+  renderAuth();
+}
+initAuth();
 }

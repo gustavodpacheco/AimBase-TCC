@@ -150,3 +150,29 @@ CREATE TABLE IF NOT EXISTS player_pc_specs (
   FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
   INDEX idx_player (player_id)
 ) ENGINE=InnoDB;
+
+-- ============================================================
+-- USERS (autenticação)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_email (email),
+  INDEX idx_username (username)
+) ENGINE=InnoDB;
+
+-- ============================================================
+-- COMMENTS (comunidade)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  player_id INT NOT NULL,
+  author VARCHAR(32) NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
+  INDEX idx_comments_player (player_id, created_at)
+) ENGINE=InnoDB;

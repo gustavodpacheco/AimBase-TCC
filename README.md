@@ -130,6 +130,10 @@ Todos os endpoints retornam JSON no formato:
 | GET    | `/api/teams.php`                      | Lista de times (com nº de jogadores)  |
 | GET    | `/api/peripherals.php`                | Lista de periféricos                  |
 | GET    | `/api/peripherals.php?type=mouse`     | Filtra periféricos por tipo           |
+| GET    | `/api/filters.php`                    | Metadados para os filtros (jogos, times, funções, países) |
+| GET    | `/api/comments.php?player_id=1`       | Lista comentários de um jogador       |
+| POST   | `/api/comments.php`                   | Publica um comentário                 |
+| GET    | `/api/auth.php?action=me`             | Retorna usuário da sessão (ou null)   |
 
 ### Administrativos
 
@@ -147,6 +151,10 @@ Todos os endpoints retornam JSON no formato:
 | POST   | `/api/peripherals.php`   | Cria periférico                        |
 | PUT    | `/api/peripherals.php`   | Edita periférico                       |
 | DELETE | `/api/peripherals.php?id=1` | Exclui periférico                    |
+| POST   | `/api/auth.php?action=register` | Registra usuário (email+username+senha) |
+| POST   | `/api/auth.php?action=login`    | Autentica e cria sessão          |
+| POST   | `/api/auth.php?action=logout`   | Encerra a sessão                |
+| DELETE | `/api/comments.php?id=1`  | Exclui comentário (requer sessão)      |
 
 ### Exemplos (PowerShell/curl)
 
@@ -175,9 +183,13 @@ curl -X POST http://localhost/prosettings-page-main/api/players.php \
 - **Saída HTML sanitizada** com `htmlspecialchars` no painel admin.
 - **JSON padronizado** e tratamento de erros que **nunca expõe erros SQL** ao usuário.
 - **Credenciais do banco** são lidas de variáveis de ambiente, nunca hardcoded.
+- **Senhas** de usuários armazenadas com `password_hash()` (bcrypt), nunca em texto puro.
+- **Sessões PHP** com cookie `HttpOnly` / `SameSite=Lax` para autenticação.
+- **Frontend** escapa toda saída dinâmica (`esc`) e valida URLs (`safeUrl`) contra XSS.
 
-O painel admin ainda **não tem autenticação** nesta versão (conforme solicitado). A
-estrutura está preparada para adicionar login/autenticação posteriormente.
+O login/registro é real (via API + banco). O botão "Entrar" do site agora usa
+esses endpoints. Os botões "Continuar com Discord/Google" continuam sendo apenas
+demonstração.
 
 ---
 
@@ -187,5 +199,11 @@ estrutura está preparada para adicionar login/autenticação posteriormente.
 - `player_settings` (1:1 com player; DPI, sens, periféricos, retícula etc.)
 - `peripherals` (mouse, keyboard, mousepad, headset, monitor)
 - `player_social`, `player_video_settings`, `player_pc_specs` (dados complementares)
+- `users` (contas para autenticação) e `comments` (comentários da comunidade)
 
 Índices em `nickname`, `slug`, `game_id`, `team_id` e `type` para consultas rápidas.
+
+> **Para aplicar as novas tabelas** (`users` e `comments`) em um banco já criado,
+> rode o trecho final do `database/schema.sql` manualmente (ou reimporte o schema —
+> ele usa `CREATE TABLE IF NOT EXISTS`). Depois rode o `database/seed.sql` para
+> incluir o usuário demo (**username `demo` / senha `demo1234`**) e comentários de exemplo.

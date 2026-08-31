@@ -62,6 +62,12 @@ const API = {
     return this.handle(res);
   },
 
+  // ---- Filters ----
+  async listFilters() {
+    const res = await fetch(`${this.base}/filters.php`);
+    return this.handle(res);
+  },
+
   async createTeam(payload) {
     const res = await fetch(`${this.base}/teams.php`, {
       method: 'POST',
@@ -98,6 +104,62 @@ const API = {
 
   async deletePeripheral(id) {
     const res = await fetch(`${this.base}/peripherals.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    return this.handle(res);
+  },
+
+  // ---- Auth ----
+  async register(credentials) {
+    const res = await fetch(`${this.base}/auth.php?action=register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+      credentials: 'same-origin',
+    });
+    return this.handle(res);
+  },
+
+  async login(credentials) {
+    const res = await fetch(`${this.base}/auth.php?action=login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+      credentials: 'same-origin',
+    });
+    return this.handle(res);
+  },
+
+  async logout() {
+    const res = await fetch(`${this.base}/auth.php?action=logout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+      credentials: 'same-origin',
+    });
+    return this.handle(res);
+  },
+
+  async me() {
+    const res = await fetch(`${this.base}/auth.php?action=me`, { credentials: 'same-origin' });
+    return this.handle(res);
+  },
+
+  // ---- Comments ----
+  async listComments(playerId) {
+    const res = await fetch(`${this.base}/comments.php?player_id=${encodeURIComponent(playerId)}`);
+    return this.handle(res);
+  },
+
+  async createComment(payload) {
+    const res = await fetch(`${this.base}/comments.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return this.handle(res);
+  },
+
+  async deleteComment(id) {
+    const res = await fetch(`${this.base}/comments.php?id=${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'same-origin' });
     return this.handle(res);
   },
 
