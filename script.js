@@ -86,6 +86,20 @@ async function loadPlayersFromApi() {
 /** Retorna `true` se a API está sendo usada como fonte de dados. */
 let apiActive = false;
 
+/** Escapa texto para uso seguro em HTML (previne XSS). */
+const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+
+/** Sanitiza URLs de atributos href/src, bloqueando javascript: e afins. */
+const safeUrl = value => {
+  const url = String(value || '').trim();
+  if (!url) return '#';
+  try {
+    const p = new URL(url, window.location.origin);
+    if (p.protocol === 'javascript:' || p.protocol === 'data:') return '#';
+  } catch { return '#'; }
+  return url;
+};
+
 const savedPlayers = JSON.parse(localStorage.getItem('val-settings-players') || '[]');
 
 if (document.body.dataset.page === 'profile') {
@@ -146,23 +160,23 @@ if (document.body.dataset.page === 'profile') {
     if (player.productImages && gearGrid) {
       const products = [['monitor', 'Monitor', player.monitor, player.links?.monitor], ['mouse', 'Mouse', player.mouse, player.links?.mouse], ['keyboard', 'Keyboard', player.keyboard, player.links?.keyboard], ['headset', 'Headset', player.headset?.name, player.headset?.link], ['mousepad', 'Mousepad', player.mousepad, player.links?.mousepad]];
       gearGrid.classList.add('product-grid');
-      gearGrid.innerHTML = products.map(([id, label, name, href]) => `<a class="gear-card product-card" href="${href || '#'}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${player.productImages[id]}" alt="${name}"></span>` : ''}<small>${label}</small><strong>${name || 'Não informado'}</strong><span>Ver produto ↗</span></a>`).join('');
+      gearGrid.innerHTML = products.map(([id, label, name, href]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${safeUrl(player.productImages[id])}" alt="${esc(name) || label}"></span>` : ''}<small>${label}</small><strong>${esc(name) || 'Não informado'}</strong><span>Ver produto ↗</span></a>`).join('');
     } else if (player.headset && gearGrid && !gearGrid.querySelector('[id="headsetLink"]')) {
-      gearGrid.insertAdjacentHTML('beforeend', `<a class="gear-card" id="headsetLink" href="${player.headset.link}" target="_blank" rel="noopener"><small>HEADSET</small><strong>${player.headset.name}</strong><span>Ver produto ↗</span></a>`);
+      gearGrid.insertAdjacentHTML('beforeend', `<a class="gear-card" id="headsetLink" href="${safeUrl(player.headset.link)}" target="_blank" rel="noopener"><small>HEADSET</small><strong>${esc(player.headset.name)}</strong><span>Ver produto ↗</span></a>`);
     }
 
     if (player.game || Object.keys(player.social || {}).length) {
       const socialIcons = { Instagram: 'assets/brands/instagram.ico', Tracker: 'assets/brands/tracker.png', VLR: 'assets/brands/vlr.png' };
-      const social = Object.entries(player.social || {}).map(([label, href]) => `<a class="social-${label.toLowerCase()}" href="${href}" target="_blank" rel="noopener"><img src="${socialIcons[label] || ''}" alt="" aria-hidden="true">${label} <span>↗</span></a>`).join('');
+      const social = Object.entries(player.social || {}).map(([label, href]) => `<a class="social-${esc(label.toLowerCase())}" href="${safeUrl(href)}" target="_blank" rel="noopener"><img src="${esc(socialIcons[label] || '')}" alt="" aria-hidden="true">${esc(label)} <span>↗</span></a>`).join('');
       if (!document.querySelector('.player-meta')) {
-        document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>JOGO</small><strong>${player.game || 'Não informado'}</strong></div><div><small>AGENTE PRINCIPAL</small><strong>${player.agents || 'Não informado'}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
+        document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>JOGO</small><strong>${esc(player.game) || 'Não informado'}</strong></div><div><small>AGENTE PRINCIPAL</small><strong>${esc(player.agents) || 'Não informado'}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
       }
     }
     if (player.videoSettings && player.videoSettings.length && !document.querySelector('.video-settings')) {
-      document.querySelector('.crosshair-block').insertAdjacentHTML('afterend', `<section class="settings-block video-settings"><div class="section-heading"><span class="section-icon">◫</span><h2>Configurações de vídeo</h2></div><div class="video-settings-grid">${player.videoSettings.map(([label, value]) => `<div><small>${label}</small><strong>${value}</strong></div>`).join('')}</div></section>`);
+      document.querySelector('.crosshair-block').insertAdjacentHTML('afterend', `<section class="settings-block video-settings"><div class="section-heading"><span class="section-icon">◫</span><h2>Configurações de vídeo</h2></div><div class="video-settings-grid">${player.videoSettings.map(([label, value]) => `<div><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div></section>`);
     }
     if (player.pcSpecs && player.pcSpecs.length && !document.querySelector('.pc-specs')) {
-      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>PC Specs</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${href || '#'}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${image}" alt="${value}"></span>` : ''}<small>${label}</small><strong>${value}</strong><span>Ver produto ↗</span></a>`).join('')}</div></section>`);
+      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>PC Specs</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${safeUrl(image)}" alt="${esc(value)}"></span>` : ''}<small>${esc(label)}</small><strong>${esc(value)}</strong><span>Ver produto ↗</span></a>`).join('')}</div></section>`);
     }
 
     const copy = async (text, success) => { try { await navigator.clipboard.writeText(text); showToast(success); } catch { showToast('Não foi possível copiar.'); } };
@@ -177,10 +191,9 @@ if (document.body.dataset.page === 'profile') {
 
   function setupComments($, player, showToast) {
     $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel"><form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="Seu nome"><textarea name="message" maxlength="300" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar comentário</button></form><div class="comment-list" id="commentList"></div></div></section>');
-    const escape = value => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
     const commentsKey = `val-tactical-comments-${player.id}`;
     const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${escape(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${escape(comment.author)}</strong><time>${new Date(comment.date).toLocaleDateString('pt-BR')}</time><p>${escape(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
+    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
     $('commentForm').addEventListener('submit', event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.currentTarget)); comments.unshift({ author: data.author.trim(), message: data.message.trim(), date: new Date().toISOString() }); localStorage.setItem(commentsKey, JSON.stringify(comments)); event.currentTarget.reset(); renderComments(); showToast('Comentário publicado.'); });
     renderComments();
   }
@@ -215,7 +228,7 @@ function renderList() {
   $('homePlayerCount').textContent = String(players.length).padStart(2, '0');
   $('heroProfileCount').textContent = String(players.length).padStart(2, '0');
   const filtered = getFilteredPlayers();
-  $('playerList').innerHTML = filtered.length ? filtered.map(player => `<button class="player-row ${player.id === selectedId ? 'active' : ''}" data-id="${player.id}" type="button">${player.photo ? `<img class="player-avatar" src="${player.photo}" alt="">` : `<span class="player-avatar player-initials">${initials(player.name)}</span>`}<span><strong>${player.name}</strong><small>${player.game || 'VALORANT'} · ${player.team}</small></span></button>`).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
+  $('playerList').innerHTML = filtered.length ? filtered.map(player => `<button class="player-row ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button">${player.photo ? `<img class="player-avatar" src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : `<span class="player-avatar player-initials">${esc(initials(player.name))}</span>`}<span><strong>${esc(player.name)}</strong><small>${esc(player.game) || 'VALORANT'} · ${esc(player.team)}</small></span></button>`).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
   document.querySelectorAll('.player-row').forEach(button => button.addEventListener('click', () => selectPlayer(button.dataset.id)));
 }
 
