@@ -60,6 +60,127 @@
   font-size: var(--fs-sm);
 }
 
+/* ============================================================
+   Home Card (página inicial) — foto maior com logo/game, nome
+   sobreposto e rodapé com time + país. Cor da moldura por jogo.
+   ============================================================ */
+.home-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+
+.home-card:hover,
+.home-card.active {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hov);
+  border-color: var(--fifa-frame, var(--accent-secondary));
+}
+
+.home-card[data-game="VALORANT"] { --fifa-frame: var(--accent-primary); }
+.home-card[data-game="Counter-Strike 2"] { --fifa-frame: #FFB11E; }
+.home-card[data-game="Rainbow Six"] { --fifa-frame: #4C9BE8; }
+
+.home-card__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bg-surface-alt);
+}
+
+.home-card__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.home-card__initials {
+  display: grid;
+  place-items: center;
+  font: 700 var(--fs-3xl) var(--font-display);
+  color: var(--fifa-frame, var(--accent-secondary));
+  opacity: 0.85;
+}
+
+/* Badge do jogo sobreposto na foto (canto superior esquerdo) */
+.home-card__badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  font: 700 0.6rem var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--fifa-frame, var(--accent-secondary));
+  border-radius: var(--radius-badge);
+  padding: 3px 10px;
+  box-shadow: var(--shadow-card-hov);
+}
+
+/* Nome sobreposto na parte inferior da foto, com gradiente de leitura */
+.home-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 52%, rgba(0, 0, 0, 0.72) 100%);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+
+.home-card__name {
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 1;
+  font: 700 var(--fs-lg) var(--font-display);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Rodapé: time + país */
+.home-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.home-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.home-card__team {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-card__country {
+  flex: none;
+  color: var(--text-muted);
+}
+
 /* ----- Estados: empty ----- */
 .player-empty {
   color: var(--text-secondary);

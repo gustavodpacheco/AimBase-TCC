@@ -69,13 +69,41 @@ function selectPlayer(id) {
   const target = player && player.slug ? player.slug : id;
   window.location.href = `player.html?player=${encodeURIComponent(target)}`;
 }
+
+/** Mapeia o nome do jogo para: rótulo curto + data-game (cor da moldura/badge). */
+function gameBadge(game) {
+  const g = String(game || 'VALORANT');
+  if (g.toLowerCase().includes('counter') || g.toLowerCase() === 'cs2') return { label: 'CS2', game: 'Counter-Strike 2' };
+  if (g.toLowerCase().includes('rainbow') || g.toLowerCase().includes('r6')) return { label: 'R6', game: 'Rainbow Six' };
+  return { label: 'VALORANT', game: 'VALORANT' };
+}
+
+function homeCardHTML(player) {
+  const badge = gameBadge(player.game);
+  const avatar = player.photo
+    ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy">`
+    : `<span class="home-card__photo home-card__initials">${esc(initials(player.name))}</span>`;
+  return `<button class="home-card ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button" data-game="${esc(badge.game)}">
+    <div class="home-card__media">
+      ${avatar}
+      <span class="home-card__badge">${esc(badge.label)}</span>
+    </div>
+    <div class="home-card__body">
+      <strong class="home-card__name">${esc(player.name)}</strong>
+      <div class="home-card__meta">
+        <span class="home-card__team">${esc(player.team)}</span>
+        <span class="home-card__country">${esc(player.country)}</span>
+      </div>
+    </div>
+  </button>`;
+}
 function renderList() {
   $('playerCount').textContent = `${players.length} ${players.length === 1 ? 'jogador' : 'jogadores'}`;
   $('homePlayerCount').textContent = String(players.length).padStart(2, '0');
   $('heroProfileCount').textContent = String(players.length).padStart(2, '0');
   const filtered = getFilteredPlayers();
-  $('playerList').innerHTML = filtered.length ? filtered.map(player => `<button class="player-row ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button">${player.photo ? `<img class="player-avatar" src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : `<span class="player-avatar player-initials">${esc(initials(player.name))}</span>`}<span><strong>${esc(player.name)}</strong><small>${esc(player.game) || 'VALORANT'} · ${esc(player.team)}</small></span></button>`).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
-  document.querySelectorAll('.player-row').forEach(button => button.addEventListener('click', () => selectPlayer(button.dataset.id)));
+  $('playerList').innerHTML = filtered.length ? filtered.map(homeCardHTML).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
+  document.querySelectorAll('.home-card').forEach(button => button.addEventListener('click', () => selectPlayer(button.dataset.id)));
 }
 
 const headerSearch = $('playerSearch');
