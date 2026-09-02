@@ -55,6 +55,19 @@ function fifaGameTag(game) {
  */
 function fifaCardHTML(player, opts = {}) {
   const large = !!opts.large;
+
+  // Jogador com imagem de card pronta (ex.: Gustavo Pacheco): renderiza somente a
+  // <img> no lugar de montar moldura/nome/atributos em HTML. Mantém o data-id para
+  // o clique levar ao perfil (listagem). object-fit: contain p/ não distorcer.
+  if (player && player.cardImage) {
+    const cls = `fifa-card fifa-card--img${large ? ' fifa-card--lg' : ''}${opts.active ? ' active' : ''}`;
+    const tag = large ? 'div' : 'button';
+    const attr = large ? '' : ` data-id="${esc(player.id)}" type="button"`;
+    return `<${tag} class="${cls}"${attr}>
+      <img src="${safeUrl(player.cardImage)}" alt="${esc(player.name)}" loading="lazy">
+    </${tag}>`;
+  }
+
   const gameTag = fifaGameTag(player.game);
   const photo = player.photo ? `<img src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : '';
   const initials = photo ? '' : `<span class="fifa-card__initials">${esc(initialsOf(player.name))}</span>`;
