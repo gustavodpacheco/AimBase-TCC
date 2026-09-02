@@ -90,9 +90,15 @@
 .home-card[data-game="Counter-Strike 2"] { --fifa-frame: #FFB11E; }
 .home-card[data-game="Rainbow Six"] { --fifa-frame: #4C9BE8; }
 
+/* Foto horizontal (ex.: Tardus) — centraliza no card para não cortar de forma agressiva */
+.home-card[data-game="Rainbow Six"] .home-card__photo {
+  object-position: center;
+  object-fit: cover;
+}
+
 .home-card__media {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--bg-surface-alt);
 }
@@ -102,7 +108,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center top;
 }
 
 .home-card__initials {
@@ -118,6 +124,7 @@
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
+  z-index: 1;
   font: 700 0.55rem var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -128,34 +135,22 @@
   box-shadow: var(--shadow-card-hov);
 }
 
-/* Nome sobreposto na parte inferior da foto, com gradiente de leitura */
-.home-card__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
-  border-radius: 0 0 var(--radius-card) var(--radius-card);
+/* Rodapé: nome + time + país, tudo no fluxo (sem sobreposição) */
+.home-card__body {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .home-card__name {
-  position: absolute;
-  left: var(--space-3);
-  right: var(--space-3);
-  bottom: var(--space-2);
-  z-index: 1;
+  display: block;
   font: 600 var(--fs-base) var(--font-display);
-  line-height: 1.05;
+  line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-/* Rodapé: time + país */
-.home-card__body {
-  display: block;
-  padding: var(--space-2) var(--space-3);
-  border-top: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .home-card__meta {
@@ -165,6 +160,7 @@
   min-width: 0;
   color: var(--text-secondary);
   font-size: 0.7rem;
+  margin-top: 4px;
 }
 
 .home-card__team {
