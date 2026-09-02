@@ -4,7 +4,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-title">
-  <div><p class="kicker">PROSENS</p><h1>Jogadores</h1></div>
+  <div><p class="kicker">AIMBASE</p><h1>Jogadores</h1></div>
   <a class="btn btn-primary" href="player-edit.php">+ Novo jogador</a>
 </div>
 

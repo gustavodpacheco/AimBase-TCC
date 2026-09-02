@@ -15,7 +15,7 @@ require __DIR__ . '/../includes/functions.php';
 applyCors();
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_name('PROSENS_SESSID');
+    session_name('AIMBASE_SESSID');
     session_start();
 }
 

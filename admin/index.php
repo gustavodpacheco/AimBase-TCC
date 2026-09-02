@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-title">
-  <div><p class="kicker">PROSENS</p><h1>Painel de Controle</h1></div>
+  <div><p class="kicker">AIMBASE</p><h1>Painel de Controle</h1></div>
 </div>
 
 <div class="admin-grid">

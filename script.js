@@ -32,6 +32,12 @@ async function loadPlayersFromApi() {
           edpi: settings.dpi && settings.sensitivity ? Math.round(settings.dpi * settings.sensitivity) : null,
         };
       });
+      const seen = new Set();
+      players = players.filter(p => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
       return true;
     }
     return false;
@@ -92,14 +98,17 @@ $('themeToggle').addEventListener('click', () => applyTheme(document.body.classL
 const updateHeaderSearch = () => document.body.classList.toggle('scrolled', window.scrollY > 110);
 updateHeaderSearch();
 window.addEventListener('scroll', updateHeaderSearch, { passive: true });
-document.querySelector('.footer-brand p').textContent = 'Loadouts competitivos de múltiplos jogos, feitos pela comunidade.';
+document.querySelector('.footer-brand p').textContent = 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.';
 
 // ---- Modal de adicionar jogador (via API) ----
 const modal = $('playerModal');
 $('openModal').addEventListener('click', () => modal.showModal());
 $('closeModal').addEventListener('click', () => modal.close());
+let playerFormBusy = false;
 $('playerForm').addEventListener('submit', async event => {
   event.preventDefault();
+  if (playerFormBusy) return;
+  playerFormBusy = true;
   const data = Object.fromEntries(new FormData(event.currentTarget));
   const payload = {
     nickname: data.tag,
@@ -116,6 +125,8 @@ $('playerForm').addEventListener('submit', async event => {
     await refreshPlayers();
   } catch (err) {
     message(err.message || 'Não foi possível adicionar o jogador.');
+  } finally {
+    playerFormBusy = false;
   }
 });
 
@@ -155,7 +166,10 @@ async function loadFilters() {
 }
 
 async function refreshPlayers() {
-  await loadPlayersFromApi();
+  const loaded = await loadPlayersFromApi();
+  if (!loaded) {
+    players = [...defaultPlayers, ...savedPlayers];
+  }
   const validRequested = requestedPlayer && players.some(p => p.id === requestedPlayer);
   selectedId = validRequested ? requestedPlayer : (players[0] || {}).id || null;
   renderList();
@@ -184,8 +198,8 @@ function setAuthMode(mode) {
   authMode = mode;
   const isRegister = mode === 'register';
   $('authTitle').textContent = isRegister ? 'CRIAR CONTA' : 'ENTRAR';
-  $('authKicker').textContent = isRegister ? 'NOVA CONTA' : 'ÁREA DO JOGADOR';
-  $('authIntro').textContent = isRegister ? 'Crie seu acesso e entre para a comunidade.' : 'Acesse sua conta para personalizar sua experiência.';
+  $('authKicker').textContent = isRegister ? 'NOVA CONTA' : 'ENTRAR';
+  $('authIntro').textContent = isRegister ? 'Crie sua conta e entre para a comunidade.' : 'Acesse sua conta para gerenciar seu perfil.';
   $('usernameField').hidden = !isRegister;
   $('authUsername').required = isRegister;
   $('authEmail').placeholder = isRegister ? 'E-mail' : 'E-mail ou username';
@@ -217,7 +231,7 @@ $('authForm').addEventListener('submit', async event => {
     currentUser = res.data.user;
     authModal.close();
     renderAuth();
-    message(authMode === 'register' ? 'Conta criada. Boas-vindas ao ProSens.' : `Bem-vindo, ${currentUser.username}.`);
+    message(authMode === 'register' ? 'Conta criada. Boas-vindas ao AimBase.' : `Bem-vindo, ${currentUser.username}.`);
   } catch (err) {
     setAuthMessage(err.message || 'Não foi possível concluir a operação.');
   }

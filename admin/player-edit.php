@@ -5,7 +5,7 @@ $editId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 ?>
 
 <div class="admin-title">
-  <div><p class="kicker">PROSENS</p><h1><?= $editId ? 'Editar Jogador' : 'Novo Jogador' ?></h1></div>
+  <div><p class="kicker">AIMBASE</p><h1><?= $editId ? 'Editar Jogador' : 'Novo Jogador' ?></h1></div>
   <a class="btn" href="players.php">← Voltar</a>
 </div>
 

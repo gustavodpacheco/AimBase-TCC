@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ProSens — Players</title>
+  <title>AimBase — Configurações</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -15,11 +15,11 @@
 
 <body data-page="home">
   <header class="site-header">
-    <a class="logo" href="#"><span class="logo-dot">P</span> Pro<span>Sens</span></a>
+    <a class="logo" href="#"><span class="logo-dot">A</span>Aim<span>Base</span></a>
     <nav class="top-nav" aria-label="Navegação principal"><a class="active" href="#inicio">Início</a><a
         href="#players">Jogadores</a></nav>
     <div class="header-tools">
-      <label class="header-search"><span>⌕</span><input id="playerSearch" type="search" placeholder="Buscar jogador"
+      <label class="header-search"><span>⌕</span><input id="playerSearch" type="search" placeholder="Buscar"
           aria-label="Buscar jogador"></label>
       <button class="auth-trigger" id="authTrigger" type="button">Entrar</button>
       <button class="auth-logout" id="authLogout" type="button" hidden>Sair</button>
@@ -31,21 +31,20 @@
     <div class="hero-mark hero-mark-one"></div>
     <div class="hero-mark hero-mark-two"></div>
     <div class="home-copy">
-      <p class="kicker">MULTI-GAME // LOADOUT DATABASE</p>
+      <p class="kicker">MULTI-GAME // DATABASE DE SETTINGS</p>
       <h1>ENCONTRE A<br><em>CONFIGURAÇÃO</em><br>CERTA.</h1>
-      <p class="home-description">Settings, retículas e periféricos de jogadores em um único lugar — feitos para você
-        encontrar o seu próximo setup.</p>
+      <p class="home-description">Configurações, retículas e periféricos de jogadores profissionais — tudo em um só lugar.</p>
       <label class="hero-search" for="heroPlayerSearch">
         <span aria-hidden="true">⌕</span>
-        <input id="heroPlayerSearch" type="search" placeholder="Busque por jogador, nick ou time"
+        <input id="heroPlayerSearch" type="search" placeholder="Buscar jogador, nick ou time"
           aria-label="Buscar perfil de jogador">
         <kbd>ENTER</kbd>
       </label>
     </div>
-    <div class="hero-status"><span class="status-dot"></span> DATABASE ONLINE <b id="homePlayerCount">02</b> PERFIS
+    <div class="hero-status"><span class="status-dot"></span> ONLINE <b id="homePlayerCount">02</b> PERFIS
       ATIVOS</div>
     <div class="home-cards">
-      <article><small>PERFIS</small><strong id="heroProfileCount">02</strong><span>JOGADORES CADASTRADOS</span>
+      <article><small>PERFIS</small><strong id="heroProfileCount">02</strong><span>JOGRADORES CADASTRADOS</span>
       </article>
       <article><small>FOCO</small><strong>ALL</strong><span>CONFIGURAÇÕES DE JOGOS</span></article>
     </div>
@@ -89,8 +88,7 @@
           <option value="high">Alta (0.46+)</option>
         </select></div>
       <div class="player-list" id="playerList"></div>
-      <div class="directory-note"><strong>Seu perfil não está aqui?</strong><br>Use o botão <b>+</b> para adicionar um
-        novo jogador.</div>
+      <div class="directory-note"><strong>Seu perfil não está aqui?</strong><br>Adicione um novo jogador com o botão <b>+</b>.</div>
     </aside>
 
     <section class="content" id="settings">
@@ -152,18 +150,17 @@
   </main>
 
   <footer class="site-footer">
-    <div class="footer-brand"><a class="logo" href="#inicio"><span class="logo-dot">V</span>
-        val<span>settings</span></a>
-      <p>Loadouts competitivos de VALORANT, feitos pela comunidade.</p>
+    <div class="footer-brand"><a class="logo" href="#inicio"><span class="logo-dot">A</span>Aim<span>Base</span></a>
+      <p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
     </div>
     <div>
       <h3>Explorar</h3><a href="#players">Jogadores</a><a href="#settings">Settings</a>
     </div>
     <div>
-      <h3>Contato</h3><a href="mailto:contato@prosens.gg">contato@prosens.gg</a><a href="#players">Ver
+      <h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="#players">Ver
         jogadores</a>
     </div>
-    <div class="footer-credit"><span>© 2026 PROSENS</span><span>CRIADO PARA COMPETIR</span></div>
+    <div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div>
   </footer>
   <nav class="mobile-nav" aria-label="Navegação mobile"><a href="#inicio"><span>⌂</span>Início</a><a
       href="#players"><span>◫</span>Players</a><a href="#settings"><span>⌖</span>Setup</a><a
@@ -190,9 +187,9 @@
   <dialog class="auth-modal" id="authModal" aria-labelledby="authTitle">
     <section class="auth-card">
       <button class="auth-close" id="authClose" type="button" aria-label="Fechar">×</button>
-      <p class="kicker" id="authKicker">ÁREA DO JOGADOR</p>
+      <p class="kicker" id="authKicker">ENTRAR</p>
       <h2 id="authTitle">ENTRAR</h2>
-      <p class="auth-intro" id="authIntro">Acesse sua conta para personalizar sua experiência.</p>
+      <p class="auth-intro" id="authIntro">Acesse sua conta para gerenciar seu perfil.</p>
       <form id="authForm">
         <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username" autocomplete="username" placeholder="Username"></label>
         <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username" required placeholder="E-mail ou username"></label>

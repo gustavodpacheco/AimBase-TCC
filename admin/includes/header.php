@@ -12,7 +12,7 @@ $apiBase = rtrim($baseHref, '/') . '/api';
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?= htmlspecialchars($pageTitle) ?> — ProSens Admin</title>
+<title><?= htmlspecialchars($pageTitle) ?> — AimBase Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ $apiBase = rtrim($baseHref, '/') . '/api';
 </head>
 <body class="dark" data-page="admin">
 <header class="admin-header">
-  <a class="logo" href="index.php"><span class="logo-dot">P</span> Pro<span>Sens</span> <small>ADMIN</small></a>
+  <a class="logo" href="index.php"><span class="logo-dot">A</span>Aim<span>Base</span> <small>ADMIN</small></a>
   <nav class="admin-nav">
     <a href="index.php">Painel</a>
     <a href="players.php">Jogadores</a>

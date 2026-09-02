@@ -4,7 +4,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-title">
-  <div><p class="kicker">PROSENS</p><h1>Periféricos</h1></div>
+  <div><p class="kicker">AIMBASE</p><h1>Periféricos</h1></div>
   <button class="btn btn-primary" id="newPeriphBtn">+ Novo periférico</button>
 </div>
 
@@ -17,15 +17,15 @@ require __DIR__ . '/includes/header.php';
   <form id="periphForm" style="display:grid;gap:12px">
     <h2 style="margin:0;font-size:18px;text-transform:uppercase" id="periphModalTitle">Novo periférico</h2>
     <input type="hidden" name="id">
-    <select name="type" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
+    <select name="type" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
       <option value="mouse">Mouse</option>
       <option value="keyboard">Teclado</option>
       <option value="mousepad">Mousepad</option>
       <option value="headset">Headset</option>
       <option value="monitor">Monitor</option>
     </select>
-    <input name="brand" placeholder="Marca" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
-    <input name="model" required placeholder="Modelo" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
+    <input name="brand" placeholder="Marca" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
+    <input name="model" required placeholder="Modelo" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" type="submit">Salvar</button>
       <button class="btn" type="button" id="closePeriph">Cancelar</button>

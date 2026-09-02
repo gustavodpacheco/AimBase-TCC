@@ -5,7 +5,7 @@ $editId = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
 ?>
 
 <div class="admin-title">
-  <div><p class="kicker">PROSENS</p><h1>Times</h1></div>
+  <div><p class="kicker">AIMBASE</p><h1>Times</h1></div>
   <button class="btn btn-primary" id="newTeamBtn">+ Novo time</button>
 </div>
 
@@ -19,9 +19,9 @@ $editId = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
   <form id="teamForm" style="display:grid;gap:12px">
     <h2 style="margin:0;font-size:18px;text-transform:uppercase" id="teamModalTitle">Novo time</h2>
     <input type="hidden" name="id">
-    <input name="name" required placeholder="Nome do time" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
-    <input name="country" placeholder="País" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
-    <input name="logo" placeholder="Logo (URL)" style="padding:10px;border:1px solid var(--line);background:#0a141e;color:var(--text)">
+    <input name="name" required placeholder="Nome do time" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
+    <input name="country" placeholder="País" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
+    <input name="logo" placeholder="Logo (URL)" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" type="submit">Salvar</button>
       <button class="btn" type="button" id="closeTeam">Cancelar</button>
