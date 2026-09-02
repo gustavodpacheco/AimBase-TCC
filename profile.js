@@ -31,6 +31,9 @@ if (document.body.dataset.page === 'profile') {
 
   function renderProfile(player, apiActive) {
     document.title = `${player.tag} — AimBase`;
+    // Cartão FIFA (peça central do topo) - versão grande do perfil
+    const fifaCardEl = $('fifaCard');
+    if (fifaCardEl) fifaCardEl.innerHTML = fifaCardHTML(player, { large: true });
     $('crumbName').textContent = player.tag.toUpperCase();
     const bc = document.querySelector('.breadcrumb');
     if (bc && bc.childNodes[2]) bc.childNodes[2].nodeValue = ` ${player.game || 'VALORANT'} `;

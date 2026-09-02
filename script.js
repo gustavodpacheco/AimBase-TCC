@@ -74,8 +74,8 @@ function renderList() {
   $('homePlayerCount').textContent = String(players.length).padStart(2, '0');
   $('heroProfileCount').textContent = String(players.length).padStart(2, '0');
   const filtered = getFilteredPlayers();
-  $('playerList').innerHTML = filtered.length ? filtered.map(player => `<button class="player-row ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button">${player.photo ? `<img class="player-avatar" src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : `<span class="player-avatar player-initials">${esc(initials(player.name))}</span>`}<span><strong>${esc(player.name)}</strong><small>${esc(player.game) || 'VALORANT'} · ${esc(player.team)}</small></span></button>`).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
-  document.querySelectorAll('.player-row').forEach(button => button.addEventListener('click', () => selectPlayer(button.dataset.id)));
+  $('playerList').innerHTML = filtered.length ? filtered.map(player => fifaCardHTML(player, { active: player.id === selectedId })).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
+  document.querySelectorAll('.fifa-card').forEach(card => card.addEventListener('click', () => selectPlayer(card.dataset.id)));
 }
 
 const headerSearch = $('playerSearch');
