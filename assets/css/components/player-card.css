@@ -81,7 +81,7 @@
 
 .home-card:hover,
 .home-card.active {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-card-hov);
   border-color: var(--fifa-frame, var(--accent-secondary));
 }
@@ -92,7 +92,7 @@
 
 .home-card__media {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--bg-surface-alt);
 }
@@ -116,15 +116,15 @@
 /* Badge do jogo sobreposto na foto (canto superior esquerdo) */
 .home-card__badge {
   position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
-  font: 700 0.6rem var(--font-mono);
+  top: var(--space-2);
+  left: var(--space-2);
+  font: 700 0.55rem var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #fff;
   background: var(--fifa-frame, var(--accent-secondary));
   border-radius: var(--radius-badge);
-  padding: 3px 10px;
+  padding: 2px 8px;
   box-shadow: var(--shadow-card-hov);
 }
 
@@ -133,7 +133,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 52%, rgba(0, 0, 0, 0.72) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
   border-radius: 0 0 var(--radius-card) var(--radius-card);
 }
 
@@ -141,9 +141,9 @@
   position: absolute;
   left: var(--space-3);
   right: var(--space-3);
-  bottom: var(--space-3);
+  bottom: var(--space-2);
   z-index: 1;
-  font: 700 var(--fs-lg) var(--font-display);
+  font: 600 var(--fs-base) var(--font-display);
   line-height: 1.05;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -157,17 +157,17 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   border-top: 1px solid var(--border-subtle);
 }
 
 .home-card__meta {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   min-width: 0;
   color: var(--text-secondary);
-  font-size: var(--fs-sm);
+  font-size: 0.7rem;
 }
 
 .home-card__team {
