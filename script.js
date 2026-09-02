@@ -87,9 +87,9 @@ function homeCardHTML(player) {
     <div class="home-card__media">
       ${avatar}
       <span class="home-card__badge">${esc(badge.label)}</span>
+      <strong class="home-card__name">${esc(player.name)}</strong>
     </div>
     <div class="home-card__body">
-      <strong class="home-card__name">${esc(player.name)}</strong>
       <div class="home-card__meta">
         <span class="home-card__team">${esc(player.team)}</span>
         <span class="home-card__country">${esc(player.country)}</span>
