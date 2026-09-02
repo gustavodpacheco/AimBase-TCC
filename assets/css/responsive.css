@@ -1,0 +1,206 @@
+/* ============================================================
+   AimBase — Responsivo
+   Breakpoints: 480 (mobile), 768 (tablet), 1024 (desktop),
+   1280 (wide). Ordem: mobile-first overrides via min-width.
+   ============================================================ */
+
+/* ---------- ≥ 480px ---------- */
+@media (min-width: 480px) {
+  .form-grid,
+  .gear-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- ≥ 768px ---------- */
+@media (min-width: 768px) {
+  .player-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .clip-mobile-only {
+    display: none;
+  }
+
+  .clips-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* ---------- ≥ 1024px ---------- */
+@media (min-width: 1024px) {
+  .player-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---------- ≥ 1280px ---------- */
+@media (min-width: 1280px) {
+  .player-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Overrides mobile-first (max-width) — desktops antes, depois telas estreitas
+   ============================================================ */
+
+/* ---------- ≤ 1024px ---------- */
+@media (max-width: 1024px) {
+  .home-cards {
+    display: none;
+  }
+
+  .profile-card {
+    grid-template-columns: 110px 1fr;
+  }
+
+  .profile-card .copy-all {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .data-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .video-settings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- ≤ 768px ---------- */
+@media (max-width: 768px) {
+  .site-header {
+    height: 56px;
+    gap: var(--space-3);
+  }
+
+  .top-nav,
+  .header-search {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
+    justify-content: space-around;
+  }
+
+  .mobile-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 0 12px;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    border-top: 2px solid transparent;
+  }
+
+  .mobile-nav a.active,
+  .mobile-nav a:hover {
+    color: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+  }
+
+  .mobile-nav a span {
+    color: var(--accent-secondary);
+    font-size: 16px;
+  }
+
+  .layout {
+    padding-bottom: calc(var(--space-7) + 64px);
+  }
+
+  .site-footer {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    padding-bottom: calc(var(--space-7) + 64px);
+  }
+
+  .footer-credit {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .clip-desktop-only {
+    display: none !important;
+  }
+
+  .clip-mobile-only {
+    display: block !important;
+  }
+
+  .clips-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comments-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* Clips profissionais: desktop fica oculto, mobile visível */
+  .profile-comments {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-5);
+  }
+}
+
+/* ---------- ≤ 480px ---------- */
+@media (max-width: 480px) {
+  .home-copy h1 {
+    font-size: 2.5rem;
+  }
+
+  .profile-card {
+    grid-template-columns: 88px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .profile-photo {
+    width: 88px;
+    height: 112px;
+  }
+
+  .profile-grid {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .player-meta {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .player-social {
+    margin-left: 0;
+  }
+
+  .data-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gear-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,152 @@
+/* ============================================================
+   AimBase — Página inicial (index.html)
+   ============================================================ */
+
+/* ----- Hero compacto e alinhado à esquerda (catálogo) ----- */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-8) clamp(20px, 6vw, 72px) var(--space-7);
+}
+
+.home-copy {
+  max-width: 680px;
+}
+
+.home-copy h1 {
+  font-size: clamp(3rem, 7vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.home-copy h1 em {
+  font-style: normal;
+  color: var(--accent-primary);
+}
+
+.home-description {
+  max-width: 480px;
+  color: var(--text-secondary);
+  font-size: var(--fs-lg);
+  line-height: 1.6;
+  margin-bottom: var(--space-6);
+}
+
+/* ----- Busca do hero ----- */
+.hero-search {
+  width: min(100%, 560px);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-input);
+  background: var(--bg-surface-alt);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.hero-search:focus-within {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(63, 193, 224, 0.15);
+}
+
+.hero-search span {
+  color: var(--accent-secondary);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.hero-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+}
+
+.hero-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.hero-search kbd {
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 3px 8px;
+  border-radius: var(--radius-badge);
+  font: 400 var(--fs-xs) var(--font-mono);
+}
+
+/* ----- Status e cards do hero ----- */
+.hero-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font: 400 0.75rem var(--font-mono);
+  margin-top: var(--space-6);
+}
+
+.hero-status b {
+  color: var(--text-primary);
+  margin-left: var(--space-1);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-badge);
+  background: var(--accent-success);
+}
+
+.home-cards {
+  position: absolute;
+  right: clamp(20px, 6vw, 72px);
+  bottom: var(--space-7);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.home-cards article {
+  min-width: 130px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.home-cards small,
+.home-cards span {
+  font: 400 0.7rem var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.home-cards strong {
+  font: 600 var(--fs-2xl) var(--font-mono);
+  color: var(--text-primary);
+  display: block;
+  margin: var(--space-1) 0;
+}
+
+/* ----- Diretório / conteúdo principal ----- */
+.content {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.profile-layout .content {
+  gap: var(--space-4);
+}
+
+/* Na página inicial o bloco de perfil embutido fica oculto:
+   a navegação leva o usuário para player.html (data-page="profile"). */
+body[data-page="home"] .content {
+  display: none;
+}

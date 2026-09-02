@@ -1,0 +1,95 @@
+/* ============================================================
+   AimBase — Player Card (grid da página inicial)
+   ============================================================ */
+
+.player-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: border-color var(--t-fast), background-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.player-row:hover,
+.player-row.active {
+  border-color: var(--accent-secondary);
+  background: var(--bg-surface-alt);
+  box-shadow: var(--shadow-card-hov);
+}
+
+.player-avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--radius-card);
+  object-fit: cover;
+  background: var(--bg-surface-alt);
+}
+
+.player-initials {
+  display: grid;
+  place-items: center;
+  font: 600 1rem var(--font-display);
+  color: var(--accent-secondary);
+}
+
+.player-row strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
+}
+
+.player-row small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+/* ----- Estados: skeleton (loading) ----- */
+.player-row--loading {
+  pointer-events: none;
+  min-height: 68px;
+  background:
+    linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-surface-alt) 50%, var(--bg-surface) 75%);
+  background-size: 400% 100%;
+  animation: skeleton 1.4s ease infinite;
+}
+
+@keyframes skeleton {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ----- Empty state ----- */
+.player-empty {
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  text-align: center;
+  font-size: var(--fs-sm);
+}
+
+.player-empty button {
+  border: 0;
+  background: transparent;
+  color: var(--accent-secondary);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: var(--fs-sm);
+}

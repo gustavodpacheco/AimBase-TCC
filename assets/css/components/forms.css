@@ -1,0 +1,227 @@
+/* ============================================================
+   AimBase — Formulários
+   Inputs, select, textarea, campos de autenticação.
+   ============================================================ */
+
+.form-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-grid label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-grid input,
+.form-grid select,
+.auth-field input,
+.comment-form input,
+.comment-form textarea,
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-input);
+  font-size: var(--fs-sm);
+  outline: none;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.auth-field:focus-within,
+.comment-form input:focus,
+.comment-form textarea:focus,
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(63, 193, 224, 0.15);
+}
+
+.form-field-error {
+  color: var(--accent-danger);
+  font-size: var(--fs-xs);
+  margin-top: 4px;
+}
+
+/* ----- Modal de autenticação ----- */
+.auth-modal,
+.player-modal {
+  width: min(100% - 30px, 440px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-modal);
+}
+
+.auth-modal::backdrop,
+.player-modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.auth-card {
+  position: relative;
+  padding: var(--space-6);
+}
+
+.auth-close,
+.close-modal {
+  position: absolute;
+  right: var(--space-3);
+  top: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--radius-btn);
+}
+
+.auth-close:hover,
+.close-modal:hover {
+  color: var(--text-primary);
+  border-color: var(--focus-ring);
+}
+
+.auth-card h2,
+.modal-head h2 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+}
+
+.auth-field {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-input);
+  background: var(--bg-surface-alt);
+  transition: border-color var(--t-fast);
+}
+
+.auth-field span {
+  width: 42px;
+  color: var(--accent-secondary);
+  text-align: center;
+  font-size: 16px;
+}
+
+.auth-field input {
+  border: 0;
+  background: transparent;
+  padding-left: 0;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.auth-providers {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.auth-providers button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 11px;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+}
+
+.auth-providers button:hover {
+  border-color: var(--focus-ring);
+  color: var(--text-primary);
+}
+
+.auth-providers button b {
+  color: var(--accent-secondary);
+  font-weight: 700;
+}
+
+.auth-providers button[data-provider]::after {
+  content: "em breve";
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  padding: 1px 8px;
+}
+
+.auth-footer {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.auth-footer button {
+  border: 0;
+  background: transparent;
+  color: var(--accent-secondary);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+}
+
+.auth-message[role="status"] {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--accent-danger);
+}
+
+/* ----- Modal de novo jogador ----- */
+.player-modal form {
+  padding: var(--space-6);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.modal-head .close-modal {
+  position: static;
+  flex: none;
+}

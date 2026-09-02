@@ -13,20 +13,20 @@ require __DIR__ . '/includes/header.php';
   <div id="periphsWrap" class="loading"><span class="spin"></span>Carregando...</div>
 </div>
 
-<dialog class="admin-modal" id="periphModal" style="border:1px solid var(--line);background:var(--panel-2);color:var(--text);padding:24px;width:min(100%-30px,440px);border-radius:4px">
-  <form id="periphForm" style="display:grid;gap:12px">
-    <h2 style="margin:0;font-size:18px;text-transform:uppercase" id="periphModalTitle">Novo periférico</h2>
+<dialog class="admin-modal" id="periphModal">
+  <form id="periphForm">
+    <h2 id="periphModalTitle">Novo periférico</h2>
     <input type="hidden" name="id">
-    <select name="type" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
+    <select name="type">
       <option value="mouse">Mouse</option>
       <option value="keyboard">Teclado</option>
       <option value="mousepad">Mousepad</option>
       <option value="headset">Headset</option>
       <option value="monitor">Monitor</option>
     </select>
-    <input name="brand" placeholder="Marca" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
-    <input name="model" required placeholder="Modelo" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
-    <div style="display:flex;gap:8px">
+    <input name="brand" placeholder="Marca">
+    <input name="model" required placeholder="Modelo">
+    <div class="actions-row">
       <button class="btn btn-primary" type="submit">Salvar</button>
       <button class="btn" type="button" id="closePeriph">Cancelar</button>
     </div>
@@ -44,9 +44,9 @@ async function loadPeriphs() {
     const res = await fetch(ADMIN_BASE + '/peripherals.php');
     const json = await res.json();
     const list = json.data.peripherals || [];
-    if (!list.length) { wrap.innerHTML = '<p style="padding:18px;color:var(--muted)">Nenhum periférico cadastrado.</p>'; return; }
+    if (!list.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum periférico cadastrado.</p>'; return; }
     wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Slug</th><th></th></tr></thead><tbody>` +
-      list.map(x => `<tr><td><span class="admin-badge">${TYPES[x.type] || x.type}</span></td><td>${x.brand || '—'}</td><td><strong>${x.model}</strong></td><td style="color:var(--muted)">${x.slug}</td><td class="actions"><button class="btn" data-edit='${JSON.stringify(x)}'>Editar</button><button class="btn btn-danger" data-del="${x.id}" data-name="${x.model}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
+      list.map(x => `<tr><td><span class="admin-badge">${TYPES[x.type] || x.type}</span></td><td>${x.brand || '—'}</td><td><strong>${x.model}</strong></td><td class="muted">${x.slug}</td><td class="actions"><button class="btn" data-edit='${JSON.stringify(x)}'>Editar</button><button class="btn btn-danger" data-del="${x.id}" data-name="${x.model}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
 
     document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(JSON.parse(b.dataset.edit))));
     document.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
@@ -54,7 +54,7 @@ async function loadPeriphs() {
       try { await fetch(`${ADMIN_BASE}/peripherals.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Periférico excluído.'); loadPeriphs(); }
       catch (err) { toast(err.message); }
     }));
-  } catch (err) { wrap.innerHTML = `<p style="padding:18px;color:var(--muted)">Falha: ${err.message}</p>`; }
+  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${err.message}</p>`; }
 }
 
 function openEdit(x) {

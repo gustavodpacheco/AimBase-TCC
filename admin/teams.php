@@ -15,14 +15,14 @@ $editId = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
 </div>
 
 <!-- Modal simplificado -->
-<dialog class="admin-modal" id="teamModal" style="border:1px solid var(--line);background:var(--panel-2);color:var(--text);padding:24px;width:min(100%-30px,440px);border-radius:4px">
-  <form id="teamForm" style="display:grid;gap:12px">
-    <h2 style="margin:0;font-size:18px;text-transform:uppercase" id="teamModalTitle">Novo time</h2>
+<dialog class="admin-modal" id="teamModal">
+  <form id="teamForm">
+    <h2 id="teamModalTitle">Novo time</h2>
     <input type="hidden" name="id">
-    <input name="name" required placeholder="Nome do time" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
-    <input name="country" placeholder="País" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
-    <input name="logo" placeholder="Logo (URL)" style="padding:10px;border:1px solid var(--line);background:#111;color:var(--text)">
-    <div style="display:flex;gap:8px">
+    <input name="name" required placeholder="Nome do time">
+    <input name="country" placeholder="País">
+    <input name="logo" placeholder="Logo (URL)">
+    <div class="actions-row">
       <button class="btn btn-primary" type="submit">Salvar</button>
       <button class="btn" type="button" id="closeTeam">Cancelar</button>
     </div>
@@ -39,7 +39,7 @@ async function loadTeams() {
     const res = await fetch(ADMIN_BASE + '/teams.php');
     const json = await res.json();
     const list = json.data.teams || [];
-    if (!list.length) { wrap.innerHTML = '<p style="padding:18px;color:var(--muted)">Nenhum time cadastrado.</p>'; return; }
+    if (!list.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum time cadastrado.</p>'; return; }
     wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Time</th><th>País</th><th>Jogadores</th><th></th></tr></thead><tbody>` +
       list.map(t => `<tr><td><strong>${t.name}</strong></td><td>${t.country || '—'}</td><td>${t.player_count}</td><td class="actions"><button class="btn" data-edit='${JSON.stringify(t)}'>Editar</button><button class="btn btn-danger" data-del="${t.id}" data-name="${t.name}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
 
@@ -49,7 +49,7 @@ async function loadTeams() {
       try { await fetch(`${ADMIN_BASE}/teams.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Time excluído.'); loadTeams(); }
       catch (err) { toast(err.message); }
     }));
-  } catch (err) { wrap.innerHTML = `<p style="padding:18px;color:var(--muted)">Falha: ${err.message}</p>`; }
+  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${err.message}</p>`; }
 }
 
 function openEdit(t) {

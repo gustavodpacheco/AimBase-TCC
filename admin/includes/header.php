@@ -15,8 +15,11 @@ $apiBase = rtrim($baseHref, '/') . '/api';
 <title><?= htmlspecialchars($pageTitle) ?> — AimBase Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= $baseHref ?>style.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?= $baseHref ?>assets/css/tokens.css">
+<link rel="stylesheet" href="<?= $baseHref ?>assets/css/base.css">
+<link rel="stylesheet" href="<?= $baseHref ?>assets/css/layout.css">
+<link rel="stylesheet" href="<?= $baseHref ?>assets/css/components/buttons.css">
 <link rel="stylesheet" href="includes/admin.css">
 </head>
 <body class="dark" data-page="admin">

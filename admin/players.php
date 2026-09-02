@@ -29,7 +29,7 @@ async function loadPlayers() {
     const res = await fetch(ADMIN_BASE + '/players.php');
     const json = await res.json();
     const list = json.data && json.data.players ? json.data.players : [];
-    if (!list.length) { wrap.innerHTML = '<p style="padding:18px;color:var(--muted)">Nenhum jogador cadastrado.</p>'; return; }
+    if (!list.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum jogador cadastrado.</p>'; return; }
     const rows = list.map(p => {
       const l = pLabel(p);
       return `<tr>
@@ -55,7 +55,7 @@ async function loadPlayers() {
       } catch (err) { toast(err.message); }
     }));
   } catch (err) {
-    wrap.innerHTML = `<p style="padding:18px;color:var(--muted)">Falha ao carregar jogadores: ${err.message}</p>`;
+    wrap.innerHTML = `<p class="admin-muted">Falha ao carregar jogadores: ${err.message}</p>`;
   }
 }
 

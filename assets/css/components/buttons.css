@@ -1,0 +1,62 @@
+/* ============================================================
+   AimBase — Botões
+   ============================================================ */
+
+/* Botão primário (CTA principal) — usa accent de forma moderada */
+.btn,
+.hero-cta,
+.copy-all,
+.save-player,
+.auth-submit,
+.comment-form button,
+.copy-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-btn);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background-color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+
+.btn { background: var(--bg-surface-alt); color: var(--text-primary); }
+
+.btn-primary,
+.hero-cta,
+.copy-all,
+.save-player,
+.auth-submit {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.hero-cta:hover,
+.copy-all:hover,
+.save-player:hover,
+.auth-submit:hover {
+  background: #E2481F;
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--accent-danger);
+  color: var(--accent-danger);
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+.btn:active,
+.hero-cta:active,
+.copy-all:active {
+  transform: translateY(1px);
+}

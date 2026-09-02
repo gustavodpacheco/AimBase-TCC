@@ -1,0 +1,114 @@
+/* ============================================================
+   AimBase — Comentários
+   ============================================================ */
+
+.comments-section {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-6) 0 0;
+  margin: var(--space-4) 0 var(--space-7);
+}
+
+/* A seção de comentários é inserida fora do .profile-layout (via JS),
+   então alinhamos à mesma largura do conteúdo do perfil. */
+.comments-section.profile-comments {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--space-6) clamp(18px, 4vw, 45px) var(--space-7);
+}
+
+.comments-intro h2 {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.comments-intro > p:last-child {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.comments-panel {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.comment-form {
+  display: flex;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-4);
+}
+
+.comment-fields {
+  flex: 1;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.comment-form textarea {
+  min-height: 72px;
+}
+
+.comment-form button {
+  align-self: flex-end;
+}
+
+.comment-list {
+  display: grid;
+  gap: 0;
+}
+
+.comment-item {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.comment-item:last-child {
+  border-bottom: 0;
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-surface-alt);
+  color: var(--accent-secondary);
+  font: 600 0.75rem var(--font-mono);
+  border-radius: var(--radius-badge);
+}
+
+.comment-item strong {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.comment-item time {
+  font: 400 0.75rem var(--font-mono);
+  color: var(--text-muted);
+  margin-left: var(--space-2);
+}
+
+.comment-item p {
+  margin-top: var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  max-width: 65ch;
+}
+
+.empty-comments {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  padding: var(--space-5) 0;
+}

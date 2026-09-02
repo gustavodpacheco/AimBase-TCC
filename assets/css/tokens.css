@@ -1,0 +1,112 @@
+/* ============================================================
+   AimBase — Design Tokens
+   Paleta de marca, tipografia, espaçamento e breakpoints.
+   ============================================================ */
+
+/* ----- Paleta (tema escuro padrão) ----- */
+:root {
+  /* Superfícies */
+  --bg-base:        #14161B;
+  --bg-surface:      #1C1F26;
+  --bg-surface-alt:  #23272F;
+  --border-subtle:   #2E333D;
+
+  /* Texto */
+  --text-primary:    #F2F3F5;
+  --text-secondary:  #9AA0AC;
+  --text-muted:      #676D79;
+
+  /* Acentos */
+  --accent-primary:  #FF5A36;
+  --accent-secondary:#3FC1E0;
+  --accent-success:  #4ADE80;
+  --accent-danger:   #F87171;
+
+  /* Ciano para foco/links (estado) */
+  --focus-ring:      #3FC1E0;
+
+  /* ----- Aliases legados (compat com seletores existentes) ----- */
+  --red:        var(--accent-primary);
+  --red-dark:   #D84315;
+  --ink:        var(--bg-base);
+  --panel:      var(--bg-surface);
+  --panel-2:    var(--bg-surface-alt);
+  --line:       var(--border-subtle);
+  --text:       var(--text-primary);
+  --muted:      var(--text-secondary);
+  --canvas:     var(--bg-base);
+
+  /* ----- Tipografia ----- */
+  --font-display: 'Barlow Condensed', 'Oswald', sans-serif;
+  --font-sans:    'Inter', Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'DM Mono', monospace;
+
+  --fs-xs:   0.75rem;
+  --fs-sm:   0.875rem;
+  --fs-base: 1rem;
+  --fs-lg:   1.125rem;
+  --fs-xl:   1.5rem;
+  --fs-2xl:  2rem;
+  --fs-3xl:  2.75rem;
+
+  /* ----- Espaçamento (escala de 4px) ----- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ----- Radii ----- */
+  --radius-card:   8px;
+  --radius-btn:    6px;
+  --radius-badge:  999px;
+  --radius-input:  6px;
+
+  /* ----- Elevação (sutil e funcional) ----- */
+  --shadow-card:     0 1px 0 var(--border-subtle);
+  --shadow-card-hov: 0 8px 24px rgba(0,0,0,.35);
+  --shadow-modal:    0 28px 80px rgba(0,0,0,.6);
+
+  /* ----- Transições ----- */
+  --t-fast: 150ms ease;
+  --t-med:  250ms ease;
+
+  /* ----- Breakpoints ----- */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+}
+
+/* ----- Modo claro ----- */
+body:not(.dark) {
+  --bg-base:        #F4F5F7;
+  --bg-surface:     #FFFFFF;
+  --bg-surface-alt: #EDEFF3;
+  --border-subtle:  #D8DBE0;
+
+  --text-primary:   #16181D;
+  --text-secondary: #4B525E;
+  --text-muted:     #6B7280;
+
+  --accent-primary: #E2481F;
+  --accent-secondary:#0F9BC4;
+  --accent-danger:  #DC2626;
+  --focus-ring:     #0F9BC4;
+
+  --red:      var(--accent-primary);
+  --ink:      var(--bg-base);
+  --panel:    var(--bg-surface);
+  --panel-2:  var(--bg-surface-alt);
+  --line:     var(--border-subtle);
+  --text:     var(--text-primary);
+  --muted:    var(--text-secondary);
+  --canvas:   var(--bg-base);
+
+  --shadow-card:     0 1px 2px rgba(0,0,0,.06);
+  --shadow-card-hov: 0 8px 24px rgba(0,0,0,.12);
+  --shadow-modal:    0 28px 80px rgba(0,0,0,.25);
+}
