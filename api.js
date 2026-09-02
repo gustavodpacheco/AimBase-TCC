@@ -241,5 +241,15 @@ function mapPlayerForUi(row) {
     productImages,
     links,
     settings,
+    // Atributos do card estilo "FIFA" (0-100). Se ainda não vierem do
+    // servidor, ficam undefined e a UI exibe "—" no lugar.
+    attrs: {
+      overall: row.overall ?? null,
+      operator: row.operator ?? null,
+      rifle: row.rifle ?? null,
+      pistol: row.pistol ?? null,
+      clutch: row.clutch ?? null,
+      trashtalk: row.trashtalk ?? null,
+    },
   };
 }

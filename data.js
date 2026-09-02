@@ -8,6 +8,9 @@ const defaultPlayers = [{
   photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.50, mouse: 'ATK A9 Plus', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
   crosshair: '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/mira.png?v=4',
   game: 'VALORANT', agents: 'Jett', scopedSensitivity: 1.0,
+  // DADOS DE EXEMPLO do card estilo "FIFA" (até a estrutura real vir da API).
+  // overall é um valor próprio do jogador (não calculado a partir dos demais).
+  attrs: { overall: 93, operator: 91, rifle: 100, pistol: 91, clutch: 85, trashtalk: 0 },
   clips: [{ src: 'assets/4k paisagem.mp4', label: 'Clutch 1v3 — Ascent', orientation: 'landscape' }, { src: 'assets/4k retrato.mp4', label: 'Ace — Split', orientation: 'portrait' }],
   social: { Instagram: 'https://www.instagram.com/gstvpacheco/', Tracker: 'https://tracker.gg/valorant/profile/riot/pacheco%23ofGod/overview?platform=pc&playlist=competitive&season=4f0864e2-40af-28a4-de2c-0e9e64e75f23', VLR: 'https://www.vlr.gg/user/pachecovlr' },
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da interface', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'MSAA 4x'], ['Filtragem anisotrópica', '4x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Ligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)']],
