@@ -1,0 +1,246 @@
+/* ============================================================
+   AimBase — Player Card estilo "FIFA" (carta colecionável FPS)
+   Componente único com modificador --lg (perfil) e variante
+   por jogo via data-game (cor da moldura).
+   ============================================================ */
+
+.fifa-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 2px solid var(--fifa-frame, var(--accent-primary));
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+
+/* Moldura sólida: cor por jogo (sem gradiente/foil) */
+.fifa-card[data-game="VALORANT"],
+.fifa-card[data-game="Valorant"] { --fifa-frame: var(--accent-primary); }
+
+.fifa-card[data-game="Counter-Strike 2"],
+.fifa-card[data-game="CS2"],
+.fifa-card[data-game="cs2"] { --fifa-frame: var(--accent-secondary); }
+
+.fifa-card:hover,
+.fifa-card.active {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hov);
+}
+
+/* Corneta decorativa de "tag" no topo */
+.fifa-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-left: 22px solid transparent;
+  border-top: 22px solid var(--fifa-frame);
+  border-bottom-left-radius: var(--radius-card);
+  opacity: 0.35;
+}
+
+/* ----- Cabeçalho: overall + role + jogo ----- */
+.fifa-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.fifa-card__overall {
+  font: 700 var(--fs-2xl) var(--font-mono);
+  line-height: 1;
+  color: var(--fifa-frame);
+}
+
+.fifa-card__head-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.fifa-card__role {
+  font: 600 0.65rem var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fifa-card__game {
+  font: 700 0.6rem var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fifa-frame);
+  border: 1px solid var(--fifa-frame);
+  border-radius: var(--radius-badge);
+  padding: 1px 8px;
+}
+
+/* ----- Avatar / centro ----- */
+.fifa-card__avatar {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 150px;
+  margin: var(--space-4) 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, transparent 60%, var(--bg-surface-alt) 100%),
+    var(--bg-surface-alt);
+}
+
+.fifa-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.fifa-card__avatar .fifa-card__initials {
+  font: 700 var(--fs-3xl) var(--font-display);
+  color: var(--fifa-frame);
+  opacity: 0.85;
+}
+
+/* ----- Nome / time / país ----- */
+.fifa-card__body {
+  text-align: left;
+}
+
+.fifa-card__name {
+  font: 700 var(--fs-base) var(--font-display);
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.fifa-card__meta {
+  font: 500 0.7rem var(--font-sans);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* ----- Rodapé: atributos (grid) ----- */
+.fifa-card__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-3);
+}
+
+.fifa-card__stat {
+  text-align: left;
+}
+
+.fifa-card__stat-value {
+  font: 600 1rem var(--font-mono);
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.fifa-card__stat-label {
+  display: block;
+  font: 400 0.55rem var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* Trashtalk: separado, destaque de acento (coluna própria) */
+.fifa-card__trash {
+  margin-top: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--fifa-frame);
+  border-radius: var(--radius-btn);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  background: var(--bg-surface-alt);
+}
+
+.fifa-card__trash .fifa-card__stat-value {
+  color: var(--fifa-frame);
+  font-size: var(--fs-lg);
+}
+
+.fifa-card__trash .fifa-card__stat-label {
+  margin-top: 0;
+}
+
+/* ============================================================
+   Modificador --lg (versão perfil, peça central do topo)
+   ============================================================ */
+.fifa-card--lg {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-6);
+  cursor: default;
+}
+
+.fifa-card--lg::before {
+  display: none;
+}
+
+.fifa-card--lg .fifa-card__head {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-items: center;
+}
+
+.fifa-card--lg .fifa-card__avatar {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  height: 200px;
+  margin: 0;
+}
+
+.fifa-card--lg .fifa-card__initials {
+  font-size: 4.5rem;
+}
+
+.fifa-card--lg .fifa-card__body {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.fifa-card--lg .fifa-card__name {
+  font-size: var(--fs-2xl);
+}
+
+.fifa-card--lg .fifa-card__meta {
+  font-size: var(--fs-sm);
+}
+
+.fifa-card--lg .fifa-card__stats {
+  grid-column: 2;
+  grid-row: 3;
+  margin-top: 0;
+  max-width: 420px;
+}
+
+.fifa-card--lg .fifa-card__trash {
+  grid-column: 2;
+  grid-row: 4;
+  max-width: 420px;
+}
