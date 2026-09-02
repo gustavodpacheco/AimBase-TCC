@@ -6,7 +6,7 @@
 const defaultPlayers = [{
   id: 'pacheco', name: 'Gustavo Pacheco', tag: 'pacheco#ofGod', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
   cardImage: 'assets/players/pacheco-card.png',
-  photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.50, mouse: 'ATK A9 Plus', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
+  photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.45, mouse: 'ATK A9 Plus', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
   crosshair: '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/mira.png?v=4',
   game: 'VALORANT', agents: 'Jett', scopedSensitivity: 1.0,
   // DADOS DE EXEMPLO do card estilo "FIFA" (até a estrutura real vir da API).
