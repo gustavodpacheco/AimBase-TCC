@@ -30,7 +30,7 @@
 /* ---------- ≥ 1024px ---------- */
 @media (min-width: 1024px) {
   .player-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .data-grid {
@@ -41,7 +41,7 @@
 /* ---------- ≥ 1280px ---------- */
 @media (min-width: 1280px) {
   .player-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
