@@ -202,6 +202,20 @@
     grid-row: 4;
     max-width: none;
   }
+
+  /* Hero do perfil: empilha (carta em cima, informações embaixo) */
+  .player-hero.has-card {
+    grid-template-columns: 1fr;
+  }
+
+  .player-hero__card {
+    display: flex;
+    justify-content: center;
+  }
+
+  .card-modal {
+    width: min(94vw, 420px);
+  }
 }
 
 /* ---------- ≤ 480px ---------- */

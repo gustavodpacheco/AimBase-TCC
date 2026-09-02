@@ -26,24 +26,33 @@
 </header>
 <main class="profile-layout">
   <a class="back-link" href="index.html#playerGrid">← Voltar para jogadores</a>
-  <!-- Cartão FIFA (peça central do topo). Renderizado dinamicamente por profile.js -->
-  <div id="fifaCard"></div>
-  <section class="content" id="settings">
-    <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName"></b></div>
-    <article class="profile-card">
-      <div class="profile-photo" id="profilePhoto"></div>
-      <div class="profile-info">
-        <p class="kicker">PERFIL DO JOGADOR</p>
-        <h1 id="playerName"></h1>
-        <p class="tag" id="playerTag"></p>
-        <div class="profile-grid">
-          <div><small>TIME</small><strong id="playerTeam"></strong></div>
-          <div><small>FUNÇÃO</small><strong id="playerRole"></strong></div>
-          <div><small>PAÍS</small><strong id="playerCountry"></strong></div>
+  <section class="player-hero" id="playerHero">
+    <div class="player-hero__card">
+      <!-- Carta do jogador (renderizada por profile.js): personalizada p/ Pacheco, dinâmica p/ os demais -->
+      <div id="fifaCard" aria-label="Carta do jogador"></div>
+    </div>
+    <div class="player-hero__info">
+      <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName"></b></div>
+      <article class="profile-card">
+        <div class="profile-photo" id="profilePhoto"></div>
+        <div class="profile-info">
+          <p class="kicker">PERFIL DO JOGADOR</p>
+          <h1 id="playerName"></h1>
+          <p class="tag" id="playerTag"></p>
+          <div class="profile-grid">
+            <div><small>TIME</small><strong id="playerTeam"></strong></div>
+            <div><small>FUNÇÃO</small><strong id="playerRole"></strong></div>
+            <div><small>PAÍS</small><strong id="playerCountry"></strong></div>
+          </div>
+          <div class="profile-actions">
+            <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
+            <button class="btn view-card-btn" id="viewCardBtn" type="button" hidden>Ver carta completa</button>
+          </div>
         </div>
-      </div>
-      <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
-    </article>
+      </article>
+    </div>
+  </section>
+  <section class="content" id="settings">
     <section class="settings-block">
       <div class="section-heading"><span class="section-icon">⌖</span><h2>Mouse settings</h2></div>
       <div class="mouse-product"><span class="product-icon mouse-shape"></span><div><small>MOUSE</small><strong id="mouseName"></strong></div><a id="mouseLink" href="#" target="_blank" rel="noopener">Ver produto ↗</a></div>
@@ -69,6 +78,10 @@
     </section>
   </section>
 </main>
+<dialog class="card-modal" id="cardModal" aria-label="Carta completa do jogador">
+  <button type="button" class="close-modal card-modal__close" id="cardModalClose" aria-label="Fechar">✕</button>
+  <div class="card-modal__body" id="cardModalBody"></div>
+</dialog>
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
 <script src="shared.js"></script>

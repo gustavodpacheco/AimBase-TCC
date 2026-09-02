@@ -31,9 +31,20 @@ if (document.body.dataset.page === 'profile') {
 
   function renderProfile(player, apiActive) {
     document.title = `${player.tag} — AimBase`;
-    // Cartão FIFA (peça central do topo) - versão grande do perfil
+    // Cartão do jogador (carta personalizada p/ Pacheco, dinâmico p/ os demais).
     const fifaCardEl = $('fifaCard');
     if (fifaCardEl) fifaCardEl.innerHTML = fifaCardHTML(player, { large: true });
+
+    // Hero lado a lado (carta | informações) apenas com carta personalizada.
+    const hero = $('playerHero');
+    if (hero) hero.classList.toggle('has-card', !!(player.cardImage && player.photo));
+
+    // Botão "Ver carta completa" (modal) — só para quem tem carta personalizada.
+    const viewBtn = $('viewCardBtn');
+    if (viewBtn && player.cardImage) {
+      viewBtn.hidden = false;
+      viewBtn.addEventListener('click', () => openCardModal(player));
+    }
     $('crumbName').textContent = player.tag.toUpperCase();
     const bc = document.querySelector('.breadcrumb');
     if (bc && bc.childNodes[2]) bc.childNodes[2].nodeValue = ` ${player.game || 'VALORANT'} `;
@@ -94,8 +105,27 @@ if (document.body.dataset.page === 'profile') {
     $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, 'Código da retícula copiado.'));
     applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
     $('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+    setupCardModal();
     setupComments($, player, apiActive);
     $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div></footer>');
+  }
+
+  function openCardModal(player) {
+    const modal = $('cardModal');
+    const body = $('cardModalBody');
+    if (!modal || !body) return;
+    body.innerHTML = fifaCardHTML(player, { large: true });
+    modal.showModal();
+  }
+
+  function setupCardModal() {
+    const modal = $('cardModal');
+    if (!modal) return;
+    $('cardModalClose').addEventListener('click', () => modal.close());
+    // Fecha ao clicar fora da carta (no backdrop / área externa do dialog).
+    modal.addEventListener('click', event => { if (event.target === modal) modal.close(); });
+    // ESC fecha nativamente (evento cancel do <dialog> só confirma o fechamento).
+    modal.addEventListener('cancel', () => modal.close());
   }
 
   function setupComments($, player, apiActive) {

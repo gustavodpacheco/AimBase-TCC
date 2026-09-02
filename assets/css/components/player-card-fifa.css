@@ -246,17 +246,18 @@
 }
 
 /* ============================================================
-   Variante --img: card pronto em uma única imagem (ex.: Pacheco)
-   Renderiza a imagem inteira no lugar do conteúdo montado em HTML;
-   mantém a proporção original com object-fit: contain (sem distorcer)
-   e a mesma "pegada" de grid dos demais cards.
+   Variante --img: carta personalizada pronta em uma única imagem
+   (ex.: Gustavo Pacheco). Usada apenas no perfil (hero médio e
+   modal grande). Mantém a proporção original (object-fit: contain)
+   e NÃO define o tamanho do container/grid: dimensiona-se pela
+   largura do pai (max-width controlado pelo contexto).
    ============================================================ */
 .fifa-card--img {
   display: block;
+  width: 100%;
   padding: 0;
   border: 0;
   background: #000;
-  overflow: hidden;
   border-radius: var(--radius-card);
   aspect-ratio: 1120 / 1440;
 }
@@ -273,23 +274,15 @@
   object-position: center;
 }
 
-/* Versão perfil (--lg): vira uma peça central, centralizada e com
-   largura máxima de colecionável; anula o grid da variante dinâmica. */
-.fifa-card--lg.fifa-card--img {
-  display: block;
-  grid-template-columns: none;
-  grid-template-rows: none;
-  gap: 0;
-  align-items: initial;
-  padding: 0;
+/* No hero do perfil: carta em tamanho médio, centralizado na coluna. */
+#fifaCard .fifa-card--img {
+  max-width: 300px;
   margin-inline: auto;
-  cursor: default;
-  max-width: 440px;
 }
 
-/* No mobile estreito, o card de perfil ocupa a largura disponível. */
-@media (max-width: 768px) {
-  .fifa-card--lg.fifa-card--img {
-    max-width: none;
-  }
+/* No modal: carta em tamanho grande, sem cortar. */
+.card-modal .fifa-card--img {
+  max-width: min(88vw, 480px);
+  max-height: calc(100vh - 140px);
+  margin-inline: auto;
 }

@@ -326,3 +326,96 @@
 .clip-mobile-only {
   display: none;
 }
+
+/* ============================================================
+   Hero do perfil: carta | informações lado a lado (desktop).
+   Só ativa o grid de 2 colunas quando o jogador tem carta
+   personalizada (.has-card). Sem ela, fica empilhado como antes.
+   ============================================================ */
+.player-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  align-items: start;
+  margin-bottom: var(--space-6);
+}
+
+.player-hero.has-card {
+  grid-template-columns: minmax(0, 340px) 1fr;
+}
+
+.player-hero__card {
+  min-width: 0;
+}
+
+.player-hero__card > * {
+  width: 100%;
+}
+
+/* Coluna de informações herda os estilos de .profile-card já existentes. */
+.player-hero__info {
+  min-width: 0;
+}
+
+/* ----- Ações (Copiar settings / Ver carta completa) ----- */
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.profile-actions .btn,
+.profile-actions .copy-all {
+  flex: 0 0 auto;
+}
+
+/* Botão "Ver carta completa" — variante secundária/clara sobre o card */
+.view-card-btn {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.view-card-btn:hover {
+  border-color: var(--accent-secondary);
+  color: var(--text-primary);
+  background: var(--bg-surface-alt);
+  filter: none;
+}
+
+/* Garante que o atributo `hidden` esconda o botão (p/ jogadores sem carta) */
+.view-card-btn[hidden] {
+  display: none;
+}
+
+/* ============================================================
+   Modal da carta completa (lightbox)
+   ============================================================ */
+.card-modal {
+  width: min(96vw, 560px);
+  max-width: none;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--bg-base);
+  box-shadow: var(--shadow-modal);
+}
+
+.card-modal::backdrop {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.card-modal__body {
+  padding: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.card-modal .card-modal__close {
+  position: absolute;
+  right: var(--space-3);
+  top: var(--space-3);
+  z-index: 1;
+}

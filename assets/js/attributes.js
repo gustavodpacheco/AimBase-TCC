@@ -56,16 +56,14 @@ function fifaGameTag(game) {
 function fifaCardHTML(player, opts = {}) {
   const large = !!opts.large;
 
-  // Jogador com imagem de card pronta (ex.: Gustavo Pacheco): renderiza somente a
-  // <img> no lugar de montar moldura/nome/atributos em HTML. Mantém o data-id para
-  // o clique levar ao perfil (listagem). object-fit: contain p/ não distorcer.
-  if (player && player.cardImage) {
-    const cls = `fifa-card fifa-card--img${large ? ' fifa-card--lg' : ''}${opts.active ? ' active' : ''}`;
-    const tag = large ? 'div' : 'button';
-    const attr = large ? '' : ` data-id="${esc(player.id)}" type="button"`;
-    return `<${tag} class="${cls}"${attr}>
-      <img src="${safeUrl(player.cardImage)}" alt="${esc(player.name)}" loading="lazy">
-    </${tag}>`;
+  // Imagem de "carta personalizada" pronta (ex.: Gustavo Pacheco) é usada SOMENTE
+  // no perfil (large) — na listagem, `large` é false e o jogador usa o card dinâmico
+  // padrão com a foto normal. No perfil renderiza só a <img> (object-fit: contain).
+  if (player && player.cardImage && large) {
+    const cls = `fifa-card fifa-card--img${opts.active ? ' active' : ''}`;
+    return `<div class="${cls}">
+      <img src="${safeUrl(player.cardImage)}" alt="${esc(player.name)}">
+    </div>`;
   }
 
   const gameTag = fifaGameTag(player.game);
