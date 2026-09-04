@@ -46,7 +46,7 @@ INSERT INTO players (nickname, real_name, team_id, game_id, role, slug, photo, d
 ('Tardus', 'Guilherme Costa', NULL, 1, 'Sentinela', 'tardus', 'assets/tardus.jpeg', 'Perfil de exemplo.', 1),
 ('Danilo Andrade', 'Danilo Andrade', NULL, 1, 'Iniciador', 'danilo-andrade', 'assets/danilo-andrade.jpg', 'Perfil de exemplo.', 1),
 ('Igor Gomes', 'Igor Gomes', NULL, 2, 'Player de CS', 'igor-gomes', 'assets/igao.jpeg', 'Perfil de exemplo.', 1),
-('Thomaz', 'Thomaz Evangelista', NULL, 5, 'Não informado', 'thomaz', 'assets/thomaz.jpeg', 'Perfil de exemplo.', 1)
+('Thomaz', 'Thomas Evangelista', NULL, 5, 'Não informado', 'thomaz', 'assets/thomaz.jpeg', 'Perfil de exemplo.', 1)
 ON DUPLICATE KEY UPDATE nickname = VALUES(nickname);
 
 -- ============================================================
