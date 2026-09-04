@@ -4,7 +4,7 @@
 // ============================================================
 
 const defaultPlayers = [{
-  id: 'pacheco', name: 'Gustavo Pacheco 🐐', tag: 'pacheco#ofGod', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
+  id: 'pacheco', name: 'Gustavo Pacheco 🐐', tag: 'TNG', team: 'Teenagers', role: 'Duelista', country: '🇧🇷 Brasil',
   cardImage: 'assets/players/pacheco-card.png',
   photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.45, mouse: 'ATK A9 Plus', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
   crosshair: '0;P;t;1;o;1;d;1;0b;0;0a;1;0f;0;1b;0;1m;0;1f;0', crosshairImage: 'assets/ponto.png?v=1',
@@ -21,6 +21,7 @@ const defaultPlayers = [{
   links: { mouse: 'https://pt.aliexpress.com/item/1005011812220400.html', keyboard: 'https://pt.aliexpress.com/item/1005008299208938.html', mousepad: 'https://pt.aliexpress.com/item/1005011561185122.html', monitor: 'https://www.terabyteshop.com.br/produto/33583' }
 }, {
   id: 'z4gb', name: 'Gabriel Felipi', tag: 'Z4GB#TOP1', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
+  cardImage: 'assets/players/gabriel final card.jpeg',
   photo: 'assets/gab.jpg', dpi: 1600, sensitivity: 0.14, mouse: 'Ajazz AJ179 Pro', keyboard: 'Redragon Kumara', mousepad: 'Mouse Pad Gamer Extended CM02 900x400', monitor: 'Duex DX270QGP165', game: 'VALORANT',
   crosshair: '0;P;c;1;u;FFFFFFFF;t;1;o;1;d;1;b;0;z;2;0b;0;0l;6;1b;0;1e;0.99', crosshairImage: 'assets/pontoverde.png?v=1',
   headset: { name: 'Fone Fortrek', link: '' },
@@ -66,7 +67,7 @@ const defaultPlayers = [{
   photo: 'assets/thoamspfp.jpeg', dpi: 1600, sensitivity: 0.6, mouse: 'Redragon Nothosaur M606', keyboard: 'Redragon Dyaus 2', mousepad: 'Não informado', monitor: 'Não informado',
   crosshair: 'Padrão R6 — Ponto simples', crosshairImage: 'assets/reticula.png?v=1', game: 'Rainbow Six',
   social: { Instagram: 'https://www.instagram.com/thomas__evangelista' },
-  videoSettings: [['Resolução', '1920x1080'], ['Proporção', '4:3'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da UI', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'Nenhum'], ['Filtragem anisotrópica', '1x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Desligado'], ['Distortion / sombras', 'Desligados'], ['Entrada de dados bruta', 'Ativado'], ['Destaque de inimigo', 'Yellow (Deuteranopia)']],
+  videoSettings: [['Qualidade de Textura', 'Baixa'], ['Filtragem de Textura', 'Linear'], ['Qualidade de LOD', 'Alta'], ['Qualidade de Sombras', 'Média'], ['Reflexos, Oclusão de Ambiente e Efeitos de Lente', 'Desligados'], ['Campo de Visão (FOV)', '90'], ['Anti-Aliasing', 'Desligado'], ['Entrada de dados bruta', 'Ativado']],
   pcSpecs: [['Processador', 'AMD Ryzen 5 Pro 3600G', 'https://www.kabum.com.br/produto/688260/processador-amd-ryzen-5-pro-3600g-3-6ghz-4-2ghz-max-turbo-am4-oem', 'assets/3600.webp']],
   productImages: { mouse: 'assets/notho.webp', keyboard: 'assets/dyau.jpg' },
   links: { mouse: 'https://www.redragon.store/mouse-gamer-redragon-nothosaur-m606-3200-dp', keyboard: 'https://www.pichau.com.br/teclado-gamer-redragon-dyaus2-rgb-k509rgb-pt', mousepad: '', monitor: '' }
@@ -81,6 +82,48 @@ const defaultPlayers = [{
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600GT (vídeo integrado)', 'https://www.pichau.com.br/processador-amd-ryzen-5-5600gt-6-core-12-threads-3-6ghz-4-6ghz-turbo-cache-19mb-am4-100-100001488box', 'assets/ryzengt.jpg']],
   productImages: { mouse: 'assets/products/atk-a9-plus.jpg', keyboard: 'assets/products/teclado.webp', mousepad: 'assets/products/mousepad.webp', headset: 'assets/qkz.webp', monitor: 'assets/products/monitor.webp' },
   links: { mouse: 'https://www.amazon.com/ATK-Dragonfly-A9-Lightweight-Adjustable/dp/B0FNC9H56K?th=1', keyboard: 'https://global.machenike.com/pt-br/products/k500', mousepad: 'https://www.amazon.com.br/Mouse-pad-pk-control-1/dp/B0DFW1CWPX', monitor: 'https://www.shop.samsung.com.br/monitor-samsung-essential-s3-32-polegadas/p' }
+}, {
+  id: 'fallen', name: 'Gabriel Toledo', tag: 'FalleN', team: 'FURIA', role: 'IGL / AWP', country: '🇧🇷 Brasil',
+  isPro: true,
+  photo: 'assets/fallen.jpg', dpi: 400, sensitivity: 2.0, mouse: 'Fallen Gear Lobo Wireless', keyboard: 'Fallen Gear Pink Keyboard (HE)', mousepad: 'Fallen Gear Invoker', monitor: 'ZOWIE XL2546K 240Hz', game: 'Counter-Strike 2',
+  crosshair: 'CSGO-ssxCh-Y9LFi-B9amu-NWkZo-ObaAB', crosshairImage: 'assets/mira.png?v=4',
+  social: { Instagram: 'https://www.instagram.com/fallen/', Tracker: 'https://tracker.gg/cs2/profile/steam/76561197968562033', Twitter: 'https://twitter.com/FalleNCS', Twitch: 'https://www.twitch.tv/gafallen', Steam: 'https://steamcommunity.com/id/fallencs/', Youtube: 'https://www.youtube.com/c/Fallen' },
+  headset: { name: 'Fallen Gear Morcego Pro Wireless', link: 'https://amzn.to/4cg5Gl6' },
+  videoSettings: [['Resolução', '1280x960'], ['Proporção', '4:3'], ['Modo de escala', 'Stretched'], ['Brilho', '93%'], ['Modo de exibição', 'Tela cheia em janela'], ['Boost Player Contrast', 'Ligado'], ['V-Sync', 'Desligado'], ['NVIDIA Reflex Low Latency', 'Ligado'], ['NVIDIA G-Sync', 'Desligado'], ['FPS máximo no jogo', '400'], ['Multisampling Anti-Aliasing', 'CMAA2'], ['Qualidade de Sombras Global', 'Alta'], ['Sombras Dinâmicas', 'Todas'], ['Detalhe de Modelo / Textura', 'Baixo'], ['Filtragem de Textura', 'Trilinear'], ['Detalhe de Shader', 'Baixo'], ['Detalhe de Partículas', 'Baixo'], ['Oclusão de Ambiente', 'Média'], ['High Dynamic Range', 'Qualidade'], ['FidelityFX Super Resolution', 'Desligado (Maior Qualidade)'], ['Viewmodel FOV', '60'], ['Viewmodel Offset X', '1'], ['Viewmodel Offset Y', '1'], ['Viewmodel Offset Z', '-1'], ['Viewmodel Presetpos', '1'], ['Bob Lower Amt', '5'], ['Bob Amt Lat', '0.4'], ['Bob Amt Vert', '0.25'], ['Bob Cycle', '0.98'], ['Launch Options', '-refresh 360 -w 1280 -h 960 -allow_third_party_software'], ['HUD Scale', '1'], ['HUD Color', 'Team Color'], ['Radar · Centrar jogador', 'Sim'], ['Radar · Rotação', 'Sim'], ['Radar · Alternar com placar', 'Sim'], ['Radar · Tamanho HUD', '1'], ['Radar · Zoom do mapa', '0.35'], ['Monitor · DyAc', 'Premium'], ['Monitor · Black eQualizer', '12'], ['Monitor · Color Vibrance', '12'], ['Monitor · Low Blue Light', '0'], ['Monitor · Picture Mode', 'FPS 2'], ['Monitor · Brilho', '100'], ['Monitor · Contraste', '50'], ['Monitor · Nitidez', '7'], ['Monitor · Gamma', '2'], ['Monitor · Temperatura de cor', 'Bluish'], ['Monitor · AMA', 'Premium']],
+  pcSpecs: [['Processador', 'AMD Ryzen 9 5950X', 'https://amzn.to/3gIajWr'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir']],
+  links: { mouse: 'https://amzn.to/4qunGMd', keyboard: 'https://amzn.to/4aFVOj2', mousepad: 'https://amzn.to/3QTJdSG', monitor: 'https://amzn.to/2VDw5B1' }
+}, {
+  id: 'aspas', name: 'Erick Santos', tag: 'aspas', team: 'MIBR', role: 'Duelista', country: '🇧🇷 Brasil', agents: 'Jett',
+  isPro: true,
+  photo: 'assets/aspas.jpg', dpi: 800, sensitivity: 0.4, mouse: 'Logitech G Pro X Superlight 2', keyboard: 'ATK RS6 Ultra Aspas Edition', mousepad: 'SteelSeries QcK Large', monitor: 'ZOWIE XL2586X 540Hz', game: 'VALORANT',
+  crosshair: '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/mira.png?v=4',
+  social: { Instagram: 'https://www.instagram.com/aspaszin/', Twitter: 'https://x.com/aspaszin', Twitch: 'https://www.twitch.tv/aspaszin', Youtube: 'https://www.youtube.com/channel/UC54ubmq5wHM3fK0ERA856Zg' },
+  headset: { name: 'Razer BlackShark V3 Pro', link: 'https://amzn.to/419l8Jy' },
+  productImages: { mouse: 'assets/gpro.jpg', keyboard: 'assets/atk.webp', mousepad: 'assets/qcK.jpg', monitor: 'assets/zowie.jpg', headset: 'assets/razer.jpg' },
+  videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método de proporção', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Qualidade de material', 'Baixa'], ['Qualidade de textura', 'Baixa'], ['Qualidade de detalhe', 'Baixa'], ['Qualidade de interface', 'Baixa'], ['Vignette', 'Desligado'], ['VSync', 'Desligado'], ['Anti-Aliasing', 'Nenhum'], ['Filtragem anisotrópica', '1x'], ['Improve Clarity', 'Desligado'], ['Experimental Sharpening', 'Desligado'], ['Bloom', 'Ligado'], ['Distorção', 'Desligado'], ['Sombras projetadas', 'Desligado'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['Monitor · DyAc', 'Premium'], ['Monitor · Black eQualizer', '10'], ['Monitor · Color Vibrance', '10'], ['Monitor · Low Blue Light', '0'], ['Monitor · Picture Mode', 'FPS 1'], ['Monitor · Brilho', '88'], ['Monitor · Contraste', '50'], ['Monitor · Nitidez', '7'], ['Monitor · Gamma', '3'], ['Monitor · Temperatura de cor', 'User Define'], ['Monitor · RGB', '89/87/100'], ['Monitor · AMA', 'Premium'], ['GPU · Digital Vibrance', '50%'], ['Teclado · Código do perfil', '78f7950fb2896b5528db0b9c86b632249822']],
+  pcSpecs: [['Processador', 'Intel Core i7-13700K', 'https://amzn.to/3J6SDEm', 'assets/i7.jpg'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir', 'assets/asus.jpg'], ['Gabinete', 'NZXT H7 Flow', 'https://amzn.to/4cpUm2T', 'assets/gabinete.jpg']],
+  links: { mouse: 'https://amzn.to/3q86C2l', keyboard: 'https://amzn.to/4hrl3ac', mousepad: 'https://amzn.to/4tI6c0l', monitor: 'https://amzn.to/4a0nzAd' }
+}, {
+  id: 'noia', name: 'Nicole Tierce', tag: 'noia', team: 'Shopify Rebellion Gold', role: 'Não informado', country: '🇩🇰 Dinamarca',
+  isPro: true,
+  photo: 'assets/noia.jpg', dpi: 800, sensitivity: 0.25, mouse: 'WLMouse BEAST X Mini', keyboard: 'Wooting 60HE+', mousepad: 'Artisan Ninja FX Zero Soft', monitor: 'ZOWIE XL2566X+ 400Hz', game: 'VALORANT',
+  crosshair: '0;s;1;P;c;7;o;0.443;d;1;0t;6;0l;1;0o;0;0a;1;0f;0;1t;6;1l;1;1o;0;1a;1;1m;0;1f;0', crosshairImage: 'assets/mira.png?v=4',
+  social: { Twitter: 'https://twitter.com/NoiaFPS', Twitch: 'https://www.twitch.tv/NoiaVAL' },
+  headset: { name: 'SteelSeries Arctis Nova Pro', link: 'https://amzn.to/3tMDkrP' },
+  productImages: { mouse: 'assets/wl.jpg', keyboard: 'assets/wooting.webp', mousepad: 'assets/artisan.jpg', monitor: 'assets/400hz.jpg', headset: 'assets/steel.jpg' },
+  videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método de proporção', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade de interface', 'Baixa'], ['Vignette', 'Desligado'], ['VSync', 'Desligado'], ['Anti-Aliasing', 'Nenhum'], ['Filtragem anisotrópica', '8x'], ['Improve Clarity', 'Desligado'], ['Experimental Sharpening', 'Desligado'], ['Bloom', 'Desligado'], ['Distorção', 'Desligado'], ['Sombras projetadas', 'Desligado']],
+  pcSpecs: [],
+  links: { mouse: 'https://amzn.to/3TBrhen', keyboard: 'https://wooting.io/wooting-60he', mousepad: 'https://amzn.to/2K0cnMG', monitor: 'https://amzn.to/4cAR1xz' }
+}, {
+  id: 'bizinha', name: 'Bruna Marvila', tag: 'bizinha', team: 'FURIA Fe', role: 'Rifler', country: '🇧🇷 Brasil',
+  isPro: true,
+  photo: 'assets/bruna.jpg', dpi: 400, sensitivity: 2.1, mouse: 'Logitech G Pro X Superlight 2', keyboard: 'Logitech G Pro X TKL', mousepad: 'Logitech G640', monitor: 'ZOWIE XL2546 240Hz', game: 'Counter-Strike 2',
+  crosshair: 'Clássico estático; Mira: Sim; Length: 1; Thickness: 0; Gap: -4; Outline: Não; Cor: Verde', crosshairImage: 'assets/mira.png?v=4',
+  social: { Twitter: 'https://x.com/bizinhafps', Twitch: 'https://www.twitch.tv/bizinha', Instagram: 'https://www.instagram.com/bizinhafps', Steam: 'https://steamcommunity.com/id/bizinha/', Youtube: 'https://www.youtube.com/bizinha' },
+  headset: { name: 'HyperX Cloud Alpha', link: 'https://amzn.to/2SMq1pR' },
+  videoSettings: [['Resolução', '1024x768'], ['Proporção', '4:3'], ['Modo de escala', 'Stretched'], ['Brilho', '100%'], ['Modo de exibição', 'Tela cheia'], ['Boost Player Contrast', 'Ligado'], ['V-Sync', 'Desligado'], ['NVIDIA Reflex Low Latency', 'Desligado'], ['NVIDIA G-Sync', 'Desligado'], ['FPS máximo no jogo', '0'], ['Multisampling Anti-Aliasing', '4x MSAA'], ['Qualidade de Sombras Global', 'Alta'], ['Sombras Dinâmicas', 'Todas'], ['Detalhe de Modelo / Textura', 'Baixo'], ['Filtragem de Textura', 'Bilinear'], ['Detalhe de Shader', 'Baixo'], ['Detalhe de Partículas', 'Baixo'], ['Oclusão de Ambiente', 'Desligado'], ['High Dynamic Range', 'Qualidade'], ['FidelityFX Super Resolution', 'Desligado (Maior Qualidade)'], ['Viewmodel FOV', '68'], ['Viewmodel Offset X', '1'], ['Viewmodel Offset Y', '1'], ['Viewmodel Offset Z', '-1'], ['Viewmodel Presetpos', '0'], ['Launch Options', '-allow_third_party_software -high'], ['HUD Scale', '1'], ['HUD Color', 'Team Color'], ['Radar · Centrar jogador', 'Sim'], ['Radar · Rotação', 'Sim'], ['Radar · Alternar com placar', 'Sim'], ['Radar · Tamanho HUD', '1'], ['Radar · Zoom do mapa', '0.4']],
+  pcSpecs: [['Processador', 'AMD Ryzen 7 7800X3D', 'https://amzn.to/46O4LTp'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir']],
+  links: { mouse: 'https://amzn.to/3q86C2l', keyboard: 'https://amzn.to/45VrFYV', mousepad: 'https://amzn.to/2URoRXu', monitor: 'https://amzn.to/2Goc9fW' }
 }];
 
 defaultPlayers.find(player => player.id === 'z4gb').links.mousepad = 'https://www.mercadolivre.com.br/mouse-pad-gamer-extended-cm02-900x400';

@@ -135,6 +135,22 @@
   box-shadow: var(--shadow-card-hov);
 }
 
+/* Badge "PRO" para pro players (canto superior direito) */
+.home-card__pro {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  font: 800 0.6rem var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0b0b0f;
+  background: linear-gradient(135deg, #ffd469, #f7a600);
+  border-radius: var(--radius-badge);
+  padding: 2px 8px;
+  box-shadow: var(--shadow-card-hov);
+}
+
 /* Rodapé: nome + time + país, tudo no fluxo (sem sobreposição) */
 .home-card__body {
   padding: var(--space-2) var(--space-3);
@@ -164,9 +180,21 @@
 }
 
 .home-card__team {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.home-card__team-logo {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  object-fit: contain;
+  border-radius: 3px;
 }
 
 .home-card__country {

@@ -35,6 +35,7 @@ require __DIR__ . '/includes/header.php';
 
 <script>
 let EDIT_ID = 0;
+let PERIPH = [];
 const modal = document.getElementById('periphModal');
 const TYPES = { mouse:'Mouse', keyboard:'Teclado', mousepad:'Mousepad', headset:'Headset', monitor:'Monitor' };
 
@@ -43,21 +44,23 @@ async function loadPeriphs() {
   try {
     const res = await fetch(ADMIN_BASE + '/peripherals.php');
     const json = await res.json();
-    const list = json.data.peripherals || [];
-    if (!list.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum periférico cadastrado.</p>'; return; }
+    PERIPH = json.data.peripherals || [];
+    if (!PERIPH.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum periférico cadastrado.</p>'; return; }
     wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Slug</th><th></th></tr></thead><tbody>` +
-      list.map(x => `<tr><td><span class="admin-badge">${TYPES[x.type] || x.type}</span></td><td>${x.brand || '—'}</td><td><strong>${x.model}</strong></td><td class="muted">${x.slug}</td><td class="actions"><button class="btn" data-edit='${JSON.stringify(x)}'>Editar</button><button class="btn btn-danger" data-del="${x.id}" data-name="${x.model}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
+      PERIPH.map(x => `<tr><td><span class="admin-badge">${esc(TYPES[x.type] || x.type)}</span></td><td>${esc(x.brand || '—')}</td><td><strong>${esc(x.model)}</strong></td><td class="muted">${esc(x.slug)}</td><td class="actions"><button class="btn" data-edit="${esc(x.id)}">Editar</button><button class="btn btn-danger" data-del="${esc(x.id)}" data-name="${esc(x.model)}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
 
-    document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(JSON.parse(b.dataset.edit))));
+    document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(Number(b.dataset.edit))));
     document.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
       if (!confirm(`Excluir "${b.dataset.name}"?`)) return;
       try { await fetch(`${ADMIN_BASE}/peripherals.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Periférico excluído.'); loadPeriphs(); }
       catch (err) { toast(err.message); }
     }));
-  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${err.message}</p>`; }
+  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${esc(err.message)}</p>`; }
 }
 
-function openEdit(x) {
+function openEdit(id) {
+  const x = PERIPH.find(item => item.id === id);
+  if (!x) return;
   EDIT_ID = x.id;
   document.getElementById('periphModalTitle').textContent = 'Editar periférico';
   document.querySelector('[name=id]').value = x.id;

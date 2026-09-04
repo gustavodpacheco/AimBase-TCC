@@ -18,6 +18,20 @@ if (document.body.dataset.page === 'profile') {
         if (res.success && res.data) {
           player = mapPlayerForUi(res.data);
           apiActive = true;
+
+          // Mescla dados estáticos (card personalizado, atributos FIFA e clips)
+          // quando o jogador também existe no fallback (data.js).
+          const staticProfile = defaultPlayers.find(dp => dp.id === player.slug || dp.slug === player.slug);
+          if (staticProfile) {
+            if (!player.cardImage && staticProfile.cardImage) player.cardImage = staticProfile.cardImage;
+            if (!player.clips && staticProfile.clips) player.clips = staticProfile.clips;
+            const staticAttrs = staticProfile.attrs || {};
+            Object.keys(staticAttrs).forEach(key => {
+              if (staticAttrs[key] != null && player.attrs && player.attrs[key] == null) {
+                player.attrs[key] = staticAttrs[key];
+              }
+            });
+          }
         }
       } catch (err) { /* fallback abaixo */ }
     }
@@ -50,7 +64,8 @@ if (document.body.dataset.page === 'profile') {
     if (bc && bc.childNodes[2]) bc.childNodes[2].nodeValue = ` ${player.game || 'VALORANT'} `;
     $('playerName').textContent = player.name;
     $('playerTag').textContent = player.tag;
-    $('playerTeam').textContent = player.team;
+    const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
+    $('playerTeam').innerHTML = `${teamLogo}${esc(player.team)}`;
     $('playerRole').textContent = player.role;
     $('playerCountry').textContent = player.country;
     $('profilePhoto').style.backgroundImage = player.photo ? `url("${player.photo}")` : 'none';

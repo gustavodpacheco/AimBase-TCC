@@ -25,6 +25,39 @@
   margin-bottom: var(--space-4);
 }
 
+.pro-tabs {
+  display: inline-flex;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 3px;
+  margin-bottom: var(--space-4);
+}
+
+.pro-tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 600 0.8rem var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.pro-tab:hover {
+  color: var(--text-primary);
+}
+
+.pro-tab.is-active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
 .player-filters {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

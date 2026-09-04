@@ -6,6 +6,29 @@ if (getenv('ADMIN_BASE_HREF')) {
 }
 $pageTitle = $pageTitle ?? 'Painel Admin';
 $apiBase = rtrim($baseHref, '/') . '/api';
+
+// --- Sessão compartilhada com a API (AIMBASE_SESSID) ---
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('AIMBASE_SESSID');
+    session_start();
+}
+
+// --- Proteção: exige usuário logado ---
+$adminUser = null;
+if (!empty($_SESSION['user_id'])) {
+    try {
+        require_once __DIR__ . '/../../includes/database.php';
+        $stmt = db()->prepare('SELECT id, username FROM users WHERE id = ?');
+        $stmt->execute([(int)$_SESSION['user_id']]);
+        $adminUser = $stmt->fetch();
+    } catch (Throwable $e) {
+        $adminUser = null;
+    }
+}
+if (!$adminUser) {
+    header('Location: login.php');
+    exit;
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -30,11 +53,28 @@ $apiBase = rtrim($baseHref, '/') . '/api';
     <a href="players.php">Jogadores</a>
     <a href="teams.php">Times</a>
     <a href="peripherals.php">Periféricos</a>
+    <a href="comments.php">Comentários</a>
   </nav>
-  <a class="admin-home" href="<?= $baseHref ?>index.html" target="_blank">Ver site ↗</a>
+  <div class="admin-tools">
+    <?php if ($adminUser): ?>
+      <span class="admin-user"><?= e($adminUser['username']) ?></span>
+    <?php endif; ?>
+    <a class="admin-home" href="<?= $baseHref ?>index.html" target="_blank">Ver site ↗</a>
+    <a class="admin-logout" href="logout.php">Sair</a>
+  </div>
 </header>
 <main class="admin-main">
 <script>
 // expõe o caminho da API para o JS do admin
 window.ADMIN_BASE = <?= json_encode($apiBase) ?>;
+// escapa strings para saída segura em HTML (anti-XSS)
+window.esc = (value) => {
+  const str = String(value ?? '');
+  return str.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+};
+// aceita apenas URLs http(s), data:, ou relativas (anti javascript:)
+window.safeAdminUrl = (value) => {
+  const url = String(value ?? '');
+  return /^(https?:|data:image\/|\/|\.\.?\/)/i.test(url) ? window.esc(url) : '#';
+};
 </script>

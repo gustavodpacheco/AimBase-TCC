@@ -58,6 +58,15 @@
   color: var(--text-primary);
 }
 
+.profile-team-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  vertical-align: -3px;
+  margin-right: 6px;
+  border-radius: 4px;
+}
+
 /* ----- Meta (jogo, agente, redes) ----- */
 .player-meta {
   display: flex;

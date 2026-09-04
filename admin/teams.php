@@ -31,6 +31,7 @@ $editId = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
 
 <script>
 let EDIT_ID = 0;
+let TEAMS = [];
 const modal = document.getElementById('teamModal');
 
 async function loadTeams() {
@@ -38,21 +39,23 @@ async function loadTeams() {
   try {
     const res = await fetch(ADMIN_BASE + '/teams.php');
     const json = await res.json();
-    const list = json.data.teams || [];
-    if (!list.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum time cadastrado.</p>'; return; }
+    TEAMS = json.data.teams || [];
+    if (!TEAMS.length) { wrap.innerHTML = '<p class="admin-muted">Nenhum time cadastrado.</p>'; return; }
     wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Time</th><th>País</th><th>Jogadores</th><th></th></tr></thead><tbody>` +
-      list.map(t => `<tr><td><strong>${t.name}</strong></td><td>${t.country || '—'}</td><td>${t.player_count}</td><td class="actions"><button class="btn" data-edit='${JSON.stringify(t)}'>Editar</button><button class="btn btn-danger" data-del="${t.id}" data-name="${t.name}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
+      TEAMS.map(t => `<tr><td><strong>${esc(t.name)}</strong></td><td>${esc(t.country || '—')}</td><td>${esc(t.player_count)}</td><td class="actions"><button class="btn" data-edit="${esc(t.id)}">Editar</button><button class="btn btn-danger" data-del="${esc(t.id)}" data-name="${esc(t.name)}">Excluir</button></td></tr>`).join('') + `</tbody></table>`;
 
-    document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(JSON.parse(b.dataset.edit))));
+    document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(Number(b.dataset.edit))));
     document.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
       if (!confirm(`Excluir o time "${b.dataset.name}"?`)) return;
       try { await fetch(`${ADMIN_BASE}/teams.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Time excluído.'); loadTeams(); }
       catch (err) { toast(err.message); }
     }));
-  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${err.message}</p>`; }
+  } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${esc(err.message)}</p>`; }
 }
 
-function openEdit(t) {
+function openEdit(id) {
+  const t = TEAMS.find(x => x.id === id);
+  if (!t) return;
   EDIT_ID = t.id;
   document.getElementById('teamModalTitle').textContent = 'Editar time';
   document.querySelector('[name=id]').value = t.id;

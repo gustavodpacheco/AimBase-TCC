@@ -23,6 +23,7 @@ $editId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     <label>Função<input name="role" placeholder="Ex.: Duelista"></label>
     <label>País<input name="country" placeholder="Ex.: Brasil"></label>
     <label>Foto (URL)<input name="photo" placeholder="/assets/foto.jpg"></label>
+    <label class="full check-row"><input type="checkbox" name="is_pro" value="1"> Pro player <span class="check-hint">Aparece na aba "Pro Players"</span></label>
     <label class="full">Descrição<textarea name="description" rows="3"></textarea></label>
   </div>
 
@@ -47,6 +48,33 @@ $editId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     <label>Imagem da retícula<input name="crosshair_image" placeholder="/assets/mira.png"></label>
     <label class="full">Código da retícula<textarea name="crosshair" rows="2"></textarea></label>
     <label class="full">Notas<textarea name="notes" rows="2"></textarea></label>
+  </div>
+
+  <div class="admin-panel-head"><h2>Redes sociais</h2></div>
+  <div class="admin-form">
+    <label>Instagram<input type="url" name="social_Instagram" placeholder="https://instagram.com/..."></label>
+    <label>Tracker<input type="url" name="social_Tracker" placeholder="https://tracker.gg/..."></label>
+    <label>VLR<input type="url" name="social_VLR" placeholder="https://www.vlr.gg/..."></label>
+  </div>
+
+  <div class="admin-panel-head"><h2>Configurações de vídeo</h2></div>
+  <div class="admin-form">
+    <div class="inline-settings">
+      <div id="videoRows"></div>
+      <div class="row-actions">
+        <button class="btn" type="button" id="addVideoRow">+ Adicionar linha</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-panel-head"><h2>PC / Hardware</h2></div>
+  <div class="admin-form">
+    <div class="inline-settings">
+      <div id="pcRows"></div>
+      <div class="row-actions">
+        <button class="btn" type="button" id="addPcRow">+ Adicionar item</button>
+      </div>
+    </div>
   </div>
 
   <div class="admin-panel-head"><h2>Ações</h2></div>
@@ -104,6 +132,7 @@ async function loadPlayer() {
     set('[name=country]', p.country);
     set('[name=photo]', p.photo);
     set('[name=description]', p.description);
+    document.querySelector('[name=is_pro]').checked = !!p.is_pro;
     const s = p.settings || {};
     set('[name=mouse_id]', s.mouse_id);
     set('[name=keyboard_id]', s.keyboard_id);
@@ -122,6 +151,21 @@ async function loadPlayer() {
     set('[name=crosshair_image]', s.crosshair_image);
     set('[name=crosshair]', s.crosshair);
     set('[name=notes]', s.notes);
+
+    // Redes sociais
+    (p.social || []).forEach(item => set(`[name=social_${item.platform}]`, item.url));
+
+    // Vídeo
+    document.getElementById('videoRows').innerHTML = '';
+    const vs = p.video_settings || [];
+    if (vs.length) vs.forEach(item => addVideoRow(item.setting_key, item.setting_value));
+    else addVideoRow('', '');
+
+    // PC specs
+    document.getElementById('pcRows').innerHTML = '';
+    const specs = p.pc_specs || [];
+    if (specs.length) specs.forEach(item => addPcRow(item.spec_type, item.label, item.link, item.image));
+    else addPcRow('', '', '', '');
   } catch (err) { toast(err.message); }
 }
 
@@ -129,6 +173,35 @@ function set(sel, value) {
   const el = document.querySelector(sel);
   if (el) el.value = value ?? '';
 }
+
+function addVideoRow(k = '', v = '') {
+  const row = document.createElement('div');
+  row.className = 'dynamic-row';
+  row.innerHTML =
+    `<input type="text" name="vs_key[]" placeholder="Chave (ex.: Resolução)" value="${esc(k)}">` +
+    `<input type="text" name="vs_value[]" placeholder="Valor (ex.: 1920x1080)" value="${esc(v)}">` +
+    `<button type="button" class="btn btn-danger vs-del" aria-label="Remover linha">✕</button>`;
+  document.getElementById('videoRows').appendChild(row);
+  row.querySelector('.vs-del').addEventListener('click', () => row.remove());
+}
+
+function addPcRow(type = '', label = '', link = '', image = '') {
+  const row = document.createElement('div');
+  row.className = 'dynamic-row pc';
+  row.innerHTML =
+    `<input type="text" name="ps_type[]" placeholder="Tipo (ex.: Processador)" value="${esc(type)}">` +
+    `<input type="text" name="ps_label[]" placeholder="Label (ex.: AMD Ryzen 5 5600)" value="${esc(label)}">` +
+    `<input type="text" name="ps_link[]" placeholder="Link (URL)" value="${esc(link)}">` +
+    `<input type="text" name="ps_image[]" placeholder="Imagem (URL)" value="${esc(image)}">` +
+    `<button type="button" class="btn btn-danger pc-del" aria-label="Remover item">✕</button>`;
+  document.getElementById('pcRows').appendChild(row);
+  row.querySelector('.pc-del').addEventListener('click', () => row.remove());
+}
+
+document.getElementById('addVideoRow').addEventListener('click', () => addVideoRow('', ''));
+document.getElementById('addPcRow').addEventListener('click', () => addPcRow('', '', '', ''));
+
+if (!EDIT_ID) { addVideoRow('', ''); addPcRow('', '', '', ''); }
 
 document.getElementById('playerForm').addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -142,6 +215,7 @@ document.getElementById('playerForm').addEventListener('submit', async (ev) => {
     country: fd.get('country'),
     photo: fd.get('photo'),
     description: fd.get('description'),
+    is_pro: fd.get('is_pro') === '1' ? 1 : 0,
     settings: {
       mouse_id: fd.get('mouse_id') || null,
       keyboard_id: fd.get('keyboard_id') || null,
@@ -161,6 +235,25 @@ document.getElementById('playerForm').addEventListener('submit', async (ev) => {
       crosshair: fd.get('crosshair'),
       notes: fd.get('notes'),
     },
+    social: ['Instagram', 'Tracker', 'VLR'].map(p => {
+      const url = String(fd.get(`social_${p}`) || '').trim();
+      return url ? { platform: p, url } : null;
+    }).filter(Boolean),
+    video_settings: fd.getAll('vs_key[]').map((k, i) => {
+      const key = String(k || '').trim();
+      const val = String(fd.getAll('vs_value[]')[i] || '').trim();
+      return key ? { setting_key: key, setting_value: val } : null;
+    }).filter(Boolean),
+    pc_specs: fd.getAll('ps_label[]').map((label, i) => {
+      const l = String(label || '').trim();
+      if (!l) return null;
+      return {
+        spec_type: String(fd.getAll('ps_type[]')[i] || '').trim() || 'Componente',
+        label: l,
+        link: String(fd.getAll('ps_link[]')[i] || '').trim() || null,
+        image: String(fd.getAll('ps_image[]')[i] || '').trim() || null,
+      };
+    }).filter(Boolean),
   };
   try {
     let url = ADMIN_BASE + '/players.php';

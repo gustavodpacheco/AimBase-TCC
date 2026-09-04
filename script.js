@@ -22,11 +22,13 @@ async function loadPlayersFromApi() {
           name: row.real_name || row.nickname,
           tag: row.nickname,
           team: row.team_name || 'Sem time',
+          teamLogo: row.team_logo,
           role: row.role || 'Não informado',
           country: row.country || 'Não informado',
           photo: row.photo,
           slug: row.slug,
           game: row.game_name || 'VALORANT',
+          isPro: !!row.is_pro,
           dpi: settings.dpi,
           sensitivity: settings.sensitivity,
           edpi: settings.dpi && settings.sensitivity ? Math.round(settings.dpi * settings.sensitivity) : null,
@@ -48,6 +50,7 @@ async function loadPlayersFromApi() {
 
 const requestedPlayer = new URLSearchParams(window.location.search).get('player');
 let selectedId = null;
+let proOnly = false;
 const $ = (id) => document.getElementById(id);
 const toast = $('toast');
 
@@ -62,7 +65,7 @@ function getFilteredPlayers() {
   const game = $('gameFilter').value;
   const dpi = $('dpiFilter').value;
   const sensitivityRange = $('sensitivityFilter').value;
-  return players.filter(player => `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || (sensitivityRange === 'low' && player.sensitivity <= .20) || (sensitivityRange === 'medium' && player.sensitivity > .20 && player.sensitivity <= .45) || (sensitivityRange === 'high' && player.sensitivity > .45)));
+  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || (sensitivityRange === 'low' && player.sensitivity <= .20) || (sensitivityRange === 'medium' && player.sensitivity > .20 && player.sensitivity <= .45) || (sensitivityRange === 'high' && player.sensitivity > .45)));
 }
 function selectPlayer(id) {
   const player = players.find(p => p.id === id);
@@ -83,15 +86,17 @@ function homeCardHTML(player) {
   const avatar = player.photo
     ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy">`
     : `<span class="home-card__photo home-card__initials">${esc(initials(player.name))}</span>`;
+  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
   return `<button class="home-card ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button" data-game="${esc(badge.game)}">
     <div class="home-card__media">
       ${avatar}
       <span class="home-card__badge">${esc(badge.label)}</span>
+      ${player.isPro ? '<span class="home-card__pro">PRO</span>' : ''}
     </div>
     <div class="home-card__body">
       <strong class="home-card__name">${esc(player.name)}</strong>
       <div class="home-card__meta">
-        <span class="home-card__team">${esc(player.team)}</span>
+        <span class="home-card__team">${teamLogo}${esc(player.team)}</span>
         <span class="home-card__country">${esc(player.country)}</span>
       </div>
     </div>
@@ -120,6 +125,16 @@ heroSearch.addEventListener('keydown', event => {
   if (event.key === 'Enter') { event.preventDefault(); $('players').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 });
 ['gameFilter', 'roleFilter', 'teamFilter', 'countryFilter', 'dpiFilter', 'sensitivityFilter'].forEach(id => $(id).addEventListener('change', renderList));
+
+// ---- Aba "Pro Players" ----
+function setProFilter(enabled) {
+  proOnly = enabled;
+  document.getElementById('tabAll').classList.toggle('is-active', !enabled);
+  document.getElementById('tabPro').classList.toggle('is-active', enabled);
+  renderList();
+}
+document.getElementById('tabAll').addEventListener('click', () => setProFilter(false));
+document.getElementById('tabPro').addEventListener('click', () => setProFilter(true));
 
 applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
 $('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));

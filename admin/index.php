@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     const el = document.getElementById('latestPlayers');
     if (!players.length) { el.innerHTML = '<p class="admin-muted">Nenhum jogador cadastrado.</p>'; return; }
     const rows = players.slice(0, 6).map(p =>
-      `<tr><td>${p.photo ? `<img class="admin-avatar" src="${p.photo}">` : ''} <strong>${p.real_name || p.nickname}</strong></td><td><span class="admin-badge">${p.game_name || '—'}</span></td><td>${p.nickname}</td><td class="actions"><a class="btn" href="players.php?edit=${p.id}">Editar</a></td></tr>`
+      `<tr><td>${p.photo ? `<img class="admin-avatar" src="${safeAdminUrl(p.photo)}">` : ''} <strong>${esc(p.real_name || p.nickname)}</strong></td><td><span class="admin-badge">${esc(p.game_name || '—')}</span></td><td>${esc(p.nickname)}</td><td class="actions"><a class="btn" href="players.php?edit=${esc(p.id)}">Editar</a></td></tr>`
     ).join('');
     el.outerHTML = `<table class="admin-table"><thead><tr><th>Jogador</th><th>Jogo</th><th>Nick</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
   } catch (err) {

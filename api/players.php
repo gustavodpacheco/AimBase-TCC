@@ -92,9 +92,9 @@ if ($method === 'GET') {
     $params = [];
 
     $sql = "
-        SELECT p.id, p.nickname, p.real_name, p.slug, p.photo, p.role, p.country, p.active,
+        SELECT p.id, p.nickname, p.real_name, p.slug, p.photo, p.role, p.country, p.active, p.is_pro,
                g.name AS game_name, g.slug AS game_slug,
-               t.name AS team_name, t.slug AS team_slug
+               t.name AS team_name, t.slug AS team_slug, t.logo AS team_logo
         FROM players p
         LEFT JOIN games g ON g.id = p.game_id
         LEFT JOIN teams t ON t.id = p.team_id
@@ -184,8 +184,8 @@ if ($method === 'POST') {
     $pdo = db();
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO players (nickname, real_name, team_id, game_id, role, country, photo, slug, description, active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO players (nickname, real_name, team_id, game_id, role, country, photo, slug, description, active, is_pro)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $nickname,
@@ -198,6 +198,7 @@ if ($method === 'POST') {
             $slug,
             trim($data['description'] ?? '') ?: null,
             isset($data['active']) && $data['active'] ? 1 : 1,
+            isset($data['is_pro']) && $data['is_pro'] ? 1 : 0,
         ]);
         jsonResponse(['id' => (int)$pdo->lastInsertId()], true, 201, 'Jogador criado.');
     } catch (PDOException $e) {
@@ -219,13 +220,9 @@ if ($method === 'PUT') {
 
     $pdo = db();
     try {
-        $stmt = $pdo->prepare("
-            UPDATE players
-            SET nickname = ?, real_name = ?, team_id = ?, game_id = ?,
-                role = ?, country = ?, photo = ?, slug = ?, description = ?, active = ?
-            WHERE id = ?
-        ");
-        $stmt->execute([
+        $fields = "nickname = ?, real_name = ?, team_id = ?, game_id = ?,
+                   role = ?, country = ?, photo = ?, slug = ?, description = ?, active = ?";
+        $values = [
             trim($data['nickname'] ?? ''),
             trim($data['real_name'] ?? '') ?: null,
             isset($data['team_id']) && validId($data['team_id']) ? (int)$data['team_id'] : null,
@@ -236,14 +233,26 @@ if ($method === 'PUT') {
             $slug,
             trim($data['description'] ?? '') ?: null,
             isset($data['active']) ? ($data['active'] ? 1 : 0) : 1,
-            $id,
-        ]);
+        ];
+        if (array_key_exists('is_pro', $data)) {
+            $fields .= ", is_pro = ?";
+            $values[] = $data['is_pro'] ? 1 : 0;
+        }
+        $values[] = $id;
+        $stmt = $pdo->prepare("UPDATE players SET $fields WHERE id = ?");
+        $stmt->execute($values);
 
         // Salvar settings, se enviadas
         saveSettings($pdo, $id, $data['settings'] ?? []);
-        saveSocial($pdo, $id, $data['social'] ?? []);
-        saveVideoSettings($pdo, $id, $data['video_settings'] ?? []);
-        savePcSpecs($pdo, $id, $data['pc_specs'] ?? []);
+        if (array_key_exists('social', $data)) {
+            saveSocial($pdo, $id, $data['social'] ?? []);
+        }
+        if (array_key_exists('video_settings', $data)) {
+            saveVideoSettings($pdo, $id, $data['video_settings'] ?? []);
+        }
+        if (array_key_exists('pc_specs', $data)) {
+            savePcSpecs($pdo, $id, $data['pc_specs'] ?? []);
+        }
 
         jsonResponse(['id' => $id], true, 200, 'Jogador atualizado.');
     } catch (PDOException $e) {
@@ -308,8 +317,8 @@ function saveSettings(PDO $pdo, int $playerId, array $settings): void
 
 function saveSocial(PDO $pdo, int $playerId, array $social): void
 {
-    if (!$social) return;
     $pdo->prepare("DELETE FROM player_social WHERE player_id = ?")->execute([$playerId]);
+    if (!$social) return;
     $stmt = $pdo->prepare("INSERT INTO player_social (player_id, platform, url) VALUES (?, ?, ?)");
     foreach ($social as $item) {
         if (!empty($item['platform']) && !empty($item['url'])) {
@@ -320,8 +329,8 @@ function saveSocial(PDO $pdo, int $playerId, array $social): void
 
 function saveVideoSettings(PDO $pdo, int $playerId, array $video): void
 {
-    if (!$video) return;
     $pdo->prepare("DELETE FROM player_video_settings WHERE player_id = ?")->execute([$playerId]);
+    if (!$video) return;
     $stmt = $pdo->prepare("INSERT INTO player_video_settings (player_id, setting_key, setting_value, sort_order) VALUES (?, ?, ?, ?)");
     $i = 0;
     foreach ($video as $item) {
@@ -335,8 +344,8 @@ function saveVideoSettings(PDO $pdo, int $playerId, array $video): void
 
 function savePcSpecs(PDO $pdo, int $playerId, array $specs): void
 {
-    if (!$specs) return;
     $pdo->prepare("DELETE FROM player_pc_specs WHERE player_id = ?")->execute([$playerId]);
+    if (!$specs) return;
     $stmt = $pdo->prepare("INSERT INTO player_pc_specs (player_id, spec_type, label, link, image, sort_order) VALUES (?, ?, ?, ?, ?, ?)");
     $i = 0;
     foreach ($specs as $item) {
