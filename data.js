@@ -21,7 +21,7 @@ const defaultPlayers = [{
   links: { mouse: 'https://pt.aliexpress.com/item/1005011812220400.html', keyboard: 'https://pt.aliexpress.com/item/1005008299208938.html', mousepad: 'https://pt.aliexpress.com/item/1005011561185122.html', monitor: 'https://www.terabyteshop.com.br/produto/33583' }
 }, {
   id: 'z4gb', name: 'Gabriel Felipi', tag: 'Z4GB#TOP1', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
-  photo: 'assets/gabzao.jpg', dpi: 1600, sensitivity: 0.14, mouse: 'Ajazz AJ179 Pro', keyboard: 'Redragon Kumara', mousepad: 'Mouse Pad Gamer Extended CM02 900x400', monitor: 'Duex DX270QGP165', game: 'VALORANT',
+  photo: 'assets/gab.jpg', dpi: 1600, sensitivity: 0.14, mouse: 'Ajazz AJ179 Pro', keyboard: 'Redragon Kumara', mousepad: 'Mouse Pad Gamer Extended CM02 900x400', monitor: 'Duex DX270QGP165', game: 'VALORANT',
   crosshair: '0;P;t;1;o;1;d;1;0b;0;1b;0;1m;0;1f;0', crosshairImage: 'assets/ret.png?v=1',
   headset: { name: 'Fone Fortrek', link: '' },
   productImages: { mouse: 'assets/products/gabriel-ajazz-aj179-pro.png', keyboard: 'assets/teclado.webp', headset: 'assets/fone.jpg', mousepad: 'assets/products/gabriel-mousepad-cm02.jpg', monitor: 'assets/products/gabriel-duex-dx270qgp165.jpg' },
@@ -53,6 +53,13 @@ const defaultPlayers = [{
   crosshair: 'Não informado', crosshairImage: 'assets/mira.png?v=4', game: 'Rainbow Six',
   social: { Instagram: 'https://www.instagram.com/thomas__evangelista' },
   links: { mouse: '', keyboard: '', mousepad: '', monitor: '' }
+}, {
+  id: 'mgk', name: 'Miguel Marlon', tag: 'ferreirinhachb#3717', team: 'Free Agent', role: 'Iniciador', country: '🇧🇷 Brasil',
+  photo: 'assets/mgk.jpg', dpi: 800, sensitivity: 0.4, mouse: 'ATK A9 Plus', keyboard: 'Machenike K500 Branco', mousepad: 'PK Control 1', monitor: 'Samsung Essential 3', game: 'VALORANT',
+  agents: 'Gekko, Deadlock',
+  crosshair: 'Não informado', crosshairImage: 'assets/mira.png?v=4',
+  productImages: { mouse: 'assets/products/atk-a9-plus.jpg', keyboard: 'assets/products/teclado.webp', mousepad: 'assets/products/mousepad.webp', monitor: 'assets/products/monitor.webp' },
+  links: { mouse: 'https://www.amazon.com/ATK-Dragonfly-A9-Lightweight-Adjustable/dp/B0FNC9H56K?th=1', keyboard: 'https://global.machenike.com/pt-br/products/k500', mousepad: 'https://www.amazon.com.br/Mouse-pad-pk-control-1/dp/B0DFW1CWPX', monitor: 'https://www.shop.samsung.com.br/monitor-samsung-essential-s3-32-polegadas/p' }
 }];
 
 defaultPlayers.find(player => player.id === 'z4gb').links.mousepad = 'https://www.mercadolivre.com.br/mouse-pad-gamer-extended-cm02-900x400';
