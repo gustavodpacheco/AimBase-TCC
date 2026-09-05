@@ -4,17 +4,6 @@
 // ============================================================
 
 if (document.body.dataset.page === 'lineups') {
-  const baseSovaClips = {
-    Haven: [
-      { agent: 'Sova', side: '', color: '', src: 'assets/lineups/C.mp4', portraitSrc: 'assets/lineups/C retrato.mp4', label: 'C Site — Pixel de reconhecimento' },
-      { agent: 'Sova', side: '', color: '', src: 'assets/lineups/garage.mp4', portraitSrc: 'assets/lineups/garage retrato.mp4', label: 'Double Doors — Recon' },
-      { agent: 'Sova', side: '', color: '', src: 'assets/lineups/haven a long dart lineup.mp4', portraitSrc: 'assets/lineups/haven a long dart lineup retrato.mp4', label: 'A Long — Dart lineup' },
-    ],
-    Ascent: [
-      { agent: 'Sova', side: '', color: '', src: 'assets/lineups/ascent sova.mp4', portraitSrc: 'assets/lineups/Ascent sova retrato.mp4', label: 'B → A — Recon que spot a planta' },
-    ],
-  };
-
   const lineups = [
     {
       game: 'CS2',
@@ -84,17 +73,20 @@ if (document.body.dataset.page === 'lineups') {
       gameClass: 'valorant',
       map: group.map,
       id: group.id,
-      items: [...(baseSovaClips[group.map] || []), ...group.items],
+      items: group.items,
     })),
   ];
 
   const colorTitles = { orange: 'Feita/aprendida por mim', purple: 'VCT', black: 'Guia Tseeky', yellow: 'YouTube (comunidade)' };
 
   function ytEmbed(url) {
-    const m = String(url).match(/[?&]v=([\w-]{6,})/);
-    if (!m) return null;
-    const t = String(url).match(/[?&]t=(\d+)s?/);
-    let embed = `https://www.youtube.com/embed/${m[1]}`;
+    const str = String(url);
+    const short = str.match(/youtu\.be\/([\w-]{6,})/);
+    const watch = str.match(/[?&]v=([\w-]{6,})/);
+    const id = (watch && watch[1]) || (short && short[1]);
+    if (!id) return null;
+    const t = str.match(/[?&]t=(\d+)s?/);
+    let embed = `https://www.youtube.com/embed/${id}`;
     if (t) embed += `?start=${t[1]}`;
     return embed;
   }

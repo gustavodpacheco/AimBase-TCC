@@ -137,86 +137,34 @@ defaultPlayers.find(player => player.id === 'z4gb').links.mousepad = 'https://ww
 // Cada item: { agent, side ('attack'|'defense'), color, src, label }
 // ============================================================
 const valLineups = [
-  { map: 'Abyss', id: 'Abyss', items: [
-      { agent: 'Deadlock', side: '', color: 'orange', src: 'assets/lineups/val/Abyss/Deadlock - Deadlock Abyss - wall for b main (from backsite).mp4', label: 'wall for b main (from backsite)' },
-      { agent: 'KAY/O', side: '', color: 'orange', src: 'assets/lineups/val/Abyss/KAY_O - KAY_O Abyss - mollies for default and bridge (from spawn).mp4', label: 'mollies for default and bridge (from spawn)' },
-      { agent: 'Vyse', side: '', color: 'yellow', src: 'assets/lineups/val/Abyss/Vyse - Vyse Abyss - slow for backsite a.mp4', label: 'slow for backsite a' }
-    ] },
   { map: 'Ascent', id: 'Ascent', items: [
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Ascent/attack/Fade - eye for a.mp4', label: 'eye for a' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Ascent/defense/Fade - eye for a lobby (from spawn barrier).mp4', label: 'eye for a lobby (from spawn barrier)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Ascent/defense/Fade - eye for a lobby (from tree).mp4', label: 'eye for a lobby (from tree)' },
-      { agent: 'Fade', side: 'defense', color: 'yellow', src: 'assets/lineups/val/Ascent/defense/Fade - retake eye for a.mp4', label: 'retake eye for a' },
-      { agent: 'Chamber', side: '', color: 'yellow', src: 'assets/lineups/val/Ascent/Chamber - Chamber Ascent - one-two setup for tiles.mp4', label: 'one-two setup for tiles' },
-      { agent: 'KAY/O', side: '', color: 'orange', src: 'assets/lineups/val/Ascent/KAY_O - KAY_O Ascent - weird flash for tree.mp4', label: 'weird flash for tree' }
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'https://youtu.be/GQnoljfllrg', label: 'eye for a' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/lKF06DGdyxU', label: 'eye for a lobby (from spawn barrier)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/dGhiPc4FOj0', label: 'eye for a lobby (from tree)' },
+      { agent: 'Fade', side: 'defense', color: 'yellow', src: 'https://youtu.be/ZGYMrnqL_Ds', label: 'retake eye for a' },
     ] },
   { map: 'Bind', id: 'Bind', items: [
-      { agent: 'Brimstone', side: '', color: 'purple', src: 'assets/lineups/val/Bind/Brimstone - fast molly for a default (from short).mp4', label: 'fast molly for a default (from short)' },
-      { agent: 'Brimstone', side: '', color: 'orange', src: 'assets/lineups/val/Bind/Brimstone - fast molly for b default (from hookah).mp4', label: 'fast molly for b default (from hookah)' },
-      { agent: 'Brimstone', side: '', color: 'black', src: 'assets/lineups/val/Bind/Brimstone - molly for b default (from long).mp4', label: 'molly for b default (from long)' },
-      { agent: 'Gekko', side: '', color: 'orange', src: 'assets/lineups/val/Bind/Gekko - Gekko Bind - anti-plant molly for b (from elbow).mp4', label: 'anti-plant molly for b (from elbow)' },
-      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 1.mp4', label: 'Captura de lineup' },
-      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 2.mp4', label: 'Captura de lineup' },
-      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 3.mp4', label: 'Captura de lineup' }
+      { agent: 'Brimstone', side: '', color: 'purple', src: 'https://youtu.be/yhk_qO_pjJs', label: 'fast molly for a default (from short)' },
+      { agent: 'Brimstone', side: '', color: 'orange', src: 'https://youtu.be/GLx4UddAYCU', label: 'fast molly for b default (from hookah)' },
+      { agent: 'Brimstone', side: '', color: 'black', src: 'https://youtu.be/cpAM5NblTe0', label: 'molly for b default (from long)' }
     ] },
   { map: 'Haven', id: 'Haven', items: [
-      { agent: 'Viper', side: '', color: 'orange', src: 'assets/lineups/val/Haven/Viper - Viper Haven - multiuse wall for b + garage + c.mp4', label: 'multiuse wall for b + garage + c' },
-      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a (from long).mp4', label: 'dart for a (from long)' },
-      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a main (from lobby).mp4', label: 'dart for a main (from lobby)' },
-      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a short (from spawn).mp4', label: 'dart for a short (from spawn)' },
-      { agent: 'Sova', side: 'attack', color: 'orange', src: 'assets/lineups/val/Haven/attack/Sova - dart for c (from main).mp4', label: 'dart for c (from main)' },
-      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - fast dart for a short (from spawn barrier).mp4', label: 'fast dart for a short (from spawn barrier)' },
-      { agent: 'Sova', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Haven/attack/Sova - shock for c default (from main).mp4', label: 'shock for c default (from main)' },
-      { agent: 'Sova', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Haven/attack/Sova - shock for optimal c plant (from main).mp4', label: 'shock for optimal c plant (from main)' },
-      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - dart for a lobby (from heaven).mp4', label: 'dart for a lobby (from heaven)' },
-      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - dart for mid window (from b).mp4', label: 'dart for mid window (from b)' },
-      { agent: 'Sova', side: 'defense', color: 'black', src: 'assets/lineups/val/Haven/defense/Sova - fast dart for a lobby (from main).mp4', label: 'fast dart for a lobby (from main)' },
-      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - fast dart for b (from backsite a).mp4', label: 'fast dart for b (from backsite a)' }
-    ] },
-  { map: 'Icebox', id: 'Icebox', items: [
-      { agent: 'Gekko', side: '', color: 'orange', src: 'assets/lineups/val/Icebox/Gekko - Gekko Icebox - molly for pipes (from spawn barrier).mp4', label: 'molly for pipes (from spawn barrier)' },
-      { agent: 'Killjoy', side: '', color: 'orange', src: 'assets/lineups/val/Icebox/Killjoy - Killjoy Icebox - molly for pipes (from the boxes behind belt).mp4', label: 'molly for pipes (from the boxes behind belt)' },
-      { agent: 'Viper', side: 'attack', color: 'black', src: 'assets/lineups/val/Icebox/attack/Viper - default b wall.mp4', label: 'default b wall' },
-      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - dont ask me what this pit is.mp4', label: 'dont ask me what this pit is' },
-      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - orb + molly for a upper + default.mp4', label: 'orb + molly for a upper + default' },
-      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - orb for b upper + oneway for lower plant.mp4', label: 'orb for b upper + oneway for lower plant' },
-      { agent: 'Viper', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Icebox/attack/Viper - orb for mid (a side).mp4', label: 'orb for mid (a side)' },
-      { agent: 'Viper', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Icebox/attack/Viper - orb for mid (b side).mp4', label: 'orb for mid (b side)' },
-      { agent: 'Viper', side: 'defense', color: 'black', src: 'assets/lineups/val/Icebox/defense/Viper - default a wall.mp4', label: 'default a wall' },
-      { agent: 'Viper', side: 'defense', color: 'orange', src: 'assets/lineups/val/Icebox/defense/Viper - oneway for b main.mp4', label: 'oneway for b main' },
-      { agent: 'Viper', side: 'defense', color: 'orange', src: 'assets/lineups/val/Icebox/defense/Viper - orb + molly for a plant.mp4', label: 'orb + molly for a plant' },
-      { agent: 'Viper', side: 'defense', color: 'black', src: 'assets/lineups/val/Icebox/defense/Viper - orb for b plant.mp4', label: 'orb for b plant' }
-    ] },
-  { map: 'Lotus', id: 'Lotus', items: [
-      { agent: 'Fade', side: '', color: 'orange', src: 'assets/lineups/val/Lotus/Fade - Fade Lotus - probably the stupidest eye I_ve ever come up with.mp4', label: 'probably the stupidest eye I_ve ever come up with' }
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'https://youtu.be/2KYi4y_K68o', label: 'dart for a (from long)' },
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'https://youtu.be/kZjYt2P7rUg', label: 'dart for a main (from lobby)' },
+      { agent: 'Sova', side: 'defense', color: 'orange', src: 'https://youtu.be/cYRRoL8QZgM', label: 'dart for a lobby (from heaven)' },
+      { agent: 'Sova', side: 'defense', color: 'orange', src: 'https://youtu.be/YBQHXQlSyl0', label: 'dart for mid window (from b)' }
     ] },
   { map: 'Split', id: 'Split', items: [
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for backsite a (from main) (two variations).mp4', label: 'eye for backsite a (from main) (two variations)' },
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for backsite b (from main).mp4', label: 'eye for backsite b (from main)' },
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for elbow and ct.mp4', label: 'eye for elbow and ct' },
-      { agent: 'Fade', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Split/attack/Fade - eye for frontsite a (from main).mp4', label: 'eye for frontsite a (from main)' },
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from lobby).mp4', label: 'eye for ramp (from lobby)' },
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from spawn #1).mp4', label: 'eye for ramp (from spawn #1)' },
-      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from spawn #2).mp4', label: 'eye for ramp (from spawn #2)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - anti-rush + retake eye for b (from heaven).mp4', label: 'anti-rush + retake eye for b (from heaven)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - anti-rush + spam eye for a heaven.mp4', label: 'anti-rush + spam eye for a heaven' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for a lobby (from flowers).mp4', label: 'eye for a lobby (from flowers)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for a main and lobby (from flowers).mp4', label: 'eye for a main and lobby (from flowers)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for attacker spawn.mp4', label: 'eye for attacker spawn' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for b main (from rafters).mp4', label: 'eye for b main (from rafters)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - fast anti-rush eye for a (from heaven).mp4', label: 'fast anti-rush eye for a (from heaven)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - fast anti-rush eye for b (from default).mp4', label: 'fast anti-rush eye for b (from default)' }
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'https://youtu.be/jToER6sOoL8', label: 'eye for backsite a (from main) (two variations)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'https://youtu.be/yKqwBULmHBU', label: 'eye for backsite b (from main)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'https://youtu.be/ehHJ82vL-Dw', label: 'eye for elbow and ct' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/YiRxClB7tN8', label: 'anti-rush + retake eye for b (from heaven)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/j3hDk7Yhed4', label: 'eye for a lobby (from flowers)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/CbKLmNbXbRg', label: 'eye for b main (from rafters)' }
     ] },
   { map: 'Sunset', id: 'Sunset', items: [
-      { agent: 'Fade', side: 'attack', color: 'black', src: 'assets/lineups/val/Sunset/attack/Fade - eye for mid (from bot mid).mp4', label: 'eye for mid (from bot mid)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush eye for b (from backsite, left side).mp4', label: 'anti-rush eye for b (from backsite, left side)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush eye for b (from backsite, right side).mp4', label: 'anti-rush eye for b (from backsite, right side)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush seize + eye for b (from market).mp4', label: 'anti-rush seize + eye for b (from market)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - eye for a main (from link).mp4', label: 'eye for a main (from link)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - retake eye for backsite a (from ct).mp4', label: 'retake eye for backsite a (from ct)' },
-      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - retake eye for frontsite and backsite (from boba).mp4', label: 'retake eye for frontsite and backsite (from boba)' },
-      { agent: 'Cypher', side: '', color: 'black', src: 'assets/lineups/val/Sunset/Cypher - Cypher Sunset - oneway for b main.mp4', label: 'oneway for b main' },
-      { agent: 'Cypher', side: '', color: 'orange', src: 'assets/lineups/val/Sunset/Cypher - Cypher Sunset - oneway for elbow.mp4', label: 'oneway for elbow' }
+      { agent: 'Fade', side: 'attack', color: 'black', src: 'https://youtu.be/sUHyJrWEzkc', label: 'eye for mid (from bot mid)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'https://youtu.be/3bGVK_20gJ4', label: 'anti-rush eye for b (from backsite, left side)' },
     ] },
 ];
 
