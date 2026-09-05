@@ -1,0 +1,6 @@
+# Vídeos de lineups (ambas as pastas — novos vídeos podem chegar a ~20GB)
+assets/lineups/**/*.mp4
+assets/lineups/**/*.MP4
+
+# Arquivos de manifest/script temporários do diretório de trabalho do dev
+*.tmp

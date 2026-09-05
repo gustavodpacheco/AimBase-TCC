@@ -86,17 +86,19 @@ const defaultPlayers = [{
   id: 'fallen', name: 'Gabriel Toledo', tag: 'FalleN', team: 'FURIA', role: 'IGL / AWP', country: '🇧🇷 Brasil',
   isPro: true,
   photo: 'assets/fallen.jpg', dpi: 400, sensitivity: 2.0, mouse: 'Fallen Gear Lobo Wireless', keyboard: 'Fallen Gear Pink Keyboard (HE)', mousepad: 'Fallen Gear Invoker', monitor: 'ZOWIE XL2546K 240Hz', game: 'Counter-Strike 2',
-  crosshair: 'CSGO-ssxCh-Y9LFi-B9amu-NWkZo-ObaAB', crosshairImage: 'assets/mira.png?v=4',
+  crosshair: 'CSGO-ssxCh-Y9LFi-B9amu-NWkZo-ObaAB', crosshairImage: 'assets/\+.png',
   social: { Instagram: 'https://www.instagram.com/fallen/', Tracker: 'https://tracker.gg/cs2/profile/steam/76561197968562033', Twitter: 'https://twitter.com/FalleNCS', Twitch: 'https://www.twitch.tv/gafallen', Steam: 'https://steamcommunity.com/id/fallencs/', Youtube: 'https://www.youtube.com/c/Fallen' },
   headset: { name: 'Fallen Gear Morcego Pro Wireless', link: 'https://amzn.to/4cg5Gl6' },
   videoSettings: [['Resolução', '1280x960'], ['Proporção', '4:3'], ['Modo de escala', 'Stretched'], ['Brilho', '93%'], ['Modo de exibição', 'Tela cheia em janela'], ['Boost Player Contrast', 'Ligado'], ['V-Sync', 'Desligado'], ['NVIDIA Reflex Low Latency', 'Ligado'], ['NVIDIA G-Sync', 'Desligado'], ['FPS máximo no jogo', '400'], ['Multisampling Anti-Aliasing', 'CMAA2'], ['Qualidade de Sombras Global', 'Alta'], ['Sombras Dinâmicas', 'Todas'], ['Detalhe de Modelo / Textura', 'Baixo'], ['Filtragem de Textura', 'Trilinear'], ['Detalhe de Shader', 'Baixo'], ['Detalhe de Partículas', 'Baixo'], ['Oclusão de Ambiente', 'Média'], ['High Dynamic Range', 'Qualidade'], ['FidelityFX Super Resolution', 'Desligado (Maior Qualidade)'], ['Viewmodel FOV', '60'], ['Viewmodel Offset X', '1'], ['Viewmodel Offset Y', '1'], ['Viewmodel Offset Z', '-1'], ['Viewmodel Presetpos', '1'], ['Bob Lower Amt', '5'], ['Bob Amt Lat', '0.4'], ['Bob Amt Vert', '0.25'], ['Bob Cycle', '0.98'], ['Launch Options', '-refresh 360 -w 1280 -h 960 -allow_third_party_software'], ['HUD Scale', '1'], ['HUD Color', 'Team Color'], ['Radar · Centrar jogador', 'Sim'], ['Radar · Rotação', 'Sim'], ['Radar · Alternar com placar', 'Sim'], ['Radar · Tamanho HUD', '1'], ['Radar · Zoom do mapa', '0.35'], ['Monitor · DyAc', 'Premium'], ['Monitor · Black eQualizer', '12'], ['Monitor · Color Vibrance', '12'], ['Monitor · Low Blue Light', '0'], ['Monitor · Picture Mode', 'FPS 2'], ['Monitor · Brilho', '100'], ['Monitor · Contraste', '50'], ['Monitor · Nitidez', '7'], ['Monitor · Gamma', '2'], ['Monitor · Temperatura de cor', 'Bluish'], ['Monitor · AMA', 'Premium']],
-  pcSpecs: [['Processador', 'AMD Ryzen 9 5950X', 'https://amzn.to/3gIajWr'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir']],
+  productImages: { mouse: 'assets/lobo.webp', keyboard: 'assets/kb.jpg', mousepad: 'assets/dota.webp', monitor: 'assets/benq.jpg', headset: 'assets/morcego.webp' },
+  pcSpecs: [['Processador', 'AMD Ryzen 9 5950X', 'https://amzn.to/3gIajWr', 'assets/amd.jpg'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir', 'assets/asus.jpg']],
   links: { mouse: 'https://amzn.to/4qunGMd', keyboard: 'https://amzn.to/4aFVOj2', mousepad: 'https://amzn.to/3QTJdSG', monitor: 'https://amzn.to/2VDw5B1' }
 }, {
   id: 'aspas', name: 'Erick Santos', tag: 'aspas', team: 'MIBR', role: 'Duelista', country: '🇧🇷 Brasil', agents: 'Jett',
   isPro: true,
+  cardImage: 'assets/arpa.png',
   photo: 'assets/aspas.jpg', dpi: 800, sensitivity: 0.4, mouse: 'Logitech G Pro X Superlight 2', keyboard: 'ATK RS6 Ultra Aspas Edition', mousepad: 'SteelSeries QcK Large', monitor: 'ZOWIE XL2586X 540Hz', game: 'VALORANT',
-  crosshair: '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/mira.png?v=4',
+  crosshair: '0;P;h;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/++.png',
   social: { Instagram: 'https://www.instagram.com/aspaszin/', Twitter: 'https://x.com/aspaszin', Twitch: 'https://www.twitch.tv/aspaszin', Youtube: 'https://www.youtube.com/channel/UC54ubmq5wHM3fK0ERA856Zg' },
   headset: { name: 'Razer BlackShark V3 Pro', link: 'https://amzn.to/419l8Jy' },
   productImages: { mouse: 'assets/gpro.jpg', keyboard: 'assets/atk.webp', mousepad: 'assets/qcK.jpg', monitor: 'assets/zowie.jpg', headset: 'assets/razer.jpg' },
@@ -107,7 +109,7 @@ const defaultPlayers = [{
   id: 'noia', name: 'Nicole Tierce', tag: 'noia', team: 'Shopify Rebellion Gold', role: 'Não informado', country: '🇩🇰 Dinamarca',
   isPro: true,
   photo: 'assets/noia.jpg', dpi: 800, sensitivity: 0.25, mouse: 'WLMouse BEAST X Mini', keyboard: 'Wooting 60HE+', mousepad: 'Artisan Ninja FX Zero Soft', monitor: 'ZOWIE XL2566X+ 400Hz', game: 'VALORANT',
-  crosshair: '0;s;1;P;c;7;o;0.443;d;1;0t;6;0l;1;0o;0;0a;1;0f;0;1t;6;1l;1;1o;0;1a;1;1m;0;1f;0', crosshairImage: 'assets/mira.png?v=4',
+  crosshair: '0;P;c;7;o;1;d;1;a;0.943;0b;0;1b;0', crosshairImage: 'assets/download.png',
   social: { Twitter: 'https://twitter.com/NoiaFPS', Twitch: 'https://www.twitch.tv/NoiaVAL' },
   headset: { name: 'SteelSeries Arctis Nova Pro', link: 'https://amzn.to/3tMDkrP' },
   productImages: { mouse: 'assets/wl.jpg', keyboard: 'assets/wooting.webp', mousepad: 'assets/artisan.jpg', monitor: 'assets/400hz.jpg', headset: 'assets/steel.jpg' },
@@ -118,14 +120,104 @@ const defaultPlayers = [{
   id: 'bizinha', name: 'Bruna Marvila', tag: 'bizinha', team: 'FURIA Fe', role: 'Rifler', country: '🇧🇷 Brasil',
   isPro: true,
   photo: 'assets/bruna.jpg', dpi: 400, sensitivity: 2.1, mouse: 'Logitech G Pro X Superlight 2', keyboard: 'Logitech G Pro X TKL', mousepad: 'Logitech G640', monitor: 'ZOWIE XL2546 240Hz', game: 'Counter-Strike 2',
-  crosshair: 'Clássico estático; Mira: Sim; Length: 1; Thickness: 0; Gap: -4; Outline: Não; Cor: Verde', crosshairImage: 'assets/mira.png?v=4',
+  crosshair: 'CSGO-WQhyz-JcvVK-Y9ptw-H56mk-37QmH', crosshairImage: 'assets/nuke.png',
   social: { Twitter: 'https://x.com/bizinhafps', Twitch: 'https://www.twitch.tv/bizinha', Instagram: 'https://www.instagram.com/bizinhafps', Steam: 'https://steamcommunity.com/id/bizinha/', Youtube: 'https://www.youtube.com/bizinha' },
   headset: { name: 'HyperX Cloud Alpha', link: 'https://amzn.to/2SMq1pR' },
+  productImages: { mouse: 'assets/log.webp', keyboard: 'assets/kbm.jpg', mousepad: 'assets/gpad.jpg', monitor: 'assets/zow.jpg', headset: 'assets/hpx.jpg' },
+  links: { mouse: 'https://amzn.to/3q86C2l', keyboard: 'https://amzn.to/45VrFYV', mousepad: 'https://amzn.to/2URoRXu', monitor: 'https://amzn.to/2Goc9fW' },
   videoSettings: [['Resolução', '1024x768'], ['Proporção', '4:3'], ['Modo de escala', 'Stretched'], ['Brilho', '100%'], ['Modo de exibição', 'Tela cheia'], ['Boost Player Contrast', 'Ligado'], ['V-Sync', 'Desligado'], ['NVIDIA Reflex Low Latency', 'Desligado'], ['NVIDIA G-Sync', 'Desligado'], ['FPS máximo no jogo', '0'], ['Multisampling Anti-Aliasing', '4x MSAA'], ['Qualidade de Sombras Global', 'Alta'], ['Sombras Dinâmicas', 'Todas'], ['Detalhe de Modelo / Textura', 'Baixo'], ['Filtragem de Textura', 'Bilinear'], ['Detalhe de Shader', 'Baixo'], ['Detalhe de Partículas', 'Baixo'], ['Oclusão de Ambiente', 'Desligado'], ['High Dynamic Range', 'Qualidade'], ['FidelityFX Super Resolution', 'Desligado (Maior Qualidade)'], ['Viewmodel FOV', '68'], ['Viewmodel Offset X', '1'], ['Viewmodel Offset Y', '1'], ['Viewmodel Offset Z', '-1'], ['Viewmodel Presetpos', '0'], ['Launch Options', '-allow_third_party_software -high'], ['HUD Scale', '1'], ['HUD Color', 'Team Color'], ['Radar · Centrar jogador', 'Sim'], ['Radar · Rotação', 'Sim'], ['Radar · Alternar com placar', 'Sim'], ['Radar · Tamanho HUD', '1'], ['Radar · Zoom do mapa', '0.4']],
-  pcSpecs: [['Processador', 'AMD Ryzen 7 7800X3D', 'https://amzn.to/46O4LTp'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir']],
+  pcSpecs: [['Processador', 'AMD Ryzen 7 7800X3D', 'https://amzn.to/46O4LTp', 'assets/ryzen7x3d.jpg'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir', 'assets/gforce.jpg']],
   links: { mouse: 'https://amzn.to/3q86C2l', keyboard: 'https://amzn.to/45VrFYV', mousepad: 'https://amzn.to/2URoRXu', monitor: 'https://amzn.to/2Goc9fW' }
 }];
 
 defaultPlayers.find(player => player.id === 'z4gb').links.mousepad = 'https://www.mercadolivre.com.br/mouse-pad-gamer-extended-cm02-900x400';
+
+// ============================================================
+// valLineups - Lineups de VALORANT (agrupadas por mapa).
+// Cada item: { agent, side ('attack'|'defense'), color, src, label }
+// ============================================================
+const valLineups = [
+  { map: 'Abyss', id: 'Abyss', items: [
+      { agent: 'Deadlock', side: '', color: 'orange', src: 'assets/lineups/val/Abyss/Deadlock - Deadlock Abyss - wall for b main (from backsite).mp4', label: 'wall for b main (from backsite)' },
+      { agent: 'KAY/O', side: '', color: 'orange', src: 'assets/lineups/val/Abyss/KAY_O - KAY_O Abyss - mollies for default and bridge (from spawn).mp4', label: 'mollies for default and bridge (from spawn)' },
+      { agent: 'Vyse', side: '', color: 'yellow', src: 'assets/lineups/val/Abyss/Vyse - Vyse Abyss - slow for backsite a.mp4', label: 'slow for backsite a' }
+    ] },
+  { map: 'Ascent', id: 'Ascent', items: [
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Ascent/attack/Fade - eye for a.mp4', label: 'eye for a' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Ascent/defense/Fade - eye for a lobby (from spawn barrier).mp4', label: 'eye for a lobby (from spawn barrier)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Ascent/defense/Fade - eye for a lobby (from tree).mp4', label: 'eye for a lobby (from tree)' },
+      { agent: 'Fade', side: 'defense', color: 'yellow', src: 'assets/lineups/val/Ascent/defense/Fade - retake eye for a.mp4', label: 'retake eye for a' },
+      { agent: 'Chamber', side: '', color: 'yellow', src: 'assets/lineups/val/Ascent/Chamber - Chamber Ascent - one-two setup for tiles.mp4', label: 'one-two setup for tiles' },
+      { agent: 'KAY/O', side: '', color: 'orange', src: 'assets/lineups/val/Ascent/KAY_O - KAY_O Ascent - weird flash for tree.mp4', label: 'weird flash for tree' }
+    ] },
+  { map: 'Bind', id: 'Bind', items: [
+      { agent: 'Brimstone', side: '', color: 'purple', src: 'assets/lineups/val/Bind/Brimstone - fast molly for a default (from short).mp4', label: 'fast molly for a default (from short)' },
+      { agent: 'Brimstone', side: '', color: 'orange', src: 'assets/lineups/val/Bind/Brimstone - fast molly for b default (from hookah).mp4', label: 'fast molly for b default (from hookah)' },
+      { agent: 'Brimstone', side: '', color: 'black', src: 'assets/lineups/val/Bind/Brimstone - molly for b default (from long).mp4', label: 'molly for b default (from long)' },
+      { agent: 'Gekko', side: '', color: 'orange', src: 'assets/lineups/val/Bind/Gekko - Gekko Bind - anti-plant molly for b (from elbow).mp4', label: 'anti-plant molly for b (from elbow)' },
+      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 1.mp4', label: 'Captura de lineup' },
+      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 2.mp4', label: 'Captura de lineup' },
+      { agent: 'Viper', side: '', color: '', src: 'assets/lineups/val/Bind/Viper - captura 3.mp4', label: 'Captura de lineup' }
+    ] },
+  { map: 'Haven', id: 'Haven', items: [
+      { agent: 'Viper', side: '', color: 'orange', src: 'assets/lineups/val/Haven/Viper - Viper Haven - multiuse wall for b + garage + c.mp4', label: 'multiuse wall for b + garage + c' },
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a (from long).mp4', label: 'dart for a (from long)' },
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a main (from lobby).mp4', label: 'dart for a main (from lobby)' },
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - dart for a short (from spawn).mp4', label: 'dart for a short (from spawn)' },
+      { agent: 'Sova', side: 'attack', color: 'orange', src: 'assets/lineups/val/Haven/attack/Sova - dart for c (from main).mp4', label: 'dart for c (from main)' },
+      { agent: 'Sova', side: 'attack', color: 'black', src: 'assets/lineups/val/Haven/attack/Sova - fast dart for a short (from spawn barrier).mp4', label: 'fast dart for a short (from spawn barrier)' },
+      { agent: 'Sova', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Haven/attack/Sova - shock for c default (from main).mp4', label: 'shock for c default (from main)' },
+      { agent: 'Sova', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Haven/attack/Sova - shock for optimal c plant (from main).mp4', label: 'shock for optimal c plant (from main)' },
+      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - dart for a lobby (from heaven).mp4', label: 'dart for a lobby (from heaven)' },
+      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - dart for mid window (from b).mp4', label: 'dart for mid window (from b)' },
+      { agent: 'Sova', side: 'defense', color: 'black', src: 'assets/lineups/val/Haven/defense/Sova - fast dart for a lobby (from main).mp4', label: 'fast dart for a lobby (from main)' },
+      { agent: 'Sova', side: 'defense', color: 'orange', src: 'assets/lineups/val/Haven/defense/Sova - fast dart for b (from backsite a).mp4', label: 'fast dart for b (from backsite a)' }
+    ] },
+  { map: 'Icebox', id: 'Icebox', items: [
+      { agent: 'Gekko', side: '', color: 'orange', src: 'assets/lineups/val/Icebox/Gekko - Gekko Icebox - molly for pipes (from spawn barrier).mp4', label: 'molly for pipes (from spawn barrier)' },
+      { agent: 'Killjoy', side: '', color: 'orange', src: 'assets/lineups/val/Icebox/Killjoy - Killjoy Icebox - molly for pipes (from the boxes behind belt).mp4', label: 'molly for pipes (from the boxes behind belt)' },
+      { agent: 'Viper', side: 'attack', color: 'black', src: 'assets/lineups/val/Icebox/attack/Viper - default b wall.mp4', label: 'default b wall' },
+      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - dont ask me what this pit is.mp4', label: 'dont ask me what this pit is' },
+      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - orb + molly for a upper + default.mp4', label: 'orb + molly for a upper + default' },
+      { agent: 'Viper', side: 'attack', color: 'orange', src: 'assets/lineups/val/Icebox/attack/Viper - orb for b upper + oneway for lower plant.mp4', label: 'orb for b upper + oneway for lower plant' },
+      { agent: 'Viper', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Icebox/attack/Viper - orb for mid (a side).mp4', label: 'orb for mid (a side)' },
+      { agent: 'Viper', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Icebox/attack/Viper - orb for mid (b side).mp4', label: 'orb for mid (b side)' },
+      { agent: 'Viper', side: 'defense', color: 'black', src: 'assets/lineups/val/Icebox/defense/Viper - default a wall.mp4', label: 'default a wall' },
+      { agent: 'Viper', side: 'defense', color: 'orange', src: 'assets/lineups/val/Icebox/defense/Viper - oneway for b main.mp4', label: 'oneway for b main' },
+      { agent: 'Viper', side: 'defense', color: 'orange', src: 'assets/lineups/val/Icebox/defense/Viper - orb + molly for a plant.mp4', label: 'orb + molly for a plant' },
+      { agent: 'Viper', side: 'defense', color: 'black', src: 'assets/lineups/val/Icebox/defense/Viper - orb for b plant.mp4', label: 'orb for b plant' }
+    ] },
+  { map: 'Lotus', id: 'Lotus', items: [
+      { agent: 'Fade', side: '', color: 'orange', src: 'assets/lineups/val/Lotus/Fade - Fade Lotus - probably the stupidest eye I_ve ever come up with.mp4', label: 'probably the stupidest eye I_ve ever come up with' }
+    ] },
+  { map: 'Split', id: 'Split', items: [
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for backsite a (from main) (two variations).mp4', label: 'eye for backsite a (from main) (two variations)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for backsite b (from main).mp4', label: 'eye for backsite b (from main)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for elbow and ct.mp4', label: 'eye for elbow and ct' },
+      { agent: 'Fade', side: 'attack', color: 'yellow', src: 'assets/lineups/val/Split/attack/Fade - eye for frontsite a (from main).mp4', label: 'eye for frontsite a (from main)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from lobby).mp4', label: 'eye for ramp (from lobby)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from spawn #1).mp4', label: 'eye for ramp (from spawn #1)' },
+      { agent: 'Fade', side: 'attack', color: 'orange', src: 'assets/lineups/val/Split/attack/Fade - eye for ramp (from spawn #2).mp4', label: 'eye for ramp (from spawn #2)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - anti-rush + retake eye for b (from heaven).mp4', label: 'anti-rush + retake eye for b (from heaven)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - anti-rush + spam eye for a heaven.mp4', label: 'anti-rush + spam eye for a heaven' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for a lobby (from flowers).mp4', label: 'eye for a lobby (from flowers)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for a main and lobby (from flowers).mp4', label: 'eye for a main and lobby (from flowers)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for attacker spawn.mp4', label: 'eye for attacker spawn' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - eye for b main (from rafters).mp4', label: 'eye for b main (from rafters)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - fast anti-rush eye for a (from heaven).mp4', label: 'fast anti-rush eye for a (from heaven)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Split/defense/Fade - fast anti-rush eye for b (from default).mp4', label: 'fast anti-rush eye for b (from default)' }
+    ] },
+  { map: 'Sunset', id: 'Sunset', items: [
+      { agent: 'Fade', side: 'attack', color: 'black', src: 'assets/lineups/val/Sunset/attack/Fade - eye for mid (from bot mid).mp4', label: 'eye for mid (from bot mid)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush eye for b (from backsite, left side).mp4', label: 'anti-rush eye for b (from backsite, left side)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush eye for b (from backsite, right side).mp4', label: 'anti-rush eye for b (from backsite, right side)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - anti-rush seize + eye for b (from market).mp4', label: 'anti-rush seize + eye for b (from market)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - eye for a main (from link).mp4', label: 'eye for a main (from link)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - retake eye for backsite a (from ct).mp4', label: 'retake eye for backsite a (from ct)' },
+      { agent: 'Fade', side: 'defense', color: 'orange', src: 'assets/lineups/val/Sunset/defense/Fade - retake eye for frontsite and backsite (from boba).mp4', label: 'retake eye for frontsite and backsite (from boba)' },
+      { agent: 'Cypher', side: '', color: 'black', src: 'assets/lineups/val/Sunset/Cypher - Cypher Sunset - oneway for b main.mp4', label: 'oneway for b main' },
+      { agent: 'Cypher', side: '', color: 'orange', src: 'assets/lineups/val/Sunset/Cypher - Cypher Sunset - oneway for elbow.mp4', label: 'oneway for elbow' }
+    ] },
+];
 
 const savedPlayers = JSON.parse(localStorage.getItem('val-settings-players') || '[]');

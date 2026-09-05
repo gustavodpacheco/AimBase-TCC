@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineups — AimBase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components/buttons.css">
+  <link rel="stylesheet" href="assets/css/components/forms.css">
+  <link rel="stylesheet" href="assets/css/components/profile-hero.css">
+  <link rel="stylesheet" href="assets/css/components/utility.css">
+  <link rel="stylesheet" href="assets/css/pages/lineups.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+
+<body data-page="lineups" class="dark">
+  <header class="site-header">
+    <a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
+    <nav class="top-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a
+        href="index.html#players">Jogadores</a><a class="active" href="#lineups">Lineups</a></nav>
+    <div class="header-tools">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">☼</button>
+    </div>
+  </header>
+
+  <section class="lineups-hero">
+    <p class="kicker">GUIA // LINEUPS</p>
+    <h1>LINEUPS<br>PARA <em>COMPETIR</em></h1>
+    <p class="lineups-desc">Pixels, walls e lineups de VALORANT + smokes úteis de CS2 — direto do meta.</p>
+  </section>
+
+  <main class="lineups-layout" id="lineups">
+    <div id="lineupMaps"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
+      <p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+    </div>
+    <div>
+      <h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="index.html#settings">Settings</a><a
+        href="#lineups">Lineups</a>
+    </div>
+    <div>
+      <h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="#lineups">Ver lineups</a>
+    </div>
+    <div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script src="assets/js/lineups.js"></script>
+</body>
+
+</html>
