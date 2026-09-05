@@ -22,7 +22,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Dust 2',
       id: 'dust2',
       items: [
-        { src: 'assets/lineups/dust2lineups.mp4', portraitSrc: 'assets/lineups/spawnsmoke.mp4', label: 'Smokes de Dust 2' },
+        { src: 'https://www.youtube.com/watch?v=cwcjhxBDCMY&t=7s', label: 'Smokes de Dust 2' },
       ],
     },
     {
@@ -31,7 +31,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Inferno',
       id: 'inferno',
       items: [
-        { src: 'assets/lineups/inferno.mp4', portraitSrc: 'assets/lineups/usefulsmoke.mp4', label: 'Smoke útil (linha fixa)' },
+        { src: 'https://www.youtube.com/watch?v=ZgxBySyBpUU', label: 'Smoke útil (linha fixa)' },
       ],
     },
     {
@@ -40,7 +40,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Mirage',
       id: 'mirage',
       items: [
-        { src: 'assets/lineups/cs2 mirage lineups.mp4', portraitSrc: 'assets/lineups/miragesmokes.mp4', label: 'Smokes de Mirage' },
+        { src: 'https://www.youtube.com/watch?v=CjmGAXJySjc&t=2s', label: 'Smokes de Mirage' },
       ],
     },
     {
@@ -49,7 +49,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Anubis',
       id: 'anubis',
       items: [
-        { src: 'assets/lineups/anubislineup.mp4', label: 'Lineup de Anubis' },
+        { src: 'https://www.youtube.com/watch?v=bImn0A5eL80&t=5s', label: 'Lineup de Anubis' },
       ],
     },
     {
@@ -58,7 +58,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Cache',
       id: 'cache',
       items: [
-        { src: 'assets/lineups/cachelineup.mp4', label: 'Lineup de Cache' },
+        { src: 'https://www.youtube.com/watch?v=9VYb8AJd9Qw&t=17s', label: 'Lineup de Cache' },
       ],
     },
     {
@@ -67,7 +67,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Overpass',
       id: 'overpass',
       items: [
-        { src: 'assets/lineups/overpass.mp4', label: 'Lineup de Overpass' },
+        { src: 'https://www.youtube.com/watch?v=BaSEAcxxgQE', label: 'Lineup de Overpass' },
       ],
     },
     {
@@ -76,7 +76,7 @@ if (document.body.dataset.page === 'lineups') {
       map: 'Nuke',
       id: 'nuke',
       items: [
-        { src: 'assets/lineups/nuke.mp4', label: 'Lineup de Nuke' },
+        { src: 'https://www.youtube.com/watch?v=OZvf_eCiMWE', label: 'Lineup de Nuke' },
       ],
     },
     ...valLineups.map(group => ({
@@ -90,6 +90,23 @@ if (document.body.dataset.page === 'lineups') {
 
   const colorTitles = { orange: 'Feita/aprendida por mim', purple: 'VCT', black: 'Guia Tseeky', yellow: 'YouTube (comunidade)' };
 
+  function ytEmbed(url) {
+    const m = String(url).match(/[?&]v=([\w-]{6,})/);
+    if (!m) return null;
+    const t = String(url).match(/[?&]t=(\d+)s?/);
+    let embed = `https://www.youtube.com/embed/${m[1]}`;
+    if (t) embed += `?start=${t[1]}`;
+    return embed;
+  }
+
+  function buildMedia(src, label) {
+    const embed = ytEmbed(src);
+    if (embed) {
+      return `<iframe src="${embed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${esc(label)}"></iframe>`;
+    }
+    return `<video src="${safeUrl(src)}" controls preload="metadata" playsinline></video>`;
+  }
+
   function clipCard(item) {
     const tags = [];
     if (item.agent) tags.push(`<span class="clip-agent">${esc(item.agent)}</span>`);
@@ -98,15 +115,13 @@ if (document.body.dataset.page === 'lineups') {
     const tagsHtml = (tags.length || item.color) ? `<div class="clip-tags">${dot}${tags.join('')}</div>` : '';
     const labelHtml = `<div class="clip-label">${tagsHtml}<small>${esc(item.label)}</small></div>`;
 
-    const video = `<video src="${safeUrl(item.src)}" controls preload="metadata" playsinline></video>`;
-
     if (item.portraitOnly) {
-      return `<div class="clip-card clip-portrait clip-mobile-only">${video}${labelHtml}</div>`;
+      return `<div class="clip-card clip-portrait clip-mobile-only">${buildMedia(item.src, item.label)}${labelHtml}</div>`;
     }
     const landscapeClass = item.portraitSrc ? 'clip-card clip-landscape clip-desktop-only' : 'clip-card clip-landscape';
-    let out = `<div class="${landscapeClass}">${video}${labelHtml}</div>`;
+    let out = `<div class="${landscapeClass}">${buildMedia(item.src, item.label)}${labelHtml}</div>`;
     if (item.portraitSrc) {
-      out += `<div class="clip-card clip-portrait clip-mobile-only"><video src="${safeUrl(item.portraitSrc)}" controls preload="metadata" playsinline></video>${labelHtml}</div>`;
+      out += `<div class="clip-card clip-portrait clip-mobile-only">${buildMedia(item.portraitSrc, item.label)}${labelHtml}</div>`;
     }
     return out;
   }

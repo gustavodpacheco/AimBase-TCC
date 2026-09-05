@@ -80,6 +80,14 @@
 }
 
 /* As proporções são definidas na base (.clip-landscape 16:9, .clip-portrait 9:16). */
+.lineup-map .clip-card iframe {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #000;
+  border-radius: calc(var(--radius-card) - 4px);
+}
 
 /* ----- Metadados do clipe (agente, lado, fonte) ----- */
 .clip-label {
