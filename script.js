@@ -103,11 +103,11 @@ function homeCardHTML(player) {
   </button>`;
 }
 function renderList() {
-  $('playerCount').textContent = `${players.length} ${players.length === 1 ? 'jogador' : 'jogadores'}`;
+  $('playerCount').textContent = I18N.t('directory.players', { count: players.length });
   $('homePlayerCount').textContent = String(players.length).padStart(2, '0');
   $('heroProfileCount').textContent = String(players.length).padStart(2, '0');
   const filtered = getFilteredPlayers();
-  $('playerList').innerHTML = filtered.length ? filtered.map(homeCardHTML).join('') : '<p class="directory-count">Nenhum jogador encontrado.</p>';
+  $('playerList').innerHTML = filtered.length ? filtered.map(homeCardHTML).join('') : '<p class="directory-count">' + I18N.t('directory.noResults') + '</p>';
   document.querySelectorAll('.home-card').forEach(button => button.addEventListener('click', () => selectPlayer(button.dataset.id)));
 }
 

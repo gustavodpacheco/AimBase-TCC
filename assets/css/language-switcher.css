@@ -1,0 +1,123 @@
+/* ============================================================
+   AimBase — Language switcher
+   Dropdown de idiomas (bandeira + nome), acessível e responsivo.
+   ============================================================ */
+
+.lang-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-current {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font: 500 var(--fs-sm) var(--font-sans);
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: border-color var(--t-fast), background-color var(--t-fast);
+}
+
+.lang-current:hover,
+.lang-current[aria-expanded="true"] {
+  border-color: var(--focus-ring);
+}
+
+.lang-flag {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lang-name {
+  white-space: nowrap;
+}
+
+.lang-caret {
+  color: var(--text-muted);
+  font-size: 10px;
+  transition: transform var(--t-fast);
+}
+
+.lang-switcher.is-open .lang-caret {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  min-width: 178px;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-hov);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity var(--t-fast), transform var(--t-fast), visibility var(--t-fast);
+}
+
+.lang-switcher.is-open .lang-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 500 var(--fs-sm) var(--font-sans);
+  text-align: left;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.lang-option:hover {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+}
+
+.lang-option.is-active {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* Breadcrumb: span de tradução não deve herdar estilo do separador */
+.breadcrumb .bc-path {
+  margin: 0;
+  color: inherit;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 768px) {
+  .lang-current {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .lang-current .lang-name,
+  .lang-current .lang-caret {
+    display: none;
+  }
+
+  .lang-menu {
+    min-width: 156px;
+  }
+}

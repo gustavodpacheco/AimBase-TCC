@@ -19,22 +19,39 @@
   <link rel="stylesheet" href="assets/css/components/utility.css">
   <link rel="stylesheet" href="assets/css/pages/lineups.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/language-switcher.css">
 </head>
 
 <body data-page="lineups" class="dark">
   <header class="site-header">
     <a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-    <nav class="top-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a
-        href="index.html#players">Jogadores</a><a class="active" href="#lineups">Lineups</a></nav>
+    <nav class="top-nav" aria-label="Navegação principal"><a href="index.html" data-i18n="nav.home">Início</a><a
+        href="index.html#players" data-i18n="nav.players">Jogadores</a><a class="active" href="#lineups" data-i18n="nav.lineups">Lineups</a></nav>
     <div class="header-tools">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">☼</button>
+      <div class="lang-switcher" data-lang-switcher>
+        <button class="lang-current" type="button" aria-haspopup="listbox" aria-expanded="false"
+          data-i18n-aria-label="lang.label" aria-label="Selecionar idioma">
+          <span class="lang-flag" aria-hidden="true">🇧🇷</span>
+          <span class="lang-name">Português</span>
+          <span class="lang-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul class="lang-menu" role="listbox" data-i18n-aria-label="lang.menuLabel" aria-label="Idiomas disponíveis">
+          <li role="none"><button class="lang-option is-active" type="button" role="option" aria-selected="true" data-lang="pt-BR"><span class="lang-flag" aria-hidden="true">🇧🇷</span>Português</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span>English</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="es"><span class="lang-flag" aria-hidden="true">🇪🇸</span>Español</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span>Français</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="de"><span class="lang-flag" aria-hidden="true">🇩🇪</span>Deutsch</button></li>
+        </ul>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" data-i18n-aria-label="theme.label"
+        aria-label="Alternar tema">☼</button>
     </div>
   </header>
 
   <section class="lineups-hero">
-    <p class="kicker">GUIA // LINEUPS</p>
-    <h1>LINEUPS<br>PARA <em>COMPETIR</em></h1>
-    <p class="lineups-desc">Pixels, walls e lineups de VALORANT + smokes úteis de CS2 — direto do meta.</p>
+    <p class="kicker" data-i18n="lineups.kicker">GUIA // LINEUPS</p>
+    <h1><span data-i18n="lineups.title.line1">LINEUPS</span><br><span data-i18n="lineups.title.line2">PARA</span> <em data-i18n="lineups.title.line3">COMPETIR</em></h1>
+    <p class="lineups-desc" data-i18n="lineups.desc">Pixels, walls e lineups de VALORANT + smokes úteis de CS2 — direto do meta.</p>
   </section>
 
   <main class="lineups-layout" id="lineups">
@@ -43,19 +60,21 @@
 
   <footer class="site-footer">
     <div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-      <p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+      <p data-i18n="footer.desc">Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
     </div>
     <div>
-      <h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="index.html#settings">Settings</a><a
-        href="#lineups">Lineups</a>
+      <h3 data-i18n="footer.explore">Explorar</h3><a href="index.html#players" data-i18n="nav.players">Jogadores</a><a
+        href="index.html#settings">Settings</a><a href="#lineups" data-i18n="nav.lineups">Lineups</a>
     </div>
     <div>
-      <h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="#lineups">Ver lineups</a>
+      <h3 data-i18n="footer.contact">Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a
+        href="#lineups" data-i18n="footer.lineupsLink">Ver lineups</a>
     </div>
-    <div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div>
+    <div class="footer-credit"><span>© 2026 AIMBASE</span><span data-i18n="footer.credit">CRIADO PARA COMPETIR</span></div>
   </footer>
 
   <div class="toast" id="toast" role="status"></div>
+  <script src="assets/i18n/i18n.js"></script>
   <script src="data.js"></script>
   <script src="shared.js"></script>
   <script src="assets/js/lineups.js"></script>

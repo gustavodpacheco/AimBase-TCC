@@ -17,15 +17,33 @@
 <link rel="stylesheet" href="assets/css/components/utility.css">
 <link rel="stylesheet" href="assets/css/components/player-card-fifa.css">
 <link rel="stylesheet" href="assets/css/responsive.css">
+<link rel="stylesheet" href="assets/css/language-switcher.css">
 </head>
 <body data-page="profile" class="dark">
 <header class="site-header">
   <a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-  <nav class="top-nav"><a href="index.html">Início</a><a class="active" href="#settings">Jogador</a></nav>
-  <div class="header-tools"><button class="theme-toggle" id="themeToggle" type="button">☼</button></div>
+  <nav class="top-nav"><a href="index.html" data-i18n="nav.home">Início</a><a class="active" href="#settings" data-i18n="nav.profile">Jogador</a></nav>
+  <div class="header-tools">
+    <div class="lang-switcher" data-lang-switcher>
+      <button class="lang-current" type="button" aria-haspopup="listbox" aria-expanded="false"
+        data-i18n-aria-label="lang.label" aria-label="Selecionar idioma">
+        <span class="lang-flag" aria-hidden="true">🇧🇷</span>
+        <span class="lang-name">Português</span>
+        <span class="lang-caret" aria-hidden="true">▾</span>
+      </button>
+      <ul class="lang-menu" role="listbox" data-i18n-aria-label="lang.menuLabel" aria-label="Idiomas disponíveis">
+        <li role="none"><button class="lang-option is-active" type="button" role="option" aria-selected="true" data-lang="pt-BR"><span class="lang-flag" aria-hidden="true">🇧🇷</span>Português</button></li>
+        <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span>English</button></li>
+        <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="es"><span class="lang-flag" aria-hidden="true">🇪🇸</span>Español</button></li>
+        <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span>Français</button></li>
+        <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="de"><span class="lang-flag" aria-hidden="true">🇩🇪</span>Deutsch</button></li>
+      </ul>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" data-i18n-aria-label="theme.label">☼</button>
+  </div>
 </header>
 <main class="profile-layout">
-  <a class="back-link" href="index.html#playerGrid">← Voltar para jogadores</a>
+  <a class="back-link" href="index.html#playerGrid" data-i18n="nav.back">← Voltar para jogadores</a>
   <section class="player-hero" id="playerHero">
     <div class="player-hero__card">
       <!-- Carta do jogador (renderizada por profile.js): personalizada p/ Pacheco, dinâmica p/ os demais -->
@@ -36,17 +54,17 @@
       <article class="profile-card">
         <div class="profile-photo" id="profilePhoto"></div>
         <div class="profile-info">
-          <p class="kicker">PERFIL DO JOGADOR</p>
+          <p class="kicker" data-i18n="profile.label">PERFIL DO JOGADOR</p>
           <h1 id="playerName"></h1>
           <p class="tag" id="playerTag"></p>
           <div class="profile-grid">
-            <div><small>TIME</small><strong id="playerTeam"></strong></div>
-            <div><small>FUNÇÃO</small><strong id="playerRole"></strong></div>
-            <div><small>PAÍS</small><strong id="playerCountry"></strong></div>
+            <div><small data-i18n="profile.team">TIME</small><strong id="playerTeam"></strong></div>
+            <div><small data-i18n="profile.role">FUNÇÃO</small><strong id="playerRole"></strong></div>
+            <div><small data-i18n="profile.country">PAÍS</small><strong id="playerCountry"></strong></div>
           </div>
           <div class="profile-actions">
-            <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
-            <button class="btn view-card-btn" id="viewCardBtn" type="button" hidden>Ver carta completa</button>
+            <button class="copy-all" id="copySettings" type="button" data-i18n="profile.copySettings">Copiar settings</button>
+            <button class="btn view-card-btn" id="viewCardBtn" type="button" data-i18n="profile.viewCard" hidden>Ver carta completa</button>
           </div>
         </div>
       </article>
@@ -54,26 +72,26 @@
   </section>
   <section class="content" id="settings">
     <section class="settings-block">
-      <div class="section-heading"><span class="section-icon">⌖</span><h2>Mouse settings</h2></div>
-      <div class="mouse-product"><span class="product-icon mouse-shape"></span><div><small>MOUSE</small><strong id="mouseName"></strong></div><a id="mouseLink" href="#" target="_blank" rel="noopener">Ver produto ↗</a></div>
+      <div class="section-heading"><span class="section-icon">⌖</span><h2 data-i18n="settings.mouse">Mouse settings</h2></div>
+      <div class="mouse-product"><span class="product-icon mouse-shape"></span><div><small data-i18n="settings.productMouse">MOUSE</small><strong id="mouseName"></strong></div><a id="mouseLink" href="#" target="_blank" rel="noopener" data-i18n="settings.viewProduct">Ver produto ↗</a></div>
       <div class="data-grid">
-        <div><small>DPI</small><strong id="dpi"></strong></div>
-        <div><small>SENSIBILIDADE</small><strong id="sensitivity"></strong></div>
-        <div><small>eDPI</small><strong id="edpi"></strong></div>
-        <div><small>SCOPED SENS</small><strong>1.00</strong></div>
+        <div><small data-i18n="settings.dpi">DPI</small><strong id="dpi"></strong></div>
+        <div><small data-i18n="settings.sens">SENSIBILIDADE</small><strong id="sensitivity"></strong></div>
+        <div><small data-i18n="settings.edpi">eDPI</small><strong id="edpi"></strong></div>
+        <div><small data-i18n="settings.scoped">SCOPED SENS</small><strong>1.00</strong></div>
       </div>
     </section>
     <section class="settings-block crosshair-block">
-      <div class="section-heading"><span class="section-icon">⌖</span><h2>Retícula</h2><button class="copy-code" id="crosshairCode" type="button">Copiar código</button></div>
-      <div class="crosshair-preview"><img src="" alt="Prévia da retícula" id="crosshairImage"></div>
+      <div class="section-heading"><span class="section-icon">⌖</span><h2 data-i18n="settings.crosshair">Retícula</h2><button class="copy-code" id="crosshairCode" type="button" data-i18n="settings.copyCode">Copiar código</button></div>
+      <div class="crosshair-preview"><img src="" data-i18n-aria-label="settings.crosshairAlt" alt="Prévia da retícula" id="crosshairImage"></div>
       <code id="crosshairText"></code>
     </section>
     <section class="settings-block" id="gear">
-      <div class="section-heading"><span class="section-icon">◫</span><h2>Setup</h2></div>
+      <div class="section-heading"><span class="section-icon">◫</span><h2 data-i18n="settings.setup">Setup</h2></div>
       <div class="gear-grid">
-        <a class="gear-card" id="keyboardLink" href="#" target="_blank" rel="noopener"><small>TECLADO</small><strong id="keyboardName"></strong><span>Ver produto ↗</span></a>
-        <a class="gear-card" id="mousepadLink" href="#" target="_blank" rel="noopener"><small>MOUSEPAD</small><strong id="mousepadName"></strong><span>Ver produto ↗</span></a>
-        <a class="gear-card" id="monitorLink" href="#" target="_blank" rel="noopener"><small>MONITOR</small><strong id="monitorName"></strong><span>Ver produto ↗</span></a>
+        <a class="gear-card" id="keyboardLink" href="#" target="_blank" rel="noopener"><small data-i18n="settings.keyboard">TECLADO</small><strong id="keyboardName"></strong><span data-i18n="settings.viewProduct">Ver produto ↗</span></a>
+        <a class="gear-card" id="mousepadLink" href="#" target="_blank" rel="noopener"><small data-i18n="settings.mousepad">MOUSEPAD</small><strong id="mousepadName"></strong><span data-i18n="settings.viewProduct">Ver produto ↗</span></a>
+        <a class="gear-card" id="monitorLink" href="#" target="_blank" rel="noopener"><small data-i18n="settings.monitor">MONITOR</small><strong id="monitorName"></strong><span data-i18n="settings.viewProduct">Ver produto ↗</span></a>
       </div>
     </section>
   </section>
@@ -83,6 +101,7 @@
   <div class="card-modal__body" id="cardModalBody"></div>
 </dialog>
 <div class="toast" id="toast"></div>
+<script src="assets/i18n/i18n.js"></script>
 <script src="data.js"></script>
 <script src="shared.js"></script>
 <script src="api.js"></script>

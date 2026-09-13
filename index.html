@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AimBase — Configurações</title>
+  <title data-i18n="page.indexTitle">AimBase — Configurações</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -23,19 +23,37 @@
   <link rel="stylesheet" href="assets/css/components/player-card-fifa.css">
   <link rel="stylesheet" href="assets/css/pages/index.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/language-switcher.css">
 </head>
 
 <body data-page="home" class="dark">
   <header class="site-header">
     <a class="logo" href="#"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-    <nav class="top-nav" aria-label="Navegação principal"><a class="active" href="#inicio">Início</a><a
-        href="#players">Jogadores</a><a href="lineups.html">Lineups</a></nav>
+    <nav class="top-nav" aria-label="Navegação principal"><a class="active" href="#inicio" data-i18n="nav.home">Início</a><a
+        href="#players" data-i18n="nav.players">Jogadores</a><a href="lineups.html" data-i18n="nav.lineups">Lineups</a></nav>
     <div class="header-tools">
-      <label class="header-search"><span>⌕</span><input id="playerSearch" type="search" placeholder="Buscar"
+      <label class="header-search"><span>⌕</span><input id="playerSearch" type="search"
+          data-i18n-placeholder="search.headerPlaceholder" data-i18n-aria-label="search.headerAria" placeholder="Buscar"
           aria-label="Buscar jogador"></label>
-      <button class="auth-trigger" id="authTrigger" type="button">Entrar</button>
-      <button class="auth-logout" id="authLogout" type="button" hidden>Sair</button>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">◐</button>
+      <button class="auth-trigger" id="authTrigger" type="button" data-i18n="auth.login">Entrar</button>
+      <button class="auth-logout" id="authLogout" type="button" data-i18n="auth.logout" hidden>Sair</button>
+      <div class="lang-switcher" data-lang-switcher>
+        <button class="lang-current" type="button" aria-haspopup="listbox" aria-expanded="false"
+          data-i18n-aria-label="lang.label" aria-label="Selecionar idioma">
+          <span class="lang-flag" aria-hidden="true">🇧🇷</span>
+          <span class="lang-name">Português</span>
+          <span class="lang-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul class="lang-menu" role="listbox" data-i18n-aria-label="lang.menuLabel" aria-label="Idiomas disponíveis">
+          <li role="none"><button class="lang-option is-active" type="button" role="option" aria-selected="true" data-lang="pt-BR"><span class="lang-flag" aria-hidden="true">🇧🇷</span>Português</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span>English</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="es"><span class="lang-flag" aria-hidden="true">🇪🇸</span>Español</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span>Français</button></li>
+          <li role="none"><button class="lang-option" type="button" role="option" aria-selected="false" data-lang="de"><span class="lang-flag" aria-hidden="true">🇩🇪</span>Deutsch</button></li>
+        </ul>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" data-i18n-aria-label="theme.label"
+        aria-label="Alternar tema">◐</button>
     </div>
   </header>
 
@@ -43,22 +61,25 @@
     <div class="hero-mark hero-mark-one"></div>
     <div class="hero-mark hero-mark-two"></div>
     <div class="home-copy">
-      <p class="kicker">MULTI-GAME // DATABASE DE SETTINGS</p>
-      <h1>ENCONTRE A<br><em>CONFIGURAÇÃO</em><br>CERTA.</h1>
-      <p class="home-description">Configurações, retículas e periféricos de jogadores profissionais — tudo em um só lugar.</p>
+      <p class="kicker" data-i18n="hero.kicker">MULTI-GAME // DATABASE DE SETTINGS</p>
+      <h1><span data-i18n="hero.title.line1">ENCONTRE A</span><br><em data-i18n="hero.title.line2">CONFIGURAÇÃO</em><br><span data-i18n="hero.title.line3">CERTA.</span></h1>
+      <p class="home-description" data-i18n="hero.desc">Configurações, retículas e periféricos de jogadores profissionais — tudo em um só lugar.</p>
       <label class="hero-search" for="heroPlayerSearch">
         <span aria-hidden="true">⌕</span>
-        <input id="heroPlayerSearch" type="search" placeholder="Buscar jogador, nick ou time"
+        <input id="heroPlayerSearch" type="search" data-i18n-placeholder="search.heroPlaceholder"
+          data-i18n-aria-label="search.heroAria" placeholder="Buscar jogador, nick ou time"
           aria-label="Buscar perfil de jogador">
         <kbd>ENTER</kbd>
       </label>
     </div>
-    <div class="hero-status"><span class="status-dot"></span> ONLINE <b id="homePlayerCount">02</b> PERFIS
-      ATIVOS</div>
+    <div class="hero-status"><span class="status-dot"></span> <span data-i18n="hero.statusOnline">ONLINE</span> <b
+        id="homePlayerCount">02</b> <span data-i18n="hero.statusProfiles">PERFIS ATIVOS</span></div>
     <div class="home-cards">
-      <article><small>PERFIS</small><strong id="heroProfileCount">02</strong><span>JOGRADORES CADASTRADOS</span>
+      <article><small data-i18n="hero.card.profiles">PERFIS</small><strong id="heroProfileCount">02</strong><span
+          data-i18n="hero.card.profilesValue">JOGADORES CADASTRADOS</span>
       </article>
-      <article><small>FOCO</small><strong>ALL</strong><span>CONFIGURAÇÕES DE JOGOS</span></article>
+      <article><small data-i18n="hero.card.focus">FOCO</small><strong>ALL</strong><span
+          data-i18n="hero.card.focusValue">CONFIGURAÇÕES DE JOGOS</span></article>
     </div>
   </section>
 
@@ -66,99 +87,109 @@
     <aside class="directory">
       <div class="directory-head">
         <div>
-          <p class="kicker">DIRETÓRIO</p>
-          <h2>Jogadores</h2>
-        </div><button class="add-player" id="openModal" type="button" aria-label="Adicionar jogador">+</button>
+          <p class="kicker" data-i18n="directory.kicker">DIRETÓRIO</p>
+          <h2 data-i18n="directory.title">Jogadores</h2>
+        </div><button class="add-player" id="openModal" type="button" data-i18n-aria-label="directory.addLabel"
+          aria-label="Adicionar jogador">+</button>
       </div>
       <p class="directory-count" id="playerCount">1 jogador</p>
       <div class="pro-tabs" role="tablist" aria-label="Filtrar por categoria">
-        <button class="pro-tab is-active" id="tabAll" type="button" data-pro="all" aria-selected="true">Todos</button>
-        <button class="pro-tab" id="tabPro" type="button" data-pro="pro" aria-selected="false">Pro Players</button>
+        <button class="pro-tab is-active" id="tabAll" type="button" data-pro="all" aria-selected="true"
+          data-i18n="directory.tabs.all">Todos</button>
+        <button class="pro-tab" id="tabPro" type="button" data-pro="pro" aria-selected="false"
+          data-i18n="directory.tabs.pro">Pro Players</button>
       </div>
-      <div class="player-filters"><select id="gameFilter" aria-label="Filtrar por jogo">
-          <option value="">Todos os jogos</option>
-          <option value="VALORANT">Valorant</option>
-          <option value="Counter-Strike 2">Counter-Strike 2</option>
-          <option value="Rainbow Six">Rainbow Six</option>
-        </select><select id="roleFilter" aria-label="Filtrar por função">
-          <option value="">Todas as funções</option>
-          <option>Duelista</option>
-          <option>Iniciador</option>
-          <option>Controlador</option>
-          <option>Sentinela</option>
-          <option>Player de CS</option>
-        </select><select id="teamFilter" aria-label="Filtrar por time">
-          <option value="">Todos os times</option>
-          <option>Free Agent</option>
-        </select><select id="countryFilter" aria-label="Filtrar por país">
-          <option value="">Todos os países</option>
-          <option>🇧🇷 Brasil</option>
-        </select><select id="dpiFilter" aria-label="Filtrar por DPI">
-          <option value="">Todo DPI</option>
-          <option value="800">800 DPI</option>
-          <option value="1600">1600 DPI</option>
-        </select><select id="sensitivityFilter" aria-label="Filtrar por faixa de sensibilidade">
-          <option value="">Toda sensibilidade</option>
-          <option value="low">Baixa (até 0.20)</option>
-          <option value="medium">Média (0.21–0.45)</option>
-          <option value="high">Alta (0.46+)</option>
+      <div class="player-filters"><select id="gameFilter" data-i18n-aria-label="filter.game" aria-label="Filtrar por jogo">
+          <option value="" data-i18n="directory.filters.game">Todos os jogos</option>
+          <option value="VALORANT" data-i18n="game.valorant">Valorant</option>
+          <option value="Counter-Strike 2" data-i18n="game.cs">Counter-Strike 2</option>
+          <option value="Rainbow Six" data-i18n="game.r6">Rainbow Six</option>
+        </select><select id="roleFilter" data-i18n-aria-label="filter.role" aria-label="Filtrar por função">
+          <option value="" data-i18n="role.all">Todas as funções</option>
+          <option data-i18n="role.duelist">Duelista</option>
+          <option data-i18n="role.initiator">Iniciador</option>
+          <option data-i18n="role.controller">Controlador</option>
+          <option data-i18n="role.sentinel">Sentinela</option>
+          <option data-i18n="role.csplayer">Player de CS</option>
+        </select><select id="teamFilter" data-i18n-aria-label="filter.team" aria-label="Filtrar por time">
+          <option value="" data-i18n="team.all">Todos os times</option>
+          <option data-i18n="team.freeAgent">Free Agent</option>
+        </select><select id="countryFilter" data-i18n-aria-label="filter.country" aria-label="Filtrar por país">
+          <option value="" data-i18n="country.all">Todos os países</option>
+          <option data-i18n="country.brazil">🇧🇷 Brasil</option>
+        </select><select id="dpiFilter" data-i18n-aria-label="filter.dpi" aria-label="Filtrar por DPI">
+          <option value="" data-i18n="dpi.all">Todo DPI</option>
+          <option value="800" data-i18n="dpi.eightHundred">800 DPI</option>
+          <option value="1600" data-i18n="dpi.sixteenHundred">1600 DPI</option>
+        </select><select id="sensitivityFilter" data-i18n-aria-label="filter.sensitivity"
+          aria-label="Filtrar por faixa de sensibilidade">
+          <option value="" data-i18n="sens.all">Toda sensibilidade</option>
+          <option value="low" data-i18n="sens.low">Baixa (até 0.20)</option>
+          <option value="medium" data-i18n="sens.medium">Média (0.21–0.45)</option>
+          <option value="high" data-i18n="sens.high">Alta (0.46+)</option>
         </select></div>
       <div class="player-list" id="playerList"></div>
-      <div class="directory-note"><strong>Seu perfil não está aqui?</strong><br>Adicione um novo jogador com o botão <b>+</b>.</div>
+      <div class="directory-note"><strong data-i18n="directory.note">Seu perfil não está aqui?</strong><br><span
+          data-i18n="directory.noteHint">Adicione um novo jogador com o botão</span> <b>+</b>.</div>
     </aside>
 
     <section class="content" id="settings">
-      <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName">PACHECO</b></div>
+      <div class="breadcrumb"><span class="bc-path" data-i18n="breadcrumb.players">JOGADORES</span> <span>/</span> VALORANT <span>/</span> <b
+          id="crumbName">PACHECO</b></div>
       <article class="profile-card">
         <div class="profile-photo" id="profilePhoto"></div>
         <div class="profile-info">
-          <p class="kicker">PERFIL DO JOGADOR</p>
+          <p class="kicker" data-i18n="profile.label">PERFIL DO JOGADOR</p>
           <h1 id="playerName">Gustavo Pacheco</h1>
           <p class="tag" id="playerTag">pacheco#ofGod</p>
           <div class="profile-grid">
-            <div><small>TIME</small><strong id="playerTeam">Free Agent</strong></div>
-            <div><small>FUNÇÃO</small><strong id="playerRole">Duelista</strong></div>
-            <div><small>PAÍS</small><strong id="playerCountry">🇧🇷 Brasil</strong></div>
+            <div><small data-i18n="profile.team">TIME</small><strong id="playerTeam">Free Agent</strong></div>
+            <div><small data-i18n="profile.role">FUNÇÃO</small><strong id="playerRole">Duelista</strong></div>
+            <div><small data-i18n="profile.country">PAÍS</small><strong id="playerCountry">🇧🇷 Brasil</strong></div>
           </div>
         </div>
-        <button class="copy-all" id="copySettings" type="button">Copiar settings</button>
+        <button class="copy-all" id="copySettings" type="button" data-i18n="profile.copySettings">Copiar settings</button>
       </article>
 
       <section class="settings-block">
         <div class="section-heading"><span class="section-icon">⌖</span>
-          <h2>Mouse settings</h2>
+          <h2 data-i18n="settings.mouse">Mouse settings</h2>
         </div>
         <div class="mouse-product"><span class="product-icon mouse-shape"></span>
-          <div><small>MOUSE</small><strong id="mouseName">ATK A9 Plus</strong></div><a id="mouseLink" href="#"
-            target="_blank" rel="noopener">Ver produto ↗</a>
+          <div><small data-i18n="settings.productMouse">MOUSE</small><strong id="mouseName">ATK A9 Plus</strong></div><a
+            id="mouseLink" href="#" target="_blank" rel="noopener" data-i18n="settings.viewProduct">Ver produto ↗</a>
         </div>
         <div class="data-grid">
-          <div><small>DPI</small><strong id="dpi">800</strong></div>
-          <div><small>SENSIBILIDADE</small><strong id="sensitivity">0.50</strong></div>
-          <div><small>eDPI</small><strong id="edpi">400</strong></div>
-          <div><small>SCOPED SENS</small><strong>1.00</strong></div>
+          <div><small data-i18n="settings.dpi">DPI</small><strong id="dpi">800</strong></div>
+          <div><small data-i18n="settings.sens">SENSIBILIDADE</small><strong id="sensitivity">0.50</strong></div>
+          <div><small data-i18n="settings.edpi">eDPI</small><strong id="edpi">400</strong></div>
+          <div><small data-i18n="settings.scoped">SCOPED SENS</small><strong>1.00</strong></div>
         </div>
       </section>
 
       <section class="settings-block crosshair-block">
         <div class="section-heading"><span class="section-icon">⌖</span>
-          <h2>Retícula</h2><button class="copy-code" id="crosshairCode" type="button">Copiar código</button>
+          <h2 data-i18n="settings.crosshair">Retícula</h2><button class="copy-code" id="crosshairCode" type="button"
+            data-i18n="settings.copyCode">Copiar código</button>
         </div>
-        <div class="crosshair-preview"><img src="assets/mira.png?v=4" alt="Prévia da retícula" id="crosshairImage">
+        <div class="crosshair-preview"><img src="assets/mira.png?v=4" data-i18n-aria-label="settings.crosshairAlt"
+            alt="Prévia da retícula" id="crosshairImage">
         </div>
         <code id="crosshairText">0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0</code>
       </section>
 
       <section class="settings-block" id="gear">
         <div class="section-heading"><span class="section-icon">◫</span>
-          <h2>Setup</h2>
+          <h2 data-i18n="settings.setup">Setup</h2>
         </div>
         <div class="gear-grid"><a class="gear-card" id="keyboardLink" href="#" target="_blank"
-            rel="noopener"><small>TECLADO</small><strong id="keyboardName">Madlions 68 HE</strong><span>Ver produto
-              ↗</span></a><a class="gear-card" id="mousepadLink" href="#" target="_blank"
-            rel="noopener"><small>MOUSEPAD</small><strong id="mousepadName">ATK 99G X Soft</strong><span>Ver produto
-              ↗</span></a><a class="gear-card" id="monitorLink" href="#" target="_blank"
-            rel="noopener"><small>MONITOR</small><strong id="monitorName">SuperFrame SFP2415</strong><span>Ver produto
+            rel="noopener"><small data-i18n="settings.keyboard">TECLADO</small><strong id="keyboardName">Madlions 68
+              HE</strong><span data-i18n="settings.viewProduct">Ver produto ↗</span></a><a class="gear-card"
+            id="mousepadLink" href="#" target="_blank" rel="noopener"><small
+              data-i18n="settings.mousepad">MOUSEPAD</small><strong id="mousepadName">ATK 99G X Soft</strong><span
+              data-i18n="settings.viewProduct">Ver produto ↗</span></a><a class="gear-card" id="monitorLink" href="#"
+            target="_blank" rel="noopener"><small data-i18n="settings.monitor">MONITOR</small><strong
+              id="monitorName">SuperFrame SFP2415</strong><span data-i18n="settings.viewProduct">Ver produto
               ↗</span></a></div>
       </section>
     </section>
@@ -167,59 +198,67 @@
 
   <footer class="site-footer">
     <div class="footer-brand"><a class="logo" href="#inicio"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-      <p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+      <p data-i18n="footer.desc">Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
     </div>
     <div>
-      <h3>Explorar</h3><a href="#players">Jogadores</a><a href="#settings">Settings</a><a
-        href="lineups.html">Lineups</a>
+      <h3 data-i18n="footer.explore">Explorar</h3><a href="#players" data-i18n="nav.players">Jogadores</a><a
+        href="#settings">Settings</a><a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
     </div>
     <div>
-      <h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="#players">Ver
-        jogadores</a>
+      <h3 data-i18n="footer.contact">Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a
+        href="#players" data-i18n="footer.playersLink">Ver jogadores</a>
     </div>
-    <div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div>
+    <div class="footer-credit"><span>© 2026 AIMBASE</span><span data-i18n="footer.credit">CRIADO PARA COMPETIR</span></div>
   </footer>
-  <nav class="mobile-nav" aria-label="Navegação mobile"><a href="#inicio"><span>⌂</span>Início</a><a
-      href="#players"><span>◫</span>Players</a><a href="#settings"><span>⌖</span>Setup</a><a
-      href="#players"><span>☷</span>Diretório</a></nav>
+  <nav class="mobile-nav" aria-label="Navegação mobile"><a href="#inicio"><span>⌂</span><span data-i18n="mobile.home">Início</span></a><a
+      href="#players"><span>◫</span><span data-i18n="mobile.players">Players</span></a><a href="#settings"><span>⌖</span><span
+        data-i18n="mobile.setup">Setup</span></a><a href="#players"><span>☷</span><span
+        data-i18n="mobile.directory">Diretório</span></a></nav>
 
   <dialog class="player-modal" id="playerModal">
     <form id="playerForm">
       <div class="modal-head">
         <div>
-          <p class="kicker">NOVO PERFIL</p>
-          <h2>Adicionar jogador</h2>
-        </div><button type="button" class="close-modal" id="closeModal" aria-label="Fechar">×</button>
+          <p class="kicker" data-i18n="modal.new">NOVO PERFIL</p>
+          <h2 data-i18n="modal.title">Adicionar jogador</h2>
+        </div><button type="button" class="close-modal" id="closeModal" data-i18n-aria-label="modal.close"
+          aria-label="Fechar">×</button>
       </div>
-      <div class="form-grid"><label>Jogo<select name="game" required><option value="VALORANT">Valorant</option><option value="Counter-Strike 2">Counter-Strike 2</option><option value="Rainbow Six">Rainbow Six</option></select></label><label>Nome<input name="name" required
-            placeholder="Nome do jogador"></label><label>Nick<input name="tag" required
-            placeholder="nick#tag"></label><label>Time<input name="team" value="Free Agent"></label><label>Função<input
-            name="role" value="Duelista"></label><label>País<input name="country"
-            value="🇧🇷 Brasil"></label><label>DPI<input name="dpi" type="number"
-            value="800"></label><label>Sensibilidade<input name="sensitivity" type="number" step="0.01"
-            value="0.50"></label><label>Mouse<input name="mouse" placeholder="Modelo do mouse"></label></div><button
-        class="save-player" type="submit">Salvar jogador</button>
+      <div class="form-grid"><label><span data-i18n="modal.game">Jogo</span><select name="game" required><option value="VALORANT" data-i18n="game.valorant">Valorant</option><option value="Counter-Strike 2" data-i18n="game.cs">Counter-Strike 2</option><option value="Rainbow Six" data-i18n="game.r6">Rainbow Six</option></select></label><label><span data-i18n="modal.name">Nome</span><input name="name" required
+            data-i18n-placeholder="modal.namePlaceholder" placeholder="Nome do jogador"></label><label><span data-i18n="modal.nick">Nick</span><input name="tag" required
+            data-i18n-placeholder="modal.nickPlaceholder" placeholder="nick#tag"></label><label><span data-i18n="modal.team">Time</span><input name="team" value="Free Agent"></label><label><span data-i18n="modal.role">Função</span><input
+            name="role" value="Duelista"></label><label><span data-i18n="modal.country">País</span><input name="country"
+            value="🇧🇷 Brasil"></label><label><span data-i18n="modal.dpi">DPI</span><input name="dpi" type="number"
+            value="800"></label><label><span data-i18n="modal.sens">Sensibilidade</span><input name="sensitivity" type="number" step="0.01"
+            value="0.50"></label><label><span data-i18n="modal.mouse">Mouse</span><input name="mouse"
+            data-i18n-placeholder="modal.mousePlaceholder" placeholder="Modelo do mouse"></label></div><button
+        class="save-player" type="submit" data-i18n="modal.save">Salvar jogador</button>
     </form>
   </dialog>
   <dialog class="auth-modal" id="authModal" aria-labelledby="authTitle">
     <section class="auth-card">
-      <button class="auth-close" id="authClose" type="button" aria-label="Fechar">×</button>
+      <button class="auth-close" id="authClose" type="button" data-i18n-aria-label="modal.close"
+        aria-label="Fechar">×</button>
       <p class="kicker" id="authKicker">ENTRAR</p>
       <h2 id="authTitle">ENTRAR</h2>
       <p class="auth-intro" id="authIntro">Acesse sua conta para gerenciar seu perfil.</p>
       <form id="authForm">
-        <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username" autocomplete="username" placeholder="Username"></label>
-        <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username" required placeholder="E-mail ou username"></label>
-        <label class="auth-field"><span>⌑</span><input id="authPassword" name="password" type="password" autocomplete="current-password" required placeholder="Senha"></label>
+        <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username"
+            autocomplete="username" data-i18n-placeholder="auth.usernamePlaceholder" placeholder="Username"></label>
+        <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username"
+            required placeholder="E-mail ou username"></label>
+        <label class="auth-field"><span>互联</span><input id="authPassword" name="password" type="password"
+            autocomplete="current-password" required data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Senha"></label>
         <button class="auth-submit" id="authSubmit" type="submit">ENTRAR</button>
       </form>
-      <div class="auth-divider"><span>OU CONTINUE COM</span></div>
-      <div class="auth-providers"><button type="button" data-provider="Discord"><b>◉</b> Continuar com Discord</button><button type="button" data-provider="Google"><b>G</b> Continuar com Google</button></div>
-      <div class="auth-footer"><button id="forgotPassword" type="button">Esqueceu a senha?</button><span id="authSwitchCopy">Não tem conta? <button id="authSwitch" type="button">Cadastre-se</button></span></div>
+      <div class="auth-divider"><span data-i18n="auth.divider">OU CONTINUE COM</span></div>
+      <div class="auth-providers"><button type="button" data-provider="Discord"><b>◉</b> <span data-i18n="auth.provider.discord">Continuar com Discord</span></button><button type="button" data-provider="Google"><b>G</b> <span data-i18n="auth.provider.google">Continuar com Google</span></button></div>
+      <div class="auth-footer"><button id="forgotPassword" type="button" data-i18n="auth.forgot">Esqueceu a senha?</button><span id="authSwitchCopy">Não tem conta? <button id="authSwitch" type="button">Cadastre-se</button></span></div>
       <p class="auth-message" id="authMessage" role="status"></p>
     </section>
   </dialog>
   <div class="toast" id="toast" role="status"></div>
+  <script src="assets/i18n/i18n.js"></script>
   <script src="data.js"></script>
   <script src="shared.js"></script>
   <script src="api.js"></script>
