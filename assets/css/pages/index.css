@@ -36,6 +36,34 @@
   margin-bottom: var(--space-6);
 }
 
+/* ----- Banner do hero (vinlândia) ----- */
+.hero-banner {
+  position: absolute;
+  z-index: 5;
+  top: 36%;
+  right: clamp(20px, 6vw, 72px);
+  width: min(calc(100% - 680px - 2 * clamp(20px, 6vw, 72px) - var(--space-6)), 640px);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 2040 / 660;
+  transform: translateY(-50%);
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(232, 72, 28, 0.25), 0 0 40px rgba(232, 72, 28, 0.15);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
+  transition: transform var(--t-med), box-shadow var(--t-med);
+}
+
+.hero-banner:hover {
+  transform: translateY(-50%) scale(1.02);
+  box-shadow: 0 24px 70px rgba(232, 72, 28, 0.35), 0 0 50px rgba(232, 72, 28, 0.25);
+}
+
+/* Profundidade: uma das linhas decorativas fica à frente do banner */
+.hero-mark-two {
+  z-index: 6;
+}
+
 /* ----- Busca do hero ----- */
 .hero-search {
   width: min(100%, 560px);

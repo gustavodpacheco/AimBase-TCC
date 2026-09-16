@@ -55,6 +55,10 @@
     display: none;
   }
 
+  .hero-banner {
+    display: none;
+  }
+
   .profile-card {
     grid-template-columns: 110px 1fr;
   }
