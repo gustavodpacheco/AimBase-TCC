@@ -1,7 +1,15 @@
-# ProSens — Banco de Dados + API
+# AimBase — Configurações de jogadores e API
 
-Site de configurações e setups de jogadores profissionais de e-sports, com banco de
-dados local (**MySQL/MariaDB via Laragon**), **API PHP** e **painel administrativo**.
+Site para consultar configurações, periféricos, perfis de jogadores e lineups de
+e-sports. O projeto usa HTML, CSS e JavaScript no frontend, **API PHP** e banco
+**MySQL/MariaDB**. A interface está disponível em pt-BR, en, es, fr e de.
+
+### Requisitos
+
+- Apache e PHP com as extensões **PDO MySQL** e **mbstring**.
+- MySQL ou MariaDB.
+- Laragon é o ambiente local documentado abaixo. Não há etapa de build nem
+  dependências npm.
 
 ---
 
@@ -22,16 +30,18 @@ C:\laragon\www\prosettings-page-main\
 ├── config\              # Configuração da conexão
 ├── database\            # schema.sql e seed.sql
 ├── includes\            # Helpers PHP
-├── assets\              # Imagens
-├── data.js              # Dados estáticos/fallback (defaultPlayers, savedPlayers)
+├── assets\              # Imagens, CSS, JavaScript e traduções
+├── data.js              # Dados estáticos/fallback dos jogadores e lineups
 ├── shared.js            # Helpers compartilhados (esc, safeUrl, tema, toast)
 ├── api.js               # Cliente JS da API
 ├── script.js            # Lógica da página inicial (index.html)
 ├── profile.js           # Lógica da página de perfil (player.html)
 ├── index.html
 ├── player.html
-└── style.css
+└── lineups.html
 ```
+
+O CSS fica em `assets/css/`. O seletor de idioma usa `assets/i18n/`.
 
 > Acesse pelo navegador em: `http://localhost/prosettings-page-main/`
 
@@ -64,15 +74,18 @@ mysql -u root < schema.sql
 mysql -u root < seed.sql
 ```
 
-O `seed.sql` insere **dados fictícios de exemplo** (jogadores, times, periféricos e
-settings) para você testar o sistema. Não são dados reais de pro players.
+O `seed.sql` insere **dados de exemplo** (jogadores, times, periféricos, settings
+e comentários). Também cria a conta `demo` / `demo1234` para testar o painel
+localmente. Os dados não são uma fonte oficial de configurações de pro players;
+veja o aviso de acesso na seção [Segurança](#segurança).
 
 ---
 
 ## 4. Como configurar a conexão PHP com MySQL
 
-Edite o arquivo `config/database.php` se necessário. Os valores padrão são os que o
-Laragon usa por padrão:
+O arquivo `config/database.php` lê os valores abaixo de variáveis de ambiente e
+usa esses padrões quando elas não estão definidas. No Laragon, a configuração
+funciona sem alteração quando o usuário `root` não tem senha:
 
 ```php
 'host'     => '127.0.0.1',
@@ -87,8 +100,8 @@ Laragon usa por padrão:
 > (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`). Em um ambiente
 > básico do Laragon, o usuário `root` sem senha funciona sem alteração.
 >
-> Nunca versionar credenciais reais. Se precisar de senha, defina a variável de
-> ambiente `DB_PASSWORD` no Windows em vez de colocar no código.
+> Não versione credenciais reais. Se precisar de senha, defina `DB_PASSWORD` nas
+> variáveis de ambiente do Windows em vez de colocá-la no código.
 
 ---
 
@@ -106,20 +119,28 @@ Laragon usa por padrão:
 | ---------------------------- | ----------------------------------------------------- |
 | Site principal               | `http://localhost/prosettings-page-main/index.html`   |
 | Perfil de jogador            | `http://localhost/prosettings-page-main/player.html?player=pacheco` |
+| Lineups                      | `http://localhost/prosettings-page-main/lineups.html` |
 | Painel administrativo        | `http://localhost/prosettings-page-main/admin/index.php` |
 
 > A partir do `index.html`, os dados dos jogadores são carregados da API via
 > `fetch` de `api/players.php`. O frontend também tem fallback com dados estáticos
 > caso a API não esteja disponível.
 
+### Idiomas
+
+A interface oferece **pt-BR, en, es, fr e de**. O idioma escolhido fica salvo no
+`localStorage`; os textos ficam em `assets/i18n/` e são aplicados por
+`assets/i18n/i18n.js`.
+
 ---
 
 ## 7. Como testar a API
 
-Todos os endpoints retornam JSON no formato:
-`{ "success": true, "message": "", "data": ... }`
+As respostas da aplicação usam o formato JSON
+`{ "success": true, "message": "", "data": ... }`. Se a conexão com o banco
+falhar, `includes/database.php` retorna `{ "success": false, "error": ... }`.
 
-### Públicos (consultas)
+### Consultas públicas
 
 | Método | Endpoint                              | Descrição                             |
 | ------ | ------------------------------------- | ------------------------------------- |
@@ -127,6 +148,8 @@ Todos os endpoints retornam JSON no formato:
 | GET    | `/api/players.php?game=valorant`      | Filtra por jogo (slug)                |
 | GET    | `/api/players.php?search=gustavo`     | Busca por nick/nome/time              |
 | GET    | `/api/players.php?team_id=1`          | Filtra por time                       |
+| GET    | `/api/players.php?role=Duelista`       | Filtra por função                     |
+| GET    | `/api/players.php?country=Brasil`       | Filtra por país                       |
 | GET    | `/api/player.php?id=1`                | Detalhe de um jogador (por id)        |
 | GET    | `/api/player.php?slug=pacheco`        | Detalhe de um jogador (por slug)      |
 | GET    | `/api/games.php`                      | Lista de jogos                        |
@@ -135,10 +158,21 @@ Todos os endpoints retornam JSON no formato:
 | GET    | `/api/peripherals.php?type=mouse`     | Filtra periféricos por tipo           |
 | GET    | `/api/filters.php`                    | Metadados para os filtros (jogos, times, funções, países) |
 | GET    | `/api/comments.php?player_id=1`       | Lista comentários de um jogador       |
-| POST   | `/api/comments.php`                   | Publica um comentário                 |
-| GET    | `/api/auth.php?action=me`             | Retorna usuário da sessão (ou null)   |
 
-### Administrativos
+### Conta e comentários
+
+| Método | Endpoint                         | Descrição                                    |
+| ------ | -------------------------------- | -------------------------------------------- |
+| GET    | `/api/auth.php?action=me`        | Retorna o usuário da sessão (ou null)        |
+| POST   | `/api/auth.php?action=register`  | Cria conta (email, username e senha)         |
+| POST   | `/api/auth.php?action=login`     | Autentica por e-mail ou username             |
+| POST   | `/api/auth.php?action=logout`    | Encerra a sessão                             |
+| POST   | `/api/comments.php`              | Publica comentário com nome enviado no corpo |
+| DELETE | `/api/comments.php?id=1`         | Exclui comentário (exige sessão)             |
+
+### Escritas de jogadores, jogos, times e periféricos
+
+Os endpoints abaixo criam, editam e excluem registros:
 
 | Método | Endpoint                 | Descrição                              |
 | ------ | ------------------------ | -------------------------------------- |
@@ -153,13 +187,13 @@ Todos os endpoints retornam JSON no formato:
 | DELETE | `/api/teams.php?id=1`    | Exclui time                            |
 | POST   | `/api/peripherals.php`   | Cria periférico                        |
 | PUT    | `/api/peripherals.php`   | Edita periférico                       |
-| DELETE | `/api/peripherals.php?id=1` | Exclui periférico                    |
-| POST   | `/api/auth.php?action=register` | Registra usuário (email+username+senha) |
-| POST   | `/api/auth.php?action=login`    | Autentica e cria sessão          |
-| POST   | `/api/auth.php?action=logout`   | Encerra a sessão                |
-| DELETE | `/api/comments.php?id=1`  | Exclui comentário (requer sessão)      |
+| DELETE | `/api/peripherals.php?id=1` | Exclui periférico                        |
 
-### Exemplos (PowerShell/curl)
+> **Atenção nesta versão da `main`:** essas rotas de escrita não verificam sessão
+> nem papel de administrador. A área web do painel pede login, mas isso não
+> protege chamadas diretas à API. Veja o aviso na seção [Segurança](#segurança).
+
+### Exemplos (curl)
 
 ```bash
 # Listar jogadores
@@ -171,7 +205,7 @@ curl "http://localhost/prosettings-page-main/api/players.php?search=aspas"
 # Detalhe de um jogador
 curl http://localhost/prosettings-page-main/api/player.php?id=1
 
-# Criar um jogador (admin)
+# Criar um jogador
 curl -X POST http://localhost/prosettings-page-main/api/players.php \
   -H "Content-Type: application/json" \
   -d '{"nickname":"Exemplo","game_id":1,"role":"Duelista"}'
@@ -181,18 +215,32 @@ curl -X POST http://localhost/prosettings-page-main/api/players.php \
 
 ## Segurança
 
-- **PDO + prepared statements** em todas as consultas com dados do usuário.
-- **Validação de IDs** (inteiros positivos) e **validação de tipos** de periféricos.
-- **Saída HTML sanitizada** com `htmlspecialchars` no painel admin.
-- **JSON padronizado** e tratamento de erros que **nunca expõe erros SQL** ao usuário.
-- **Credenciais do banco** são lidas de variáveis de ambiente, nunca hardcoded.
-- **Senhas** de usuários armazenadas com `password_hash()` (bcrypt), nunca em texto puro.
-- **Sessões PHP** com cookie `HttpOnly` / `SameSite=Lax` para autenticação.
-- **Frontend** escapa toda saída dinâmica (`esc`) e valida URLs (`safeUrl`) contra XSS.
+- As consultas usam **PDO e prepared statements**; IDs e tipos de periféricos são
+  validados, e o painel escapa valores exibidos em HTML.
+- As credenciais do banco vêm de variáveis de ambiente; senhas de usuários são
+  armazenadas com `password_hash()`.
+- A sessão PHP usa cookie `HttpOnly` e `SameSite=Lax`.
+- O frontend usa `esc()` para escapar conteúdo dinâmico e `safeUrl()` ao montar
+  links e imagens.
 
 O login/registro é real (via API + banco). O botão "Entrar" do site agora usa
 esses endpoints. Os botões "Continuar com Discord/Google" continuam sendo apenas
 demonstração.
+
+### Acesso na branch `main`
+
+Esta versão tem limitações importantes de acesso: o CORS permite qualquer origem,
+e as rotas `POST`, `PUT` e `DELETE` de jogadores, jogos, times e periféricos não
+exigem login, token CSRF nem papel de administrador. O painel web exige uma
+sessão, mas aceita qualquer conta cadastrada; o banco ainda não tem papéis de
+usuário. A criação de comentários também é pública, e o nome vem do corpo da
+requisição. O `DELETE` de comentários exige uma sessão, mas não confere se a
+pessoa é autora daquele comentário.
+
+Por esses motivos, mantenha esta versão em desenvolvimento local ou proteja o
+servidor por outros meios antes de expô-la publicamente. O `seed.sql` inclui a
+conta conhecida `demo` / `demo1234`; remova-a ou troque a senha antes de qualquer
+implantação.
 
 ---
 
