@@ -155,14 +155,19 @@ CREATE TABLE IF NOT EXISTS player_pc_specs (
 -- ============================================================
 -- USERS (autenticação)
 -- ============================================================
+-- role: 'user' (padrão) ou 'admin' (acesso ao painel).
+-- Em instalações já existentes use database/migrations/001_users_role.sql
+-- (CREATE TABLE IF NOT EXISTS não altera tabelas que já existem).
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
   email VARCHAR(190) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_email (email),
-  INDEX idx_username (username)
+  INDEX idx_username (username),
+  INDEX idx_role (role)
 ) ENGINE=InnoDB;
 
 -- ============================================================

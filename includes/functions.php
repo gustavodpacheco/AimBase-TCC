@@ -4,6 +4,24 @@
  */
 
 /**
+ * Ambiente da aplicação.
+ * APP_ENV=dev habilita recursos só de desenvolvimento (dicas de credenciais
+ * de teste). O padrão é 'production', ou seja, nada de dicas na tela.
+ */
+function appEnv(): string
+{
+    $env = strtolower(trim((string)getenv('APP_ENV')));
+
+    return in_array($env, ['dev', 'development', 'local'], true) ? 'dev' : 'production';
+}
+
+/** true apenas quando APP_ENV=dev|development|local. */
+function isDevEnvironment(): bool
+{
+    return appEnv() === 'dev';
+}
+
+/**
  * Origens permitidas para chamadas cross-origin.
  *
  * - APP_ORIGIN: lista separada por vírgula/espaço (ex.: "https://aimbase.gg,https://www.aimbase.gg").

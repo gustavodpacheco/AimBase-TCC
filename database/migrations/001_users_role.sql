@@ -58,12 +58,15 @@ EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
 -- ------------------------------------------------------------
--- 3) Promove o usuário de demonstração legado a admin
---    (mantém o acesso ao painel de quem já usa a instalação)
--- ------------------------------------------------------------
-UPDATE users SET role = 'admin' WHERE username = 'demo' AND role <> 'admin';
-
--- ------------------------------------------------------------
+-- 3) Nenhuma conta é promovida automaticamente.
+--
+--    Esta migração NÃO cria nem promove usuários: em produção não
+--    pode existir caminho para admin. Para o ambiente local, rode
+--    database/dev/seed-dev.sql (cria a conta demo com role admin).
+--
+--    Se você já tinha uma conta de demonstração e quer promovê-la:
+--    UPDATE users SET role = 'admin' WHERE username = 'demo';
+--
 -- 4) Como promover outros usuários a admin
 -- ------------------------------------------------------------
 -- UPDATE users SET role = 'admin' WHERE username = 'seu_usuario';

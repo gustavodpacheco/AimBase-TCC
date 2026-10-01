@@ -12,7 +12,10 @@ function db(): PDO
         return $pdo;
     }
 
-    $config = require __DIR__ . '/../config/database.php';
+    // config/database.local.php (não versionado) tem prioridade: é o lugar
+    // para a senha real do banco em desenvolvimento.
+    $local = __DIR__ . '/../config/database.local.php';
+    $config = is_file($local) ? require $local : require __DIR__ . '/../config/database.php';
 
     $dsn = sprintf(
         'mysql:host=%s;port=%s;dbname=%s;charset=%s',

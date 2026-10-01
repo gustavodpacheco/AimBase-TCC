@@ -114,9 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </label>
       <button class="btn btn-primary" type="submit">Entrar</button>
     </form>
+    <?php if (isDevEnvironment()): ?>
     <p class="admin-muted" style="text-align:left;padding:var(--space-4) 0 0;font-size:0.7rem">
-      Usuário demo: <code>demo</code> / senha: <code>demo1234</code>
+      Ambiente de desenvolvimento: usuário <code>demo</code> / senha: <code>demo1234</code>
     </p>
+    <?php endif; ?>
   </div>
 </div>
 </body>
