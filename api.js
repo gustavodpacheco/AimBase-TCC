@@ -16,11 +16,20 @@ const API = {
   async csrf(force = false) {
     if (force) this.csrfToken = null;
     if (this.csrfToken) return this.csrfToken;
-    const res = await fetch(`${this.base}/auth.php?action=csrf`, { credentials: 'same-origin' });
-    const json = await res.json();
+    // Mesmo tratamento das demais leituras: JSON inválido ou HTTP de erro viram
+    // Error com mensagem útil, em vez de SyntaxError cru do res.json().
+    const json = await this.get(`${this.base}/auth.php?action=csrf`, { credentials: 'same-origin' });
     this.csrfToken = (json && json.data && json.data.token) || null;
     if (!this.csrfToken) throw new Error('Não foi possível obter o token CSRF.');
     return this.csrfToken;
+  },
+
+  /**
+   * Leitura: fetch + contrato único de erro via handle().
+   * Aceita as mesmas opções do fetch (credentials, signal, ...).
+   */
+  async get(url, options) {
+    return this.handle(await fetch(url, options));
   },
 
   /** Escrita autenticada: sessão + token CSRF. */
@@ -49,18 +58,15 @@ const API = {
       if (v !== undefined && v !== null && v !== '') qs.set(k, v);
     });
     const query = qs.toString() ? `?${qs.toString()}` : '';
-    const res = await fetch(`${this.base}/players.php${query}`);
-    return this.handle(res);
+    return this.get(`${this.base}/players.php${query}`);
   },
 
   async getPlayer(id) {
-    const res = await fetch(`${this.base}/player.php?id=${encodeURIComponent(id)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/player.php?id=${encodeURIComponent(id)}`);
   },
 
   async getPlayerBySlug(slug) {
-    const res = await fetch(`${this.base}/player.php?slug=${encodeURIComponent(slug)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/player.php?slug=${encodeURIComponent(slug)}`);
   },
 
   async createPlayer(payload) {
@@ -77,20 +83,17 @@ const API = {
 
   // ---- Games ----
   async listGames() {
-    const res = await fetch(`${this.base}/games.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/games.php`);
   },
 
   // ---- Teams ----
   async listTeams() {
-    const res = await fetch(`${this.base}/teams.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/teams.php`);
   },
 
   // ---- Filters ----
   async listFilters() {
-    const res = await fetch(`${this.base}/filters.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/filters.php`);
   },
 
   async createTeam(payload) {
@@ -100,8 +103,7 @@ const API = {
   // ---- Peripherals ----
   async listPeripherals(type) {
     const qs = type ? `?type=${encodeURIComponent(type)}` : '';
-    const res = await fetch(`${this.base}/peripherals.php${qs}`);
-    return this.handle(res);
+    return this.get(`${this.base}/peripherals.php${qs}`);
   },
 
   async createPeripheral(payload) {
@@ -130,14 +132,12 @@ const API = {
   },
 
   async me() {
-    const res = await fetch(`${this.base}/auth.php?action=me`, { credentials: 'same-origin' });
-    return this.handle(res);
+    return this.get(`${this.base}/auth.php?action=me`, { credentials: 'same-origin' });
   },
 
   // ---- Comments ----
   async listComments(playerId) {
-    const res = await fetch(`${this.base}/comments.php?player_id=${encodeURIComponent(playerId)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/comments.php?player_id=${encodeURIComponent(playerId)}`);
   },
 
   async createComment(payload) {
@@ -157,7 +157,11 @@ const API = {
       json = await res.json();
     } catch { /* resposta não-JSON: cai no throw abaixo */ }
     if (!res.ok || !json || !json.success) {
-      throw new Error((json && json.message) || 'Resposta inválida do servidor.');
+      // Em erro de rede/5xx costuma vir HTML (page de erro do PHP) e não há
+      // message: incluí o status para o log do Laragon ajudar a diagnosticar.
+      const detail = (json && json.message)
+        || (res.ok ? 'Resposta inválida do servidor.' : `Falha na requisição (HTTP ${res.status}).`);
+      throw new Error(detail);
     }
     return json;
   },
