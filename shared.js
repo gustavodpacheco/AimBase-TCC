@@ -82,6 +82,19 @@ function textOr(value, key) {
   return key ? I18N.t(key) : '';
 }
 
+/**
+ * Formata uma data conforme o idioma ativo, usando Intl.DateTimeFormat.
+ * Aceita string ISO, timestamp ou Date. Ausente/inválida vira '–', no mesmo
+ * padrão de placeholder usado nos demais campos.
+ */
+function formatDate(value, options) {
+  if (value === null || value === undefined || value === '') return '–';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '–';
+  const locale = (typeof I18N !== 'undefined' && I18N.lang) || 'pt-BR';
+  return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
 /** Aplica (e alterna) o tema claro/escuro. */
 function applyTheme(theme) {
   document.body.classList.toggle('dark', theme === 'dark');
