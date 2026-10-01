@@ -1,6 +1,6 @@
 // ============================================================
 // lineups.js - Página de lineups (lineups.html)
-// Depende de: shared.js (applyTheme), data.js (valLineups).
+// Depende de: shared.js (esc, safeUrl, initTheme), data.js (valLineups).
 // ============================================================
 
 if (document.body.dataset.page === 'lineups') {
@@ -138,7 +138,5 @@ if (document.body.dataset.page === 'lineups') {
     }).join('');
   }
 
-  const toggle = document.getElementById('themeToggle');
-  if (toggle) toggle.addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
-  applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
+  initTheme();
 }

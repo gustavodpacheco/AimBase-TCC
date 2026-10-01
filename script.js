@@ -51,7 +51,6 @@ async function loadPlayersFromApi() {
 const requestedPlayer = new URLSearchParams(window.location.search).get('player');
 let selectedId = null;
 let proOnly = false;
-const $ = (id) => document.getElementById(id);
 
 function initials(name) { return (name || '').split(' ').map(part => part[0]).slice(0, 2).join('') || '?'; }
 
@@ -191,8 +190,7 @@ function setProFilter(enabled) {
 document.getElementById('tabAll').addEventListener('click', () => setProFilter(false));
 document.getElementById('tabPro').addEventListener('click', () => setProFilter(true));
 
-applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
-$('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+initTheme();
 const updateHeaderSearch = () => document.body.classList.toggle('scrolled', window.scrollY > 110);
 updateHeaderSearch();
 window.addEventListener('scroll', updateHeaderSearch, { passive: true });

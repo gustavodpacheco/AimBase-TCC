@@ -3,6 +3,9 @@
 // Carregado antes de script.js e profile.js
 // ============================================================
 
+/** Atalho para document.getElementById, usado por todas as páginas. */
+const $ = id => document.getElementById(id);
+
 /** Escapa texto para uso seguro em HTML (previne XSS). */
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 
@@ -74,6 +77,19 @@ function applyTheme(theme) {
   const toggle = document.getElementById('themeToggle');
   if (toggle) toggle.textContent = theme === 'dark' ? '☼' : '◐';
   localStorage.setItem('val-tactical-theme', theme);
+}
+
+/**
+ * Aplica o tema salvo e liga o botão de alternância.
+ *
+ * As três páginas repetiam esse par (applyTheme no load + listener no toggle)
+ * e a do lineups ainda protegia o botão com um if. Aqui o elemento é opcional
+ * por decisão, e o estado inicial vem sempre do localStorage.
+ */
+function initTheme() {
+  applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) toggle.addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
 }
 
 /** Copia texto para a área de transferência com feedback. */

@@ -5,7 +5,6 @@
 // ============================================================
 
 if (document.body.dataset.page === 'profile') {
-  const $ = id => document.getElementById(id);
   let notFoundShown = false;
 
   (async function initProfile() {
@@ -178,8 +177,7 @@ if (document.body.dataset.page === 'profile') {
   // Tema e rodapé: aplicados nos dois caminhos (perfil e 404) para que a
   // tela de erro não fique sem o toggle de tema funcionando.
   function setupPageChrome() {
-    applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
-    $('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+    initTheme();
     $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div></footer>');
   }
 
