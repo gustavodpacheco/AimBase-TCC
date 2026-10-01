@@ -21,10 +21,11 @@ async function loadPlayersFromApi() {
           id: String(row.id),
           name: row.real_name || row.nickname,
           tag: row.nickname,
-          team: row.team_name || 'Sem time',
+          // Vazio fica como null; o fallback traduzido é aplicado em textOr() na exibição.
+    team: row.team_name || null,
           teamLogo: row.team_logo,
-          role: row.role || 'Não informado',
-          country: row.country || 'Não informado',
+    role: row.role || null,
+    country: row.country || null,
           photo: row.photo,
           slug: row.slug,
           game: row.game_name || 'VALORANT',
@@ -113,7 +114,7 @@ function getFilteredPlayers() {
   const game = $('gameFilter').value;
   const dpi = $('dpiFilter').value;
   const sensitivityRange = $('sensitivityFilter').value;
-  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || matchesSensitivityBand(player, sensitivityRange)));
+  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team || ''} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || matchesSensitivityBand(player, sensitivityRange)));
 }
 function selectPlayer(id) {
   const player = players.find(p => p.id === id);
@@ -134,7 +135,9 @@ function homeCardHTML(player) {
   const avatar = player.photo
     ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy">`
     : `<span class="home-card__photo home-card__initials">${esc(initials(player.name))}</span>`;
-  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
+  // Traduzido na exibição (e não no mapeamento) para acompanhar troca de idioma.
+  const team = textOr(player.team, 'common.noTeam');
+  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}">` : '';
   return `<button class="home-card ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button" data-game="${esc(badge.game)}">
     <div class="home-card__media">
       ${avatar}
@@ -144,8 +147,8 @@ function homeCardHTML(player) {
     <div class="home-card__body">
       <strong class="home-card__name">${esc(player.name)}</strong>
       <div class="home-card__meta">
-        <span class="home-card__team">${teamLogo}${esc(player.team)}</span>
-        <span class="home-card__country">${esc(player.country)}</span>
+        <span class="home-card__team">${teamLogo}${esc(team)}</span>
+        <span class="home-card__country">${esc(textOr(player.country, 'common.notInformed'))}</span>
       </div>
     </div>
   </button>`;
@@ -176,9 +179,13 @@ heroSearch.addEventListener('keydown', event => {
 // Trocar o jogo muda os números no rótulo das faixas de sensibilidade.
 $('gameFilter').addEventListener('change', updateSensitivityLabels);
 updateSensitivityLabels();
-// Ao trocar de idioma, os rótulos das faixas precisam ser reescritos: o
-// i18n.js não conhece os textos gerados por JS.
-document.addEventListener('i18n:changed', updateSensitivityLabels);
+// Ao trocar de idioma, os textos que o i18n.js não conhece precisam ser
+// reescritos: os rótulos das faixas e os fallbacks traduzidos dos cards
+// (time/país), que são montados por JS.
+document.addEventListener('i18n:changed', () => {
+  updateSensitivityLabels();
+  renderList();
+});
 
 // ---- Aba "Pro Players" ----
 function setProFilter(enabled) {
@@ -194,7 +201,8 @@ initTheme();
 const updateHeaderSearch = () => document.body.classList.toggle('scrolled', window.scrollY > 110);
 updateHeaderSearch();
 window.addEventListener('scroll', updateHeaderSearch, { passive: true });
-document.querySelector('.footer-brand p').textContent = 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.';
+// A tagline do rodapé já vem traduzida por data-i18n="footer.desc" no HTML;
+// o script não deve sobrescrever isso com texto fixo em português.
 
 // ---- Modal de adicionar jogador (via API) ----
 const modal = $('playerModal');
@@ -217,10 +225,10 @@ $('playerForm').addEventListener('submit', async event => {
     const res = await API.createPlayer(payload);
     event.currentTarget.reset();
     modal.close();
-    showToast(res.message || 'Jogador adicionado.');
+    showToast(res.message || I18N.t('toast.playerAdded'));
     await refreshPlayers();
   } catch (err) {
-    showToast(err.message || 'Não foi possível adicionar o jogador.');
+    showToast(err.message || I18N.t('toast.playerAddFailed'));
   } finally {
     playerFormBusy = false;
   }
@@ -297,19 +305,20 @@ function renderAuth() {
 function setAuthMode(mode) {
   authMode = mode;
   const isRegister = mode === 'register';
-  $('authTitle').textContent = isRegister ? 'CRIAR CONTA' : 'ENTRAR';
-  $('authKicker').textContent = isRegister ? 'NOVA CONTA' : 'ENTRAR';
-  $('authIntro').textContent = isRegister ? 'Crie sua conta e entre para a comunidade.' : 'Acesse sua conta para gerenciar seu perfil.';
+  const p = isRegister ? 'register' : 'login';
+  $('authTitle').textContent = I18N.t('auth.title.' + p);
+  $('authKicker').textContent = I18N.t('auth.kicker.' + p);
+  $('authIntro').textContent = I18N.t('auth.intro.' + p);
   $('usernameField').hidden = !isRegister;
   $('authUsername').required = isRegister;
-  $('authEmail').placeholder = isRegister ? 'E-mail' : 'E-mail ou username';
+  $('authEmail').placeholder = I18N.t('auth.emailPlaceholder.' + p);
   $('authPassword').autocomplete = isRegister ? 'new-password' : 'current-password';
-  $('authSubmit').textContent = isRegister ? 'CADASTRAR' : 'ENTRAR';
+  $('authSubmit').textContent = I18N.t('auth.submit.' + p);
   // Antes o innerHTML recriava o <button> a cada troca e o listener era
   // religado, acumulando handlers no botão anterior. O botão agora é fixo no
   // HTML e só os textos mudam.
-  $('authSwitchPrompt').textContent = isRegister ? 'Já tem conta?' : 'Não tem conta?';
-  $('authSwitch').textContent = isRegister ? 'Entrar' : 'Cadastre-se';
+  $('authSwitchPrompt').textContent = I18N.t('auth.switch.prompt.' + p);
+  $('authSwitch').textContent = I18N.t('auth.switch.action.' + p);
   setAuthMessage('');
 }
 $('authSwitch').addEventListener('click', () => setAuthMode(authMode === 'register' ? 'login' : 'register'));
@@ -319,11 +328,11 @@ $('authLogout').addEventListener('click', async () => {
   try { await API.logout(); } catch { /* ignora */ }
   currentUser = null;
   renderAuth();
-  showToast('Sessão encerrada.');
+  showToast(I18N.t('toast.sessionClosed'));
 });
 $('authClose').addEventListener('click', () => authModal.close());
-$('forgotPassword').addEventListener('click', () => setAuthMessage('Em uma integração real, enviaremos um link de recuperação para seu e-mail.'));
-document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(`Login com ${button.dataset.provider} é uma demonstração nesta versão.`)));
+$('forgotPassword').addEventListener('click', () => setAuthMessage(I18N.t('auth.forgotInfo')));
+document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(I18N.t('auth.provider.demo', { provider: button.dataset.provider }))));
 $('authForm').addEventListener('submit', async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget));
@@ -335,9 +344,11 @@ $('authForm').addEventListener('submit', async event => {
     currentUser = res.data.user;
     authModal.close();
     renderAuth();
-    showToast(authMode === 'register' ? 'Conta criada. Boas-vindas ao AimBase.' : `Bem-vindo, ${currentUser.username}.`);
+    showToast(authMode === 'register'
+      ? I18N.t('auth.toast.registered')
+      : I18N.t('auth.toast.welcome', { username: currentUser.username }));
   } catch (err) {
-    setAuthMessage(err.message || 'Não foi possível concluir a operação.');
+    setAuthMessage(err.message || I18N.t('auth.toast.failed'));
   }
 });
 
@@ -349,4 +360,7 @@ async function initAuth() {
   } catch { currentUser = null; }
   renderAuth();
 }
+// O HTML do modal de auth vem em português como valor inicial; sem esta chamada
+// o texto fixo ficaria visível até o usuário abrir o modal.
+setAuthMode('login');
 initAuth();

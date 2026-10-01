@@ -209,10 +209,13 @@ function mapPlayerForUi(row) {
     id: String(row.id),
     name: row.real_name || row.nickname,
     tag: row.nickname,
-    team: row.team_name || 'Sem time',
+    // Vazio fica como null de propósito: o texto de fallback é traduzido em
+    // textOr() na hora da exibição (ver shared.js), para não ficar preso ao
+    // idioma carregado no momento do mapeamento.
+    team: row.team_name || null,
     teamLogo: row.team_logo,
-    role: row.role || 'Não informado',
-    country: row.country || 'Não informado',
+    role: row.role || null,
+    country: row.country || null,
     photo: row.photo,
     slug: row.slug,
     game: row.game_name || 'VALORANT',

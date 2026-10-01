@@ -51,6 +51,32 @@
     'sens.r6.medium': 'Média (6–12)',
     'sens.r6.high': 'Alta (≥ 12)',
     'page.notFoundTitle': 'Jogador não encontrado',
+    'common.notInformed': 'Não informado',
+    'common.noTeam': 'Sem time',
+    'common.visitor': 'Visitante',
+    'toast.copyFailed': 'Não foi possível copiar.',
+    'toast.playerAdded': 'Jogador adicionado.',
+    'toast.playerAddFailed': 'Não foi possível adicionar o jogador.',
+    'toast.sessionClosed': 'Sessão encerrada.',
+    'toast.commentPublished': 'Comentário publicado.',
+    'toast.commentFailed': 'Não foi possível publicar o comentário.',
+    'lineups.count': { one: '{{count}} lineup', other: '{{count}} lineups' },
+
+    // script.js chama setAuthMode() já no parse, antes do dicionário carregar.
+    'auth.title.login': 'ENTRAR',
+    'auth.title.register': 'CRIAR CONTA',
+    'auth.kicker.login': 'ENTRAR',
+    'auth.kicker.register': 'NOVA CONTA',
+    'auth.intro.login': 'Acesse sua conta para gerenciar seu perfil.',
+    'auth.intro.register': 'Crie sua conta e entre para a comunidade.',
+    'auth.emailPlaceholder.login': 'E-mail ou username',
+    'auth.emailPlaceholder.register': 'E-mail',
+    'auth.submit.login': 'ENTRAR',
+    'auth.submit.register': 'CADASTRAR',
+    'auth.switch.prompt.login': 'Não tem conta?',
+    'auth.switch.prompt.register': 'Já tem conta?',
+    'auth.switch.action.login': 'Cadastre-se',
+    'auth.switch.action.register': 'Entrar',
   };
 
   var state = { lang: DEFAULT_LANG, dict: null, cache: {} };

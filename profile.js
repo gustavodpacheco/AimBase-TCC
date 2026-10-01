@@ -6,6 +6,11 @@
 
 if (document.body.dataset.page === 'profile') {
   let notFoundShown = false;
+  // Estado do perfil em escopo de módulo para que a troca de idioma consiga
+  // redesenhar a página sem repetir a busca dos dados.
+  let currentPlayer = null;
+  let currentApiActive = false;
+  let listenersBound = false;
 
   (async function initProfile() {
     const id = new URLSearchParams(window.location.search).get('player');
@@ -48,9 +53,19 @@ if (document.body.dataset.page === 'profile') {
       return;
     }
 
+    currentPlayer = player;
+    currentApiActive = apiActive;
     renderProfile(player, apiActive);
     setupPageChrome();
   })();
+
+  // A troca de idioma precisa redesenhar o perfil: os fallbacks traduzidos
+  // (time, função, país, periféricos) são montados por JS e não têm
+  // data-i18n para o i18n.js reescrever sozinho.
+  document.addEventListener('i18n:changed', () => {
+    if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
+    else setupPageChrome();
+  });
 
   /** Tela 404: esconde o perfil e mostra o aviso de "não encontrado". */
   function showNotFound(requestedId) {
@@ -84,26 +99,34 @@ if (document.body.dataset.page === 'profile') {
     const fifaCardEl = $('fifaCard');
     if (fifaCardEl) fifaCardEl.innerHTML = fifaCardHTML(player, { large: true });
 
+    // Seções montadas por JS: removidas antes de recriar, senão a troca de
+    // idioma (que chama renderProfile de novo) duplicaria cada bloco.
+    ['.player-meta', '.video-settings', '.pc-specs', '.clips-section'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.remove();
+    });
+
     // Hero lado a lado (carta | informações) apenas com carta personalizada.
     const hero = $('playerHero');
     if (hero) hero.classList.toggle('has-card', !!(player.cardImage && player.photo));
 
     // Botão "Ver carta completa" (modal) — só para quem tem carta personalizada.
+    // O listener vive no bloco de listenersBound para não acumular a cada
+    // redesenho (troca de idioma).
     const viewBtn = $('viewCardBtn');
-    if (viewBtn && player.cardImage) {
-      viewBtn.hidden = false;
-      viewBtn.addEventListener('click', () => openCardModal(player));
-    }
+    if (viewBtn && player.cardImage) viewBtn.hidden = false;
     $('crumbName').textContent = player.tag.toUpperCase();
     // id próprio: o seletor antigo pegava childNodes[2] e quebrava se a
     // ordem dos nós da breadcrumb mudasse.
     $('crumbGame').textContent = (player.game || 'VALORANT').toUpperCase();
     $('playerName').textContent = player.name;
     $('playerTag').textContent = player.tag;
-    const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
-    $('playerTeam').innerHTML = `${teamLogo}${esc(player.team)}`;
-    $('playerRole').textContent = player.role;
-    $('playerCountry').textContent = player.country;
+    // Traduzido aqui, e não no mapeamento, para acompanhar troca de idioma.
+    const team = textOr(player.team, 'common.noTeam');
+    const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}">` : '';
+    $('playerTeam').innerHTML = `${teamLogo}${esc(team)}`;
+    $('playerRole').textContent = textOr(player.role, 'common.notInformed');
+    $('playerCountry').textContent = textOr(player.country, 'common.notInformed');
     // safeCssUrl escapa aspas e parênteses: impede quebrar a regra CSS
     // com uma URL maliciosa vinda do banco.
     $('profilePhoto').style.backgroundImage = safeCssUrl(player.photo);
@@ -119,11 +142,12 @@ if (document.body.dataset.page === 'profile') {
     const scopedNum = Number(scopedRaw);
     $('scopedSensitivity').textContent =
       scopedRaw != null && String(scopedRaw).trim() !== '' && Number.isFinite(scopedNum) ? scopedNum.toFixed(2) : '–';
-    $('mouseName').textContent = player.mouse || 'Não informado';
-    $('keyboardName').textContent = player.keyboard || 'Não informado';
-    $('mousepadName').textContent = player.mousepad || 'Não informado';
-    $('monitorName').textContent = player.monitor || 'Não informado';
-    $('crosshairText').textContent = player.crosshair || 'Não informado';
+    const naoInformado = I18N.t('common.notInformed');
+    $('mouseName').textContent = player.mouse || naoInformado;
+    $('keyboardName').textContent = player.keyboard || naoInformado;
+    $('mousepadName').textContent = player.mousepad || naoInformado;
+    $('monitorName').textContent = player.monitor || naoInformado;
+    $('crosshairText').textContent = player.crosshair || naoInformado;
     // safeUrl já devolve o valor escapado e validado (http(s) ou relativo).
     $('crosshairImage').src = safeUrl(player.crosshairImage || 'assets/mira.png?v=4');
 
@@ -134,11 +158,24 @@ if (document.body.dataset.page === 'profile') {
 
     const gearGrid = document.querySelector('#gear .gear-grid');
     if (player.productImages && gearGrid) {
-      const products = [['monitor', 'Monitor', player.monitor, player.links?.monitor], ['mouse', 'Mouse', player.mouse, player.links?.mouse], ['keyboard', 'Keyboard', player.keyboard, player.links?.keyboard], ['headset', 'Headset', player.headset?.name, player.headset?.link], ['mousepad', 'Mousepad', player.mousepad, player.links?.mousepad]];
+      const products = [
+        ['monitor', 'gear.monitor', player.monitor, player.links?.monitor],
+        ['mouse', 'gear.mouse', player.mouse, player.links?.mouse],
+        ['keyboard', 'gear.keyboard', player.keyboard, player.links?.keyboard],
+        ['headset', 'gear.headset', player.headset?.name, player.headset?.link],
+        ['mousepad', 'gear.mousepad', player.mousepad, player.links?.mousepad],
+      ];
+      const verProduto = I18N.t('settings.viewProduct');
       gearGrid.classList.add('product-grid');
-      gearGrid.innerHTML = products.map(([id, label, name, href]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${safeUrl(player.productImages[id])}" alt="${esc(name) || label}"></span>` : ''}<small>${label}</small><strong>${esc(name) || 'Não informado'}</strong><span>Ver produto ↗</span></a>`).join('');
-    } else if (player.headset && gearGrid && !gearGrid.querySelector('[id="headsetLink"]')) {
-      gearGrid.insertAdjacentHTML('beforeend', `<a class="gear-card" id="headsetLink" href="${safeUrl(player.headset.link)}" target="_blank" rel="noopener"><small>HEADSET</small><strong>${esc(player.headset.name)}</strong><span>Ver produto ↗</span></a>`);
+      gearGrid.innerHTML = products.map(([id, labelKey, name, href]) => {
+        const label = I18N.t(labelKey);
+        return `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${safeUrl(player.productImages[id])}" alt="${esc(name) || label}"></span>` : ''}<small>${label}</small><strong>${esc(name) || naoInformado}</strong><span>${verProduto}</span></a>`;
+      }).join('');
+    } else if (player.headset && gearGrid) {
+      // Recria o card (removendo o anterior) para o rótulo acompanhar o idioma.
+      const antigo = gearGrid.querySelector('[id="headsetLink"]');
+      if (antigo) antigo.remove();
+      gearGrid.insertAdjacentHTML('beforeend', `<a class="gear-card" id="headsetLink" href="${safeUrl(player.headset.link)}" target="_blank" rel="noopener"><small>${esc(I18N.t('gear.headset'))}</small><strong>${esc(player.headset.name)}</strong><span>${esc(I18N.t('settings.viewProduct'))}</span></a>`);
     }
 
     if (player.game || Object.keys(player.social || {}).length) {
@@ -151,26 +188,35 @@ if (document.body.dataset.page === 'profile') {
         const link = safeUrl(href);
         return `<a class="social-${esc(slug)}" href="${link}" target="_blank" rel="noopener">${icon ? `<img src="${icon}" alt="" aria-hidden="true">` : ''}${esc(label)} <span>↗</span></a>`;
       }).join('');
-      if (!document.querySelector('.player-meta')) {
-        document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>JOGO</small><strong>${esc(player.game) || 'Não informado'}</strong></div><div><small>AGENTE</small><strong>${esc(player.agents) || 'Não informado'}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
-      }
+      document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>${esc(I18N.t('player.game'))}</small><strong>${esc(player.game) || naoInformado}</strong></div><div><small>${esc(I18N.t('player.agent'))}</small><strong>${esc(player.agents) || naoInformado}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
     }
-    if (player.videoSettings && player.videoSettings.length && !document.querySelector('.video-settings')) {
-      document.querySelector('.crosshair-block').insertAdjacentHTML('afterend', `<section class="settings-block video-settings"><div class="section-heading"><span class="section-icon">◫</span><h2>Vídeo</h2></div><div class="video-settings-grid">${player.videoSettings.map(([label, value]) => `<div><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div></section>`);
+    if (player.videoSettings && player.videoSettings.length) {
+      document.querySelector('.crosshair-block').insertAdjacentHTML('afterend', `<section class="settings-block video-settings"><div class="section-heading"><span class="section-icon">◫</span><h2>${esc(I18N.t('settings.video'))}</h2></div><div class="video-settings-grid">${player.videoSettings.map(([label, value]) => `<div><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div></section>`);
     }
-    if (player.pcSpecs && player.pcSpecs.length && !document.querySelector('.pc-specs')) {
-      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>PC</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${safeUrl(image)}" alt="${esc(value)}"></span>` : ''}<small>${esc(label)}</small><strong>${esc(value)}</strong><span>Ver produto ↗</span></a>`).join('')}</div></section>`);
+    if (player.pcSpecs && player.pcSpecs.length) {
+      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>${esc(I18N.t('settings.pc'))}</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${safeUrl(image)}" alt="${esc(value)}"></span>` : ''}<small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(I18N.t('settings.viewProduct'))}</span></a>`).join('')}</div></section>`);
     }
-    if (player.clips && player.clips.length && !document.querySelector('.clips-section')) {
+    if (player.clips && player.clips.length) {
       const gear = document.querySelector('#gear');
       if (gear) {
-        gear.insertAdjacentHTML('afterend', `<section class="settings-block clips-section"><div class="section-heading"><span class="section-icon">▶</span><h2>Clips</h2></div><div class="clips-grid">${player.clips.map(clip => `<div class="clip-card clip-${esc(clip.orientation || 'landscape')} ${clip.orientation === 'landscape' ? 'clip-desktop-only' : 'clip-mobile-only'}"><video src="${safeUrl(clip.src)}" controls preload="metadata" playsinline></video><small>${esc(clip.label || '')}</small></div>`).join('')}</div></section>`);
+        gear.insertAdjacentHTML('afterend', `<section class="settings-block clips-section"><div class="section-heading"><span class="section-icon">▶</span><h2>${esc(I18N.t('settings.clips'))}</h2></div><div class="clips-grid">${player.clips.map(clip => `<div class="clip-card clip-${esc(clip.orientation || 'landscape')} ${clip.orientation === 'landscape' ? 'clip-desktop-only' : 'clip-mobile-only'}"><video src="${safeUrl(clip.src)}" controls preload="metadata" playsinline></video><small>${esc(clip.label || '')}</small></div>`).join('')}</div></section>`);
       }
     }
 
-    $('copySettings').addEventListener('click', () => copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, 'Settings copiadas.'));
-    $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, 'Código da retícula copiado.'));
-    setupCardModal();
+    // Os listeners são registrados uma vez: renderProfile roda de novo a cada
+    // troca de idioma e religá-los a cada passada duplicaria os toasts.
+    if (!listenersBound) {
+      listenersBound = true;
+      const viewBtn = $('viewCardBtn');
+      if (viewBtn) {
+        // Lê currentPlayer no clique: na troca de idioma o objeto é substituído
+        // e o listener precisa enxergar o valor atualizado.
+        viewBtn.addEventListener('click', () => { if (currentPlayer) openCardModal(currentPlayer); });
+      }
+      $('copySettings').addEventListener('click', () => copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, I18N.t('toast.copySettings')));
+      $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, I18N.t('toast.crosshairCopied')));
+      setupCardModal();
+    }
     setupComments($, player, apiActive);
   }
 
@@ -178,7 +224,14 @@ if (document.body.dataset.page === 'profile') {
   // tela de erro não fique sem o toggle de tema funcionando.
   function setupPageChrome() {
     initTheme();
-    $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div></footer>');
+    // Recriado a cada chamada para o texto acompanhar a troca de idioma.
+    const rodapeAntigo = document.querySelector('.site-footer');
+    if (rodapeAntigo) rodapeAntigo.remove();
+    const f = {
+      desc: I18N.t('footer.desc'), explore: I18N.t('footer.explore'), players: I18N.t('nav.players'),
+      comments: I18N.t('comments.title'), contact: I18N.t('footer.contact'), credit: I18N.t('footer.credit'),
+    };
+    $('toast').insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="#comments">${esc(f.comments)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
   }
 
   function openCardModal(player) {
@@ -221,11 +274,15 @@ if (document.body.dataset.page === 'profile') {
       // Com API, só quem está logado pode comentar — e o nome vem da sessão.
       const form = isDb
         ? (currentUser
-            ? '<form class="comment-form" id="commentForm"><div class="comment-fields"><textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar como ' + esc(currentUser.username) + '</button></form>'
-            : '<p class="empty-comments">Entre com sua conta para comentar. <a href="index.html">Ir para o início</a></p>')
-        : '<form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="Seu nome"><textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar</button></form>';
+            ? '<form class="comment-form" id="commentForm"><div class="comment-fields"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submitAs', { username: currentUser.username })) + '</button></form>'
+            : '<p class="empty-comments">' + esc(I18N.t('comments.loginRequired')) + ' <a href="index.html">' + esc(I18N.t('comments.goHome')) + '</a></p>')
+        : '<form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="' + esc(I18N.t('comments.authorPlaceholder')) + '"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submit')) + '</button></form>';
 
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
+      // A seção é remontada a cada troca de idioma: a anterior sai antes para
+      // não duplicar (o id #comments é único).
+      const anterior = $('comments');
+      if (anterior) anterior.remove();
+      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2>' + esc(I18N.t('comments.title')) + '</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
 
       const formEl = $('commentForm');
       if (formEl) {
@@ -237,16 +294,16 @@ if (document.body.dataset.page === 'profile') {
               await API.createComment({ player_id: playerId, message: data.message.trim() });
               event.currentTarget.reset();
               await reload();
-              showToast('Comentário publicado.');
+              showToast(I18N.t('toast.commentPublished'));
             } catch (err) {
-              showToast(err.message || 'Não foi possível publicar o comentário.');
+              showToast(err.message || I18N.t('toast.commentFailed'));
             }
           } else {
-            comments.unshift({ author: (data.author || 'Visitante').trim(), message: data.message.trim(), date: new Date().toISOString() });
+            comments.unshift({ author: (data.author || I18N.t('common.visitor')).trim(), message: data.message.trim(), date: new Date().toISOString() });
             localStorage.setItem(commentsKey, JSON.stringify(comments));
             event.currentTarget.reset();
             renderComments();
-            showToast('Comentário publicado.');
+            showToast(I18N.t('toast.commentPublished'));
           }
         });
       }
@@ -261,7 +318,7 @@ if (document.body.dataset.page === 'profile') {
       }
       renderComments();
     }
-    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.created_at || comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
+    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.created_at || comment.date).toLocaleDateString(I18N.lang || 'pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>'; };
     reload();
   }
 }

@@ -71,6 +71,17 @@ function showToast(text) {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+/**
+ * Texto de exibição para um campo que pode vir vazio do banco.
+ * A camada de dados guarda `null` (não um texto já traduzido) para que trocar
+ * o idioma não deixe rótulos velhos na tela; a tradução acontece na hora de
+ * exibir. Sem argumento `key`, devolve o próprio valor.
+ */
+function textOr(value, key) {
+  if (value !== null && value !== undefined && String(value).trim() !== '') return String(value);
+  return key ? I18N.t(key) : '';
+}
+
 /** Aplica (e alterna) o tema claro/escuro. */
 function applyTheme(theme) {
   document.body.classList.toggle('dark', theme === 'dark');
@@ -98,6 +109,6 @@ async function copyText(text, successMsg) {
     await navigator.clipboard.writeText(text);
     showToast(successMsg);
   } catch {
-    showToast('Não foi possível copiar.');
+    showToast(I18N.t('toast.copyFailed'));
   }
 }

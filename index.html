@@ -79,7 +79,7 @@
       <article><small data-i18n="hero.card.profiles">PERFIS</small><strong id="heroProfileCount">02</strong><span
           data-i18n="hero.card.profilesValue">JOGADORES CADASTRADOS</span>
       </article>
-      <article><small data-i18n="hero.card.focus">FOCO</small><strong>ALL</strong><span
+      <article><small data-i18n="hero.card.focus">FOCO</small><strong data-i18n="hero.card.games">ALL</strong><span
           data-i18n="hero.card.focusValue">CONFIGURAÇÕES DE JOGOS</span></article>
     </div>
   </section>
@@ -207,7 +207,7 @@
     </div>
     <div>
       <h3 data-i18n="footer.explore">Explorar</h3><a href="#players" data-i18n="nav.players">Jogadores</a><a
-        href="#settings">Settings</a><a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
+        href="#settings" data-i18n="footer.settings">Settings</a><a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
     </div>
     <div>
       <h3 data-i18n="footer.contact">Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a
@@ -244,21 +244,21 @@
     <section class="auth-card">
       <button class="auth-close" id="authClose" type="button" data-i18n-aria-label="modal.close"
         aria-label="Fechar">×</button>
-      <p class="kicker" id="authKicker">ENTRAR</p>
-      <h2 id="authTitle">ENTRAR</h2>
-      <p class="auth-intro" id="authIntro">Acesse sua conta para gerenciar seu perfil.</p>
+      <p class="kicker" id="authKicker" data-i18n="auth.kicker.login">ENTRAR</p>
+      <h2 id="authTitle" data-i18n="auth.title.login">ENTRAR</h2>
+      <p class="auth-intro" id="authIntro" data-i18n="auth.intro.login">Acesse sua conta para gerenciar seu perfil.</p>
       <form id="authForm">
         <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username"
             autocomplete="username" data-i18n-placeholder="auth.usernamePlaceholder" placeholder="Username"></label>
         <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username"
-            required placeholder="E-mail ou username"></label>
+            required data-i18n-placeholder="auth.emailPlaceholder.login" placeholder="E-mail ou username"></label>
         <label class="auth-field"><span>🔒</span><input id="authPassword" name="password" type="password"
             autocomplete="current-password" required data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Senha"></label>
-        <button class="auth-submit" id="authSubmit" type="submit">ENTRAR</button>
+        <button class="auth-submit" id="authSubmit" type="submit" data-i18n="auth.submit.login">ENTRAR</button>
       </form>
       <div class="auth-divider"><span data-i18n="auth.divider">OU CONTINUE COM</span></div>
       <div class="auth-providers"><button type="button" data-provider="Discord"><b>◉</b> <span data-i18n="auth.provider.discord">Continuar com Discord</span></button><button type="button" data-provider="Google"><b>G</b> <span data-i18n="auth.provider.google">Continuar com Google</span></button></div>
-      <div class="auth-footer"><button id="forgotPassword" type="button" data-i18n="auth.forgot">Esqueceu a senha?</button><span id="authSwitchCopy"><span id="authSwitchPrompt">Não tem conta?</span><button id="authSwitch" type="button">Cadastre-se</button></span></div>
+      <div class="auth-footer"><button id="forgotPassword" type="button" data-i18n="auth.forgot">Esqueceu a senha?</button><span id="authSwitchCopy"><span id="authSwitchPrompt" data-i18n="auth.switch.prompt.login">Não tem conta?</span><button id="authSwitch" type="button" data-i18n="auth.switch.action.login">Cadastre-se</button></span></div>
       <p class="auth-message" id="authMessage" role="status"></p>
     </section>
   </dialog>

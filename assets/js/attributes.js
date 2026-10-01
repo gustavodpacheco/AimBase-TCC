@@ -69,7 +69,8 @@ function fifaCardHTML(player, opts = {}) {
   const gameTag = fifaGameTag(player.game);
   const photo = player.photo ? `<img src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : '';
   const initials = photo ? '' : `<span class="fifa-card__initials">${esc(initialsOf(player.name))}</span>`;
-  const meta = esc([player.team, player.country].filter(Boolean).join(' · '));
+  // Fallbacks traduzidos na exibição (o texto só entra no card se houver dado).
+  const meta = esc([textOr(player.team, 'common.noTeam'), textOr(player.country, 'common.notInformed')].filter(Boolean).join(' · '));
 
   const statCell = key => `
     <div class="fifa-card__stat">
@@ -87,7 +88,7 @@ function fifaCardHTML(player, opts = {}) {
     <div class="fifa-card__head">
       <span class="fifa-card__overall">${fifaOverall(player)}</span>
       <div class="fifa-card__head-meta">
-        <span class="fifa-card__role">${esc(player.role || '—')}</span>
+        <span class="fifa-card__role">${esc(textOr(player.role, 'common.notInformed'))}</span>
         <span class="fifa-card__game">${esc(gameTag)}</span>
       </div>
     </div>
