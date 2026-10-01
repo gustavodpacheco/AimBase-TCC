@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AimBase">
+  <rect width="64" height="64" rx="14" fill="#14161B"/>
+  <path fill="#FF5A36" fill-rule="evenodd" d="M32 12 12 52h9l4.5-9.5h13L43 52h9L32 12Zm-3.2 23L32 27l3.2 8h-6.4Z"/>
+</svg>
