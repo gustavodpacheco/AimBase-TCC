@@ -62,12 +62,12 @@ function fifaCardHTML(player, opts = {}) {
   if (player && player.cardImage && large) {
     const cls = `fifa-card fifa-card--img${opts.active ? ' active' : ''}`;
     return `<div class="${cls}">
-      <img src="${safeUrl(player.cardImage)}" alt="${esc(player.name)}">
+      <img src="${safeUrl(player.cardImage)}" alt="${esc(player.name)}" decoding="async">
     </div>`;
   }
 
   const gameTag = fifaGameTag(player.game);
-  const photo = player.photo ? `<img src="${safeUrl(player.photo)}" alt="${esc(player.name)}">` : '';
+  const photo = player.photo ? `<img src="${safeUrl(player.photo)}" alt="${esc(player.name)}" decoding="async">` : '';
   const initials = photo ? '' : `<span class="fifa-card__initials">${esc(initialsOf(player.name))}</span>`;
   // Fallbacks traduzidos na exibição (o texto só entra no card se houver dado).
   const meta = esc([textOr(player.team, 'common.noTeam'), textOr(player.country, 'common.notInformed')].filter(Boolean).join(' · '));

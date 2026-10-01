@@ -123,7 +123,7 @@ if (document.body.dataset.page === 'profile') {
     $('playerTag').textContent = player.tag;
     // Traduzido aqui, e não no mapeamento, para acompanhar troca de idioma.
     const team = textOr(player.team, 'common.noTeam');
-    const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}">` : '';
+    const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}" decoding="async">` : '';
     $('playerTeam').innerHTML = `${teamLogo}${esc(team)}`;
     $('playerRole').textContent = textOr(player.role, 'common.notInformed');
     $('playerCountry').textContent = textOr(player.country, 'common.notInformed');
@@ -169,7 +169,7 @@ if (document.body.dataset.page === 'profile') {
       gearGrid.classList.add('product-grid');
       gearGrid.innerHTML = products.map(([id, labelKey, name, href]) => {
         const label = I18N.t(labelKey);
-        return `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${safeUrl(player.productImages[id])}" alt="${esc(name) || label}"></span>` : ''}<small>${label}</small><strong>${esc(name) || naoInformado}</strong><span>${verProduto}</span></a>`;
+        return `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${player.productImages[id] ? `<span class="product-photo"><img src="${safeUrl(player.productImages[id])}" alt="${esc(name) || label}" loading="lazy" decoding="async"></span>` : ''}<small>${label}</small><strong>${esc(name) || naoInformado}</strong><span>${verProduto}</span></a>`;
       }).join('');
     } else if (player.headset && gearGrid) {
       // Recria o card (removendo o anterior) para o rótulo acompanhar o idioma.
@@ -186,7 +186,7 @@ if (document.body.dataset.page === 'profile') {
         // ícone: safeUrl (não esc) porque o valor é um src de atributo
         const icon = socialIcons[label] ? safeUrl(socialIcons[label]) : '';
         const link = safeUrl(href);
-        return `<a class="social-${esc(slug)}" href="${link}" target="_blank" rel="noopener">${icon ? `<img src="${icon}" alt="" aria-hidden="true">` : ''}${esc(label)} <span>↗</span></a>`;
+        return `<a class="social-${esc(slug)}" href="${link}" target="_blank" rel="noopener">${icon ? `<img src="${icon}" alt="" aria-hidden="true" loading="lazy" decoding="async">` : ''}${esc(label)} <span>↗</span></a>`;
       }).join('');
       document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>${esc(I18N.t('player.game'))}</small><strong>${esc(player.game) || naoInformado}</strong></div><div><small>${esc(I18N.t('player.agent'))}</small><strong>${esc(player.agents) || naoInformado}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
     }
@@ -194,12 +194,12 @@ if (document.body.dataset.page === 'profile') {
       document.querySelector('.crosshair-block').insertAdjacentHTML('afterend', `<section class="settings-block video-settings"><div class="section-heading"><span class="section-icon">◫</span><h2>${esc(I18N.t('settings.video'))}</h2></div><div class="video-settings-grid">${player.videoSettings.map(([label, value]) => `<div><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div></section>`);
     }
     if (player.pcSpecs && player.pcSpecs.length) {
-      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>${esc(I18N.t('settings.pc'))}</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${safeUrl(image)}" alt="${esc(value)}"></span>` : ''}<small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(I18N.t('settings.viewProduct'))}</span></a>`).join('')}</div></section>`);
+      document.querySelector('#gear').insertAdjacentHTML('afterend', `<section class="settings-block pc-specs"><div class="section-heading"><span class="section-icon">▣</span><h2>${esc(I18N.t('settings.pc'))}</h2></div><div class="gear-grid product-grid">${player.pcSpecs.map(([label, value, href, image]) => `<a class="gear-card product-card" href="${safeUrl(href)}" target="_blank" rel="noopener">${image ? `<span class="product-photo"><img src="${safeUrl(image)}" alt="${esc(value)}" loading="lazy" decoding="async"></span>` : ''}<small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(I18N.t('settings.viewProduct'))}</span></a>`).join('')}</div></section>`);
     }
     if (player.clips && player.clips.length) {
       const gear = document.querySelector('#gear');
       if (gear) {
-        gear.insertAdjacentHTML('afterend', `<section class="settings-block clips-section"><div class="section-heading"><span class="section-icon">▶</span><h2>${esc(I18N.t('settings.clips'))}</h2></div><div class="clips-grid">${player.clips.map(clip => `<div class="clip-card clip-${esc(clip.orientation || 'landscape')} ${clip.orientation === 'landscape' ? 'clip-desktop-only' : 'clip-mobile-only'}"><video src="${safeUrl(clip.src)}" controls preload="metadata" playsinline></video><small>${esc(clip.label || '')}</small></div>`).join('')}</div></section>`);
+        gear.insertAdjacentHTML('afterend', `<section class="settings-block clips-section"><div class="section-heading"><span class="section-icon">▶</span><h2>${esc(I18N.t('settings.clips'))}</h2></div><div class="clips-grid">${player.clips.map(clip => `<div class="clip-card clip-${esc(clip.orientation || 'landscape')} ${clip.orientation === 'landscape' ? 'clip-desktop-only' : 'clip-mobile-only'}"><video src="${safeUrl(clip.src)}" controls preload="none" playsinline></video><small>${esc(clip.label || '')}</small></div>`).join('')}</div></section>`);
       }
     }
 

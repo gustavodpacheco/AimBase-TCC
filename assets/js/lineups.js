@@ -96,9 +96,9 @@ if (document.body.dataset.page === 'lineups') {
   function buildMedia(src, label) {
     const embed = ytEmbed(src);
     if (embed) {
-      return `<iframe src="${embed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${esc(label)}"></iframe>`;
+      return `<iframe src="${embed}" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${esc(label)}"></iframe>`;
     }
-    return `<video src="${safeUrl(src)}" controls preload="metadata" playsinline></video>`;
+    return `<video src="${safeUrl(src)}" controls preload="none" playsinline></video>`;
   }
 
   function clipCard(item) {

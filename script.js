@@ -133,11 +133,11 @@ function gameBadge(game) {
 function homeCardHTML(player) {
   const badge = gameBadge(player.game);
   const avatar = player.photo
-    ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy">`
+    ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy" decoding="async">`
     : `<span class="home-card__photo home-card__initials">${esc(initials(player.name))}</span>`;
   // Traduzido na exibição (e não no mapeamento) para acompanhar troca de idioma.
   const team = textOr(player.team, 'common.noTeam');
-  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}">` : '';
+  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}" loading="lazy" decoding="async">` : '';
   return `<button class="home-card ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button" data-game="${esc(badge.game)}">
     <div class="home-card__media">
       ${avatar}
