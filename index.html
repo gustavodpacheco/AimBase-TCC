@@ -72,7 +72,7 @@
         <kbd>ENTER</kbd>
       </label>
     </div>
-    <img class="hero-banner" src="assets/final.png" alt="Banner" aria-label="Banner" width="2040" height="660" decoding="async" fetchpriority="high">
+    <img class="hero-banner" src="assets/final.png" alt="" width="2040" height="660" decoding="async" fetchpriority="high">
     <div class="hero-status"><span class="status-dot"></span> <span data-i18n="hero.statusOnline">ONLINE</span> <b
         id="homePlayerCount">02</b> <span data-i18n="hero.statusProfiles">PERFIS ATIVOS</span></div>
     <div class="home-cards">
@@ -249,11 +249,11 @@
       <p class="auth-intro" id="authIntro" data-i18n="auth.intro.login">Acesse sua conta para gerenciar seu perfil.</p>
       <form id="authForm">
         <label class="auth-field" id="usernameField" hidden><span>@</span><input id="authUsername" name="username"
-            autocomplete="username" data-i18n-placeholder="auth.usernamePlaceholder" placeholder="Username"></label>
+            autocomplete="username" data-i18n-placeholder="auth.usernamePlaceholder" data-i18n-aria-label="auth.usernamePlaceholder" placeholder="Username"></label>
         <label class="auth-field"><span>✉</span><input id="authEmail" name="email" type="text" autocomplete="username"
-            required data-i18n-placeholder="auth.emailPlaceholder.login" placeholder="E-mail ou username"></label>
+            required data-i18n-placeholder="auth.emailPlaceholder.login" aria-label="E-mail ou username" placeholder="E-mail ou username"></label>
         <label class="auth-field"><span>🔒</span><input id="authPassword" name="password" type="password"
-            autocomplete="current-password" required data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Senha"></label>
+            autocomplete="current-password" required data-i18n-placeholder="auth.passwordPlaceholder" data-i18n-aria-label="auth.passwordPlaceholder" placeholder="Senha"></label>
         <button class="auth-submit" id="authSubmit" type="submit" data-i18n="auth.submit.login">ENTRAR</button>
       </form>
       <div class="auth-divider"><span data-i18n="auth.divider">OU CONTINUE COM</span></div>

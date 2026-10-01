@@ -318,7 +318,7 @@ if (document.body.dataset.page === 'profile') {
       }
       renderComments();
     }
-    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${esc(formatDate(comment.created_at || comment.date))}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>'; };
+    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time datetime="${esc(comment.created_at || comment.date || '')}">${esc(formatDate(comment.created_at || comment.date))}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>'; };
     reload();
   }
 }

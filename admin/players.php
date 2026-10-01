@@ -30,7 +30,7 @@ function playerRows(list) {
     const l = pLabel(p);
     const name = p.real_name || p.nickname;
     return `<tr>
-      <td>${p.photo ? `<img class="admin-avatar" src="${window.safeAdminUrl ? safeAdminUrl(p.photo) : esc(p.photo)}">` : ''} <strong>${esc(name)}</strong></td>
+      <td>${p.photo ? `<img class="admin-avatar" src="${window.safeAdminUrl ? safeAdminUrl(p.photo) : esc(p.photo)}" alt="">` : ''} <strong>${esc(name)}</strong></td>
       <td>${p.is_pro ? '<span class="admin-badge admin-badge--pro">PRO</span> ' : ''}${esc(p.nickname)}</td>
       <td><span class="admin-badge">${esc(l.game)}</span></td>
       <td>${esc(l.dpi)}</td>

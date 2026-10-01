@@ -312,6 +312,7 @@ function setAuthMode(mode) {
   $('usernameField').hidden = !isRegister;
   $('authUsername').required = isRegister;
   $('authEmail').placeholder = I18N.t('auth.emailPlaceholder.' + p);
+  $('authEmail').setAttribute('aria-label', I18N.t('auth.emailPlaceholder.' + p));
   $('authPassword').autocomplete = isRegister ? 'new-password' : 'current-password';
   $('authSubmit').textContent = I18N.t('auth.submit.' + p);
   // Antes o innerHTML recriava o <button> a cada troca e o listener era
