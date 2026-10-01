@@ -57,6 +57,57 @@ const toast = $('toast');
 function message(text) { toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
 function initials(name) { return (name || '').split(' ').map(part => part[0]).slice(0, 2).join('') || '?'; }
 
+/**
+ * Faixas de sensibilidade por jogo: [min, max).
+ *
+ * `min` é INCLUSIVO e `max` é EXCLUSIVO, ou seja, intervalos meio-abertos. Isso
+ * faz as três faixas particionarem o eixo sem sobreposição nem buraco, e casa
+ * com os rótulos traduzidos ("Baixa (< 0.20)", "Alta (≥ 0.45)").
+ * CS2 e R6 usam escalas diferentes do VALORANT: 0.35 é "baixa" num e "média" no
+ * outro, então um único par de limites classificava todo mundo errado.
+ */
+const SENSITIVITY_BANDS = {
+  'VALORANT': { low: [0, 0.20], medium: [0.20, 0.45], high: [0.45, Infinity] },
+  'Counter-Strike 2': { low: [0, 1.00], medium: [1.00, 2.00], high: [2.00, Infinity] },
+  'Rainbow Six': { low: [0, 6], medium: [6, 12], high: [12, Infinity] },
+};
+const SENSITIVITY_BAND_ORDER = ['low', 'medium', 'high'];
+// Nome canônico do jogo -> prefixo das chaves i18n das faixas.
+const SENSITIVITY_BAND_I18N = {
+  'VALORANT': 'valorant',
+  'Counter-Strike 2': 'cs2',
+  'Rainbow Six': 'r6',
+};
+
+/** O jogador está na faixa escolhida? */
+function matchesSensitivityBand(player, band) {
+  const bands = SENSITIVITY_BANDS[gameBadge(player.game).game];
+  if (!bands || !bands[band]) return false;
+  const raw = player.sensitivity;
+  // Sem sensibilidade no banco não é "baixa": antes, null <= 0.20 era true e
+  // o jogador sem o campo caía na faixa baixa.
+  if (raw == null || String(raw).trim() === '') return false;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < 0) return false;
+  const [min, max] = bands[band];
+  return value >= min && value < max;
+}
+
+/**
+ * Rótulos das faixas dependem do jogo escolhido: os números no texto
+ * ("Baixa (até 0.20)") só fazem sentido para a escala daquele jogo.
+ * Sem jogo selecionado, mostra só o nome da faixa.
+ */
+function updateSensitivityLabels() {
+  const game = $('gameFilter').value;
+  const prefix = SENSITIVITY_BAND_I18N[game];
+  SENSITIVITY_BAND_ORDER.forEach(band => {
+    const option = document.querySelector(`#sensitivityFilter option[value="${band}"]`);
+    if (!option) return;
+    option.textContent = I18N.t(prefix ? `sens.${prefix}.${band}` : `sens.${band}`);
+  });
+}
+
 function getFilteredPlayers() {
   const query = $('playerSearch').value.toLowerCase();
   const role = $('roleFilter').value;
@@ -65,7 +116,7 @@ function getFilteredPlayers() {
   const game = $('gameFilter').value;
   const dpi = $('dpiFilter').value;
   const sensitivityRange = $('sensitivityFilter').value;
-  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || (sensitivityRange === 'low' && player.sensitivity <= .20) || (sensitivityRange === 'medium' && player.sensitivity > .20 && player.sensitivity <= .45) || (sensitivityRange === 'high' && player.sensitivity > .45)));
+  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || matchesSensitivityBand(player, sensitivityRange)));
 }
 function selectPlayer(id) {
   const player = players.find(p => p.id === id);
@@ -125,6 +176,12 @@ heroSearch.addEventListener('keydown', event => {
   if (event.key === 'Enter') { event.preventDefault(); $('players').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 });
 ['gameFilter', 'roleFilter', 'teamFilter', 'countryFilter', 'dpiFilter', 'sensitivityFilter'].forEach(id => $(id).addEventListener('change', renderList));
+// Trocar o jogo muda os números no rótulo das faixas de sensibilidade.
+$('gameFilter').addEventListener('change', updateSensitivityLabels);
+updateSensitivityLabels();
+// Ao trocar de idioma, os rótulos das faixas precisam ser reescritos: o
+// i18n.js não conhece os textos gerados por JS.
+document.addEventListener('i18n:changed', updateSensitivityLabels);
 
 // ---- Aba "Pro Players" ----
 function setProFilter(enabled) {

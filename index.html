@@ -122,12 +122,16 @@
           <option value="" data-i18n="dpi.all">Todo DPI</option>
           <option value="800" data-i18n="dpi.eightHundred">800 DPI</option>
           <option value="1600" data-i18n="dpi.sixteenHundred">1600 DPI</option>
-        </select><select id="sensitivityFilter" data-i18n-aria-label="filter.sensitivity"
+        </select>        <select id="sensitivityFilter" data-i18n-aria-label="filter.sensitivity"
           aria-label="Filtrar por faixa de sensibilidade">
           <option value="" data-i18n="sens.all">Toda sensibilidade</option>
-          <option value="low" data-i18n="sens.low">Baixa (até 0.20)</option>
-          <option value="medium" data-i18n="sens.medium">Média (0.21–0.45)</option>
-          <option value="high" data-i18n="sens.high">Alta (0.46+)</option>
+          <!-- As três faixas NÃO têm data-i18n de propósito: os números no
+               rótulo dependem do jogo selecionado, e o apply() do i18n.js
+               sobrescreveria o texto. O dono delas é updateSensitivityLabels()
+               em script.js, que reage a i18n:changed. -->
+          <option value="low">Baixa</option>
+          <option value="medium">Média</option>
+          <option value="high">Alta</option>
         </select></div>
       <div class="player-list" id="playerList"></div>
       <div class="directory-note"><strong data-i18n="directory.note">Seu perfil não está aqui?</strong><br><span

@@ -33,9 +33,24 @@
   };
 
   // Fallbacks para strings geradas por JS dinamicamente (antes do JSON carregar).
+  // Precisa cobrir as chaves que o JS monta em runtime (rótulos das faixas de
+  // sensibilidade, título da 404), senão o texto aparece como "sens.cs2.low".
   var JS_FALLBACKS = {
     'directory.players': { one: '{{count}} jogador', other: '{{count}} jogadores' },
     'directory.noResults': 'Nenhum jogador encontrado.',
+    'sens.low': 'Baixa',
+    'sens.medium': 'Média',
+    'sens.high': 'Alta',
+    'sens.valorant.low': 'Baixa (< 0.20)',
+    'sens.valorant.medium': 'Média (0.20–0.45)',
+    'sens.valorant.high': 'Alta (≥ 0.45)',
+    'sens.cs2.low': 'Baixa (< 1.00)',
+    'sens.cs2.medium': 'Média (1.00–2.00)',
+    'sens.cs2.high': 'Alta (≥ 2.00)',
+    'sens.r6.low': 'Baixa (< 6)',
+    'sens.r6.medium': 'Média (6–12)',
+    'sens.r6.high': 'Alta (≥ 12)',
+    'page.notFoundTitle': 'Jogador não encontrado',
   };
 
   var state = { lang: DEFAULT_LANG, dict: null, cache: {} };
@@ -224,9 +239,13 @@
       document.documentElement.lang = lang;
       apply();
       updateSwitcherUI();
-      document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: lang } }));
+      announce(lang);
       return true;
     });
+  }
+
+  function announce(lang) {
+    document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: lang } }));
   }
 
   // Reaplica traduções se algum script sobrescrever um elemento data-i18n.
@@ -271,6 +290,9 @@
       updateSwitcherUI();
       document.querySelectorAll('[data-lang-switcher]').forEach(setupSwitcher);
       observeDynamicContent();
+      // Even listeners de conteúdo montado por JS (rótulos de filtro, título
+      // da 404) rodaram antes do dicionário carregar e usaram JS_FALLBACKS.
+      announce(state.lang);
     });
   }
 

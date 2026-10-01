@@ -44,6 +44,16 @@
 </header>
 <main class="profile-layout">
   <a class="back-link" href="index.html#players" data-i18n="nav.back">← Voltar para jogadores</a>
+  <!-- Tela 404: mostrada por profile.js quando o slug não existe na API nem no fallback. -->
+  <section class="profile-not-found" id="profileNotFound" hidden>
+    <p class="profile-not-found__code" aria-hidden="true">404</p>
+    <h1 data-i18n="profile.notFound.title">Jogador não encontrado</h1>
+    <p class="profile-not-found__body" data-i18n="profile.notFound.body">Não encontramos nenhum perfil com esse identificador.</p>
+    <!-- Slug pedido na URL. Sem data-i18n de propósito: o i18n.js sobrescreveria
+         o texto ao traduzir, apagando o valor. -->
+    <p class="profile-not-found__slug" id="notFoundSlug" hidden></p>
+    <a class="btn" href="index.html#players" data-i18n="profile.notFound.back">← Voltar para jogadores</a>
+  </section>
   <section class="player-hero" id="playerHero">
     <div class="player-hero__card">
       <!-- Carta do jogador (renderizada por profile.js): personalizada p/ Pacheco, dinâmica p/ os demais -->

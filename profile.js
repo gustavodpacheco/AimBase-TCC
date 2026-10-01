@@ -6,6 +6,7 @@
 
 if (document.body.dataset.page === 'profile') {
   const $ = id => document.getElementById(id);
+  let notFoundShown = false;
 
   (async function initProfile() {
     const id = new URLSearchParams(window.location.search).get('player');
@@ -35,13 +36,48 @@ if (document.body.dataset.page === 'profile') {
         }
       } catch (err) { /* fallback abaixo */ }
     }
+    // Sem ?player= na URL não há perfil a exibir: mostro a tela 404 em vez
+    // de abrir o primeiro jogador da lista sem contexto.
     if (!player) {
       const profilePlayers = [...defaultPlayers, ...savedPlayers];
-      player = profilePlayers.find(item => item.id === id || item.slug === id) || defaultPlayers[0];
+      player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
+    }
+
+    if (!player) {
+      showNotFound(id);
+      setupPageChrome();
+      return;
     }
 
     renderProfile(player, apiActive);
+    setupPageChrome();
   })();
+
+  /** Tela 404: esconde o perfil e mostra o aviso de "não encontrado". */
+  function showNotFound(requestedId) {
+    const notFound = $('profileNotFound');
+    if (notFound) notFound.hidden = false;
+    // O slug vem da query string. Usa textContent (não innerHTML) para não
+    // interpretar marcação, e fica num elemento separado do texto traduzido
+    // para o i18n.js não sobrescrever o valor na troca de idioma.
+    const slugEl = $('notFoundSlug');
+    if (slugEl && requestedId) {
+      slugEl.textContent = `?player=${requestedId}`;
+      slugEl.hidden = false;
+    }
+    ['playerHero', 'settings'].forEach(id => { const el = $(id); if (el) el.hidden = true; });
+    // O <title> é sobrescrito por JS, então o i18n.js não o traduz sozinho:
+    // usamos a chave e reagimos a i18n:changed.
+    notFoundShown = true;
+    updateNotFoundTitle();
+    document.addEventListener('i18n:changed', updateNotFoundTitle);
+  }
+
+  /** Mantém o título da aba traduzido enquanto a tela 404 estiver visível. */
+  function updateNotFoundTitle() {
+    if (!notFoundShown) return;
+    document.title = `${I18N.t('page.notFoundTitle')} — AimBase`;
+  }
 
   function renderProfile(player, apiActive) {
     document.title = `${player.tag} — AimBase`;
@@ -135,10 +171,15 @@ if (document.body.dataset.page === 'profile') {
 
     $('copySettings').addEventListener('click', () => copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, 'Settings copiadas.'));
     $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, 'Código da retícula copiado.'));
-    applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
-    $('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
     setupCardModal();
     setupComments($, player, apiActive);
+  }
+
+  // Tema e rodapé: aplicados nos dois caminhos (perfil e 404) para que a
+  // tela de erro não fique sem o toggle de tema funcionando.
+  function setupPageChrome() {
+    applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
+    $('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
     $('toast').insertAdjacentHTML('beforebegin', '<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p></div><div><h3>Explorar</h3><a href="index.html#players">Jogadores</a><a href="#comments">Comentários</a></div><div><h3>Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>CRIADO PARA COMPETIR</span></div></footer>');
   }
 
