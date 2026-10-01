@@ -52,9 +52,7 @@ const requestedPlayer = new URLSearchParams(window.location.search).get('player'
 let selectedId = null;
 let proOnly = false;
 const $ = (id) => document.getElementById(id);
-const toast = $('toast');
 
-function message(text) { toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
 function initials(name) { return (name || '').split(' ').map(part => part[0]).slice(0, 2).join('') || '?'; }
 
 /**
@@ -221,10 +219,10 @@ $('playerForm').addEventListener('submit', async event => {
     const res = await API.createPlayer(payload);
     event.currentTarget.reset();
     modal.close();
-    message(res.message || 'Jogador adicionado.');
+    showToast(res.message || 'Jogador adicionado.');
     await refreshPlayers();
   } catch (err) {
-    message(err.message || 'Não foi possível adicionar o jogador.');
+    showToast(err.message || 'Não foi possível adicionar o jogador.');
   } finally {
     playerFormBusy = false;
   }
@@ -265,23 +263,25 @@ async function loadFilters() {
   } catch { /* mantém filtros estáticos */ }
 }
 
-async function refreshPlayers() {
+/**
+ * Carrega a lista de jogadores e escolhe o selecionado.
+ *
+ * `preferRequested` só vale no boot: a URL pode pedir um jogador específico
+ * (?player=). Depois de criar um jogador, o que importa é voltar ao topo da
+ * lista, senão a seleção fica presa num id que acabou de mudar.
+ */
+async function refreshPlayers(preferRequested = false) {
   const loaded = await loadPlayersFromApi();
-  if (!loaded) {
-    players = [...defaultPlayers, ...savedPlayers];
-  }
-  const validRequested = requestedPlayer && players.some(p => p.id === requestedPlayer);
+  if (loaded) apiActive = true;
+  if (!loaded) players = [...defaultPlayers, ...savedPlayers];
+  const validRequested = preferRequested && requestedPlayer && players.some(p => p.id === requestedPlayer);
   selectedId = validRequested ? requestedPlayer : (players[0] || {}).id || null;
   renderList();
 }
 
 (async function initHome() {
-  const loaded = await loadPlayersFromApi();
-  if (loaded) apiActive = true;
-  if (!loaded) players = [...defaultPlayers, ...savedPlayers];
-  selectedId = players[0] ? players[0].id : null;
+  await refreshPlayers(true);
   loadFilters();
-  renderList();
 })();
 
 // ---- Autenticação (via API + sessão) ----
@@ -307,17 +307,21 @@ function setAuthMode(mode) {
   $('authEmail').placeholder = isRegister ? 'E-mail' : 'E-mail ou username';
   $('authPassword').autocomplete = isRegister ? 'new-password' : 'current-password';
   $('authSubmit').textContent = isRegister ? 'CADASTRAR' : 'ENTRAR';
-  $('authSwitchCopy').innerHTML = isRegister ? 'Já tem conta? <button id="authSwitch" type="button">Entrar</button>' : 'Não tem conta? <button id="authSwitch" type="button">Cadastre-se</button>';
-  $('authSwitch').addEventListener('click', () => setAuthMode(isRegister ? 'login' : 'register'));
+  // Antes o innerHTML recriava o <button> a cada troca e o listener era
+  // religado, acumulando handlers no botão anterior. O botão agora é fixo no
+  // HTML e só os textos mudam.
+  $('authSwitchPrompt').textContent = isRegister ? 'Já tem conta?' : 'Não tem conta?';
+  $('authSwitch').textContent = isRegister ? 'Entrar' : 'Cadastre-se';
   setAuthMessage('');
 }
+$('authSwitch').addEventListener('click', () => setAuthMode(authMode === 'register' ? 'login' : 'register'));
 function openAuth(mode = 'login') { setAuthMode(mode); authModal.showModal(); $('authEmail').focus(); }
 $('authTrigger').addEventListener('click', () => openAuth());
 $('authLogout').addEventListener('click', async () => {
   try { await API.logout(); } catch { /* ignora */ }
   currentUser = null;
   renderAuth();
-  message('Sessão encerrada.');
+  showToast('Sessão encerrada.');
 });
 $('authClose').addEventListener('click', () => authModal.close());
 $('forgotPassword').addEventListener('click', () => setAuthMessage('Em uma integração real, enviaremos um link de recuperação para seu e-mail.'));
@@ -333,7 +337,7 @@ $('authForm').addEventListener('submit', async event => {
     currentUser = res.data.user;
     authModal.close();
     renderAuth();
-    message(authMode === 'register' ? 'Conta criada. Boas-vindas ao AimBase.' : `Bem-vindo, ${currentUser.username}.`);
+    showToast(authMode === 'register' ? 'Conta criada. Boas-vindas ao AimBase.' : `Bem-vindo, ${currentUser.username}.`);
   } catch (err) {
     setAuthMessage(err.message || 'Não foi possível concluir a operação.');
   }
