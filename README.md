@@ -20,16 +20,19 @@ C:\laragon\www\prosettings-page-main\
 ├── api\                 # Endpoints REST (PHP)
 ├── admin\               # Painel administrativo
 ├── config\              # Configuração da conexão
-├── database\            # schema.sql e seed.sql
+├── database\            # schema.sql, seed.sql, migrations\ e dev\ (seed só local)
 ├── includes\            # Helpers PHP
-├── assets\              # Imagens
+├── assets\              # Imagens, CSS e JS
+├── robots.txt
+├── sitemap.xml
 ├── data.js              # Dados estáticos/fallback (defaultPlayers, savedPlayers)
-├── shared.js            # Helpers compartilhados (esc, safeUrl, tema, toast)
+├── shared.js            # Helpers compartilhados (esc, safeUrl, textOr, formatDate, tema, toast)
 ├── api.js               # Cliente JS da API
 ├── script.js            # Lógica da página inicial (index.html)
 ├── profile.js           # Lógica da página de perfil (player.html)
 ├── index.html
 ├── player.html
+├── lineups.html
 └── style.css
 ```
 
@@ -208,5 +211,20 @@ demonstração.
 
 > **Para aplicar as novas tabelas** (`users` e `comments`) em um banco já criado,
 > rode o trecho final do `database/schema.sql` manualmente (ou reimporte o schema —
-> ele usa `CREATE TABLE IF NOT EXISTS`). Depois rode o `database/seed.sql` para
-> incluir o usuário demo (**username `demo` / senha `demo1234`**) e comentários de exemplo.
+> ele usa `CREATE TABLE IF NOT EXISTS`). O `users.role` (usado pelo painel) é uma
+> coluna posterior: rode `database/migrations/001_users_role.sql`.
+
+### Conta de demonstração (somente desenvolvimento)
+
+O `database/seed.sql` traz os dados de exemplo do site, mas **nenhum login** —
+em produção não deve existir conta com senha conhecida. A conta de demonstração
+do painel (`demo` / `demo1234`) fica em `database/dev/seed-dev.sql`, para rodar
+só na sua máquina:
+
+1. `database/schema.sql` (tabelas)
+2. `database/migrations/001_users_role.sql` (garante `users.role`)
+3. `database/seed.sql` (dados de exemplo)
+4. `database/dev/seed-dev.sql` (conta admin local)
+
+Para a tela de login do painel sugerir as credenciais, defina `APP_ENV=dev` no
+Apache/PHP. Para remover a conta depois: `DELETE FROM users WHERE username = 'demo';`
