@@ -19,8 +19,7 @@ $pdo    = db();
 
 // Escritas (POST/PUT/DELETE) exigem sessão com role = 'admin'
 if ($method !== 'GET') {
-    bootSession();
-    requireRole('admin');
+    requireAdminWrite();
 }
 
 if ($method === 'GET') {

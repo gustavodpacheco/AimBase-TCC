@@ -42,9 +42,7 @@ function renderComments(q = '') {
   document.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async () => {
     if (!confirm(`Excluir o comentário de "${btn.dataset.author}"?`)) return;
     try {
-      const res = await fetch(`${ADMIN_BASE}/comments.php?id=${btn.dataset.del}`, { method: 'DELETE', credentials: 'same-origin' });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.message);
+      const json = await adminJson(`${ADMIN_BASE}/comments.php?id=${btn.dataset.del}`, 'DELETE');
       toast('Comentário excluído.');
       loadComments();
     } catch (err) { toast(err.message); }

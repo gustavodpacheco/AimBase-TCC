@@ -26,8 +26,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Escritas (POST/PUT/DELETE) exigem sessão com role = 'admin'
 // ============================================================
 if ($method !== 'GET') {
-    bootSession();
-    requireRole('admin');
+    requireAdminWrite();
 }
 
 // ============================================================

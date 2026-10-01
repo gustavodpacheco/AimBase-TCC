@@ -3,12 +3,98 @@
  * Utilitários comuns: respostas JSON padronizadas e helpers.
  */
 
-// CORS simples (descomente para permitir acesso de outras origens ao desenvolver)
+/**
+ * Origens permitidas para chamadas cross-origin.
+ *
+ * - APP_ORIGIN: lista separada por vírgula/espaço (ex.: "https://aimbase.gg,https://www.aimbase.gg").
+ *   Quando não está definida, aceita-se APENAS a própria origem da requisição
+ *   e os hosts locais do Laragon (localhost / 127.0.0.1).
+ */
+function allowedOrigins(): array
+{
+    $origins = [];
+
+    $configured = trim((string)getenv('APP_ORIGIN'));
+    if ($configured !== '') {
+        foreach (preg_split('/[\s,]+/', $configured) as $item) {
+            $origin = rtrim(trim($item), '/');
+            if ($origin !== '') {
+                $origins[] = $origin;
+            }
+        }
+    }
+
+    // Mesma origem da requisição (site e painel servidos pelo mesmo host).
+    $host = trim((string)($_SERVER['HTTP_HOST'] ?? ''));
+    if ($host !== '') {
+        $origins[] = 'http://' . $host;
+        $origins[] = 'https://' . $host;
+        // Normaliza portas padrão (http://host:80, https://host:443).
+        $origins[] = 'http://' . preg_replace('/:80$/i', '', $host);
+        $origins[] = 'https://' . preg_replace('/:443$/i', '', $host);
+    }
+
+    // Hosts locais de desenvolvimento.
+    foreach (['localhost', '127.0.0.1', '[::1]'] as $local) {
+        $origins[] = 'http://' . $local;
+        $origins[] = 'https://' . $local;
+    }
+
+    return array_values(array_unique($origins));
+}
+
+/** Verifica se a origem recebida está na lista permitida. */
+function isAllowedOrigin(string $origin): bool
+{
+    $origin = rtrim(trim($origin), '/');
+    if (in_array($origin, allowedOrigins(), true)) {
+        return true;
+    }
+
+    // Hosts locais aceitos em qualquer porta (dev): http://localhost:8080 etc.
+    if (preg_match('#^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$#i', $origin)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * CORS restrito às origens permitidas.
+ *
+ * Sem APP_ORIGIN, requisições de outras origens recebem 403.
+ * Requisições sem Origin (mesma origem, <img>, <form>) seguem normalmente.
+ * Preflight OPTIONS é respondida aqui e encerra a execução.
+ */
 function applyCors(): void
 {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
+    $origin = trim((string)($_SERVER['HTTP_ORIGIN'] ?? ''));
+
+    if ($origin !== '') {
+        header('Vary: Origin');
+
+        if (!isAllowedOrigin($origin)) {
+            http_response_code(403);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Origem não permitida.',
+                'data'    => null,
+            ]);
+            exit;
+        }
+
+        header('Access-Control-Allow-Origin: ' . rtrim($origin, '/'));
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 600');
+    }
+
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
 }
 
 /**

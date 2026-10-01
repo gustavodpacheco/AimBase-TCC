@@ -59,7 +59,7 @@ function renderPlayers(q = '') {
   document.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async () => {
     if (!confirm(`Excluir o jogador "${btn.dataset.name}"?`)) return;
     try {
-      await fetch(`${ADMIN_BASE}/players.php?id=${btn.dataset.del}`, { method: 'DELETE' });
+      await adminJson(`${ADMIN_BASE}/players.php?id=${btn.dataset.del}`, 'DELETE');
       toast('Jogador excluído.');
       loadPlayers();
     } catch (err) { toast(err.message); }

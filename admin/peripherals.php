@@ -52,7 +52,7 @@ async function loadPeriphs() {
     document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(Number(b.dataset.edit))));
     document.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
       if (!confirm(`Excluir "${b.dataset.name}"?`)) return;
-      try { await fetch(`${ADMIN_BASE}/peripherals.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Periférico excluído.'); loadPeriphs(); }
+      try { await adminJson(`${ADMIN_BASE}/peripherals.php?id=${b.dataset.del}`, 'DELETE'); toast('Periférico excluído.'); loadPeriphs(); }
       catch (err) { toast(err.message); }
     }));
   } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${esc(err.message)}</p>`; }
@@ -84,11 +84,9 @@ document.getElementById('periphForm').addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const fd = new FormData(ev.currentTarget);
   const payload = { type: fd.get('type'), brand: fd.get('brand'), model: fd.get('model') };
+  if (EDIT_ID) payload.id = EDIT_ID;
   try {
-    let opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) };
-    if (EDIT_ID) { payload.id = EDIT_ID; opts.method = 'PUT'; }
-    const res = await fetch(ADMIN_BASE + '/peripherals.php', opts);
-    const json = await res.json();
+    const json = await adminJson(ADMIN_BASE + '/peripherals.php', EDIT_ID ? 'PUT' : 'POST', payload);
     toast(json.message || 'OK');
     modal.close();
     loadPeriphs();

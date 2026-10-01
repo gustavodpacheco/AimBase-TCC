@@ -2,9 +2,45 @@
 // Camada de comunicação com a API PHP (REST)
 // Todas as chamadas retornam Promise de JSON padronizado:
 //   { success, message, data }
+//
+// Escritas (POST/PUT/DELETE) passam por API.write(), que:
+//   - envia o cookie de sessão (credentials: same-origin)
+//   - envia o token CSRF no header X-CSRF-Token
+//   - renova o token e repete UMA vez se a resposta for 403
 // ============================================================
 const API = {
   base: 'api',
+  csrfToken: null,
+
+  // ---- CSRF ----
+  async csrf(force = false) {
+    if (force) this.csrfToken = null;
+    if (this.csrfToken) return this.csrfToken;
+    const res = await fetch(`${this.base}/auth.php?action=csrf`, { credentials: 'same-origin' });
+    const json = await res.json();
+    this.csrfToken = (json && json.data && json.data.token) || null;
+    if (!this.csrfToken) throw new Error('Não foi possível obter o token CSRF.');
+    return this.csrfToken;
+  },
+
+  /** Escrita autenticada: sessão + token CSRF. */
+  async write(url, method, payload) {
+    const token = await this.csrf();
+    const send = tk => fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': tk },
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+      credentials: 'same-origin',
+    });
+
+    let res = await send(token);
+    // Token expirado/sessão renovada: busca um novo e tenta mais uma vez.
+    if (res.status === 403) {
+      const fresh = await this.csrf(true);
+      res = await send(fresh);
+    }
+    return this.handle(res);
+  },
 
   // ---- Players ----
   async listPlayers(filters = {}) {
@@ -28,28 +64,15 @@ const API = {
   },
 
   async createPlayer(payload) {
-    const res = await fetch(`${this.base}/players.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php`, 'POST', payload);
   },
 
   async updatePlayer(payload) {
-    const res = await fetch(`${this.base}/players.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php`, 'PUT', payload);
   },
 
   async deletePlayer(id) {
-    const res = await fetch(`${this.base}/players.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   // ---- Games ----
@@ -71,13 +94,7 @@ const API = {
   },
 
   async createTeam(payload) {
-    const res = await fetch(`${this.base}/teams.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/teams.php`, 'POST', payload);
   },
 
   // ---- Peripherals ----
@@ -88,59 +105,28 @@ const API = {
   },
 
   async createPeripheral(payload) {
-    const res = await fetch(`${this.base}/peripherals.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php`, 'POST', payload);
   },
 
   async updatePeripheral(payload) {
-    const res = await fetch(`${this.base}/peripherals.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php`, 'PUT', payload);
   },
 
   async deletePeripheral(id) {
-    const res = await fetch(`${this.base}/peripherals.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   // ---- Auth ----
   async register(credentials) {
-    const res = await fetch(`${this.base}/auth.php?action=register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=register`, 'POST', credentials);
   },
 
   async login(credentials) {
-    const res = await fetch(`${this.base}/auth.php?action=login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=login`, 'POST', credentials);
   },
 
   async logout() {
-    const res = await fetch(`${this.base}/auth.php?action=logout`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}',
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=logout`, 'POST', {});
   },
 
   async me() {
@@ -155,18 +141,11 @@ const API = {
   },
 
   async createComment(payload) {
-    const res = await fetch(`${this.base}/comments.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/comments.php`, 'POST', payload);
   },
 
   async deleteComment(id) {
-    const res = await fetch(`${this.base}/comments.php?id=${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'same-origin' });
-    return this.handle(res);
+    return this.write(`${this.base}/comments.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   async handle(res) {

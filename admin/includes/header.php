@@ -92,9 +92,54 @@ window.esc = (value) => {
   const str = String(value ?? '');
   return str.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 };
-// aceita apenas URLs http(s), data:, ou relativas (anti javascript:)
+// aceita apenas URLs http(s) ou relativas (anti javascript:)
 window.safeAdminUrl = (value) => {
   const url = String(value ?? '');
-  return /^(https?:|data:image\/|\/|\.\.?\/)/i.test(url) ? window.esc(url) : '#';
+  return /^(https?:|\/|\.\.?\/)/i.test(url) ? window.esc(url) : '#';
+};
+
+// ---- Token CSRF ----
+// Toda escrita (POST/PUT/DELETE) passa por adminFetch(), que envia o cookie de
+// sessão e o header X-CSRF-Token. Se a API responder 403, o token é renovado e
+// a requisição é repetida uma única vez.
+window.ADMIN_CSRF = null;
+
+window.adminFetch = async function (url, opts = {}) {
+  const method = (opts.method || 'GET').toUpperCase();
+  const isWrite = method !== 'GET' && method !== 'HEAD';
+  const body = opts.body;
+
+  const token = async (force) => {
+    if (force) window.ADMIN_CSRF = null;
+    if (window.ADMIN_CSRF) return window.ADMIN_CSRF;
+    const res = await fetch(ADMIN_BASE + '/auth.php?action=csrf', { credentials: 'same-origin' });
+    const json = await res.json();
+    window.ADMIN_CSRF = (json && json.data && json.data.token) || null;
+    return window.ADMIN_CSRF;
+  };
+
+  const send = (tk) => {
+    const headers = Object.assign({}, opts.headers || {});
+    if (isWrite) headers['X-CSRF-Token'] = tk;
+    return fetch(url, { method, headers, body, credentials: 'same-origin' });
+  };
+
+  if (!isWrite) return send(null);
+
+  let res = await send(await token(false));
+  if (res.status === 403) res = await send(await token(true));
+  return res;
+};
+
+// atalho JSON: envia body serializado e devolve o JSON já convertido
+window.adminJson = async function (url, method, payload) {
+  const res = await window.adminFetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: payload === undefined ? undefined : JSON.stringify(payload),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) throw new Error(json.message || 'Erro na requisição.');
+  return json;
 };
 </script>

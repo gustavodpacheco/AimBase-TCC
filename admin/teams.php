@@ -47,7 +47,7 @@ async function loadTeams() {
     document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEdit(Number(b.dataset.edit))));
     document.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
       if (!confirm(`Excluir o time "${b.dataset.name}"?`)) return;
-      try { await fetch(`${ADMIN_BASE}/teams.php?id=${b.dataset.del}`, { method: 'DELETE' }); toast('Time excluído.'); loadTeams(); }
+      try { await adminJson(`${ADMIN_BASE}/teams.php?id=${b.dataset.del}`, 'DELETE'); toast('Time excluído.'); loadTeams(); }
       catch (err) { toast(err.message); }
     }));
   } catch (err) { wrap.innerHTML = `<p class="admin-muted">Falha: ${esc(err.message)}</p>`; }
@@ -79,11 +79,9 @@ document.getElementById('teamForm').addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const fd = new FormData(ev.currentTarget);
   const payload = { name: fd.get('name'), country: fd.get('country'), logo: fd.get('logo') };
+  if (EDIT_ID) payload.id = EDIT_ID;
   try {
-    let opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) };
-    if (EDIT_ID) { payload.id = EDIT_ID; opts.method = 'PUT'; }
-    const res = await fetch(ADMIN_BASE + '/teams.php', opts);
-    const json = await res.json();
+    const json = await adminJson(ADMIN_BASE + '/teams.php', EDIT_ID ? 'PUT' : 'POST', payload);
     toast(json.message || 'OK');
     modal.close();
     loadTeams();

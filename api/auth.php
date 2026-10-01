@@ -29,10 +29,20 @@ if ($method === 'GET') {
         jsonResponse(['user' => $user]);
     }
 
+    // ---- /csrf : devolve o token anti-CSRF desta sessão ----
+    if ($action === 'csrf') {
+        jsonResponse(['token' => csrfToken()]);
+    }
+
     errorResponse('Ação inválida.', 400);
 }
 
 if ($method === 'POST') {
+    // Login, registro e logout alteram o estado da sessão: exigem token CSRF
+    // (evita login CSRF — um site externo "forçar" o login na sua sessão).
+    bootSession();
+    verifyCsrf();
+
     $data = readJsonBody();
 
     if ($action === 'register') {
@@ -90,12 +100,7 @@ if ($method === 'POST') {
     }
 
     if ($action === 'logout') {
-        $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        }
-        session_destroy();
+        destroySession();
         jsonResponse(null, true, 200, 'Sessão encerrada.');
     }
 

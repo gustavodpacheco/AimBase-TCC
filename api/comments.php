@@ -31,6 +31,10 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
+    // Publicar exige token CSRF válido (o autor passa a vir da sessão no A3).
+    bootSession();
+    verifyCsrf();
+
     $data     = readJsonBody();
     $playerId = $data['player_id'] ?? null;
     $author   = trim($data['author'] ?? '');
@@ -76,7 +80,7 @@ if ($method === 'DELETE') {
     }
     // Somente admin pode excluir comentários nesta etapa.
     // (A3 passa a permitir também o autor do próprio comentário.)
-    requireRole('admin');
+    requireAdminWrite();
     $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
     $stmt->execute([(int)$id]);
     jsonResponse(null, true, 200, 'Comentário excluído.');
