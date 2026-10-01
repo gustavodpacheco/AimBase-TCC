@@ -106,6 +106,16 @@
       var val = t(el.getAttribute('data-i18n-aria-label'));
       if (el.getAttribute('aria-label') !== val) el.setAttribute('aria-label', val);
     });
+    // alt em <img>: o aria-label sozinho não substitui o texto alternativo,
+    // então sem isso a imagem continua com o alt estático em português.
+    // Chave ausente não vira alt: t() devolveria o nome da chave, que um
+    // leitor de tela leria em voz alta.
+    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n-alt');
+      var val = t(key);
+      if (!val || val === key) return;
+      if (el.getAttribute('alt') !== val) el.setAttribute('alt', val);
+    });
   }
 
   function load(lang) {
@@ -239,7 +249,7 @@
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ['data-i18n', 'data-i18n-vars', 'data-i18n-placeholder', 'data-i18n-title', 'data-i18n-aria-label'],
+      attributeFilter: ['data-i18n', 'data-i18n-vars', 'data-i18n-placeholder', 'data-i18n-title', 'data-i18n-aria-label', 'data-i18n-alt'],
     });
   }
 

@@ -60,8 +60,9 @@ if (document.body.dataset.page === 'profile') {
       viewBtn.addEventListener('click', () => openCardModal(player));
     }
     $('crumbName').textContent = player.tag.toUpperCase();
-    const bc = document.querySelector('.breadcrumb');
-    if (bc && bc.childNodes[2]) bc.childNodes[2].nodeValue = ` ${player.game || 'VALORANT'} `;
+    // id próprio: o seletor antigo pegava childNodes[2] e quebrava se a
+    // ordem dos nós da breadcrumb mudasse.
+    $('crumbGame').textContent = (player.game || 'VALORANT').toUpperCase();
     $('playerName').textContent = player.name;
     $('playerTag').textContent = player.tag;
     const teamLogo = player.teamLogo ? `<img class="profile-team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
@@ -75,8 +76,14 @@ if (document.body.dataset.page === 'profile') {
     $('sensitivity').textContent = player.sensitivity != null ? Number(player.sensitivity).toFixed(2) : '–';
     const edpi = player.edpi != null ? player.edpi : (player.dpi && player.sensitivity ? Math.round(player.dpi * player.sensitivity) : null);
     $('edpi').textContent = edpi ?? '–';
-    const scoped = document.querySelector('.data-grid > div:last-child strong');
-    if (scoped) scoped.textContent = Number(player.scopedSensitivity ?? 1).toFixed(2);
+    // id próprio: '.data-grid > div:last-child strong' dependia da ordem das
+    // divs e quebrava se alguém inserisse outro campo no grid.
+    // Sem valor no banco => '–' (o padrão 1.00 antigo era um número inventado).
+    // '' e texto não-numérico também viram '–'; zero é um valor válido.
+    const scopedRaw = player.scopedSensitivity;
+    const scopedNum = Number(scopedRaw);
+    $('scopedSensitivity').textContent =
+      scopedRaw != null && String(scopedRaw).trim() !== '' && Number.isFinite(scopedNum) ? scopedNum.toFixed(2) : '–';
     $('mouseName').textContent = player.mouse || 'Não informado';
     $('keyboardName').textContent = player.keyboard || 'Não informado';
     $('mousepadName').textContent = player.mousepad || 'Não informado';

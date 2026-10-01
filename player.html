@@ -50,7 +50,8 @@
       <div id="fifaCard" aria-label="Carta do jogador"></div>
     </div>
     <div class="player-hero__info">
-      <div class="breadcrumb">JOGADORES <span>/</span> VALORANT <span>/</span> <b id="crumbName"></b></div>
+      <div class="breadcrumb"><span class="bc-path" data-i18n="breadcrumb.players">JOGADORES</span> <span>/</span> <span
+          class="bc-game" id="crumbGame">VALORANT</span> <span>/</span> <b id="crumbName"></b></div>
       <article class="profile-card">
         <div class="profile-photo" id="profilePhoto"></div>
         <div class="profile-info">
@@ -78,12 +79,12 @@
         <div><small data-i18n="settings.dpi">DPI</small><strong id="dpi"></strong></div>
         <div><small data-i18n="settings.sens">SENSIBILIDADE</small><strong id="sensitivity"></strong></div>
         <div><small data-i18n="settings.edpi">eDPI</small><strong id="edpi"></strong></div>
-        <div><small data-i18n="settings.scoped">SCOPED SENS</small><strong>1.00</strong></div>
+        <div><small data-i18n="settings.scoped">SCOPED SENS</small><strong id="scopedSensitivity">1.00</strong></div>
       </div>
     </section>
     <section class="settings-block crosshair-block">
       <div class="section-heading"><span class="section-icon">⌖</span><h2 data-i18n="settings.crosshair">Retícula</h2><button class="copy-code" id="crosshairCode" type="button" data-i18n="settings.copyCode">Copiar código</button></div>
-      <div class="crosshair-preview"><img src="" data-i18n-aria-label="settings.crosshairAlt" alt="Prévia da retícula" id="crosshairImage"></div>
+      <div class="crosshair-preview"><img src="" data-i18n-alt="settings.crosshairAlt" alt="" id="crosshairImage"></div>
       <code id="crosshairText"></code>
     </section>
     <section class="settings-block" id="gear">

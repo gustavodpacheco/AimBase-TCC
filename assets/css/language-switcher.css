@@ -98,8 +98,10 @@
   font-weight: 700;
 }
 
-/* Breadcrumb: span de tradução não deve herdar estilo do separador */
-.breadcrumb .bc-path {
+/* Breadcrumb: spans de tradução e de conteúdo não devem herdar o estilo
+   do separador (.breadcrumb span), que é cinza com margem lateral. */
+.breadcrumb .bc-path,
+.breadcrumb .bc-game {
   margin: 0;
   color: inherit;
 }
