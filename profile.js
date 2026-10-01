@@ -68,7 +68,9 @@ if (document.body.dataset.page === 'profile') {
     $('playerTeam').innerHTML = `${teamLogo}${esc(player.team)}`;
     $('playerRole').textContent = player.role;
     $('playerCountry').textContent = player.country;
-    $('profilePhoto').style.backgroundImage = player.photo ? `url("${player.photo}")` : 'none';
+    // safeCssUrl escapa aspas e parênteses: impede quebrar a regra CSS
+    // com uma URL maliciosa vinda do banco.
+    $('profilePhoto').style.backgroundImage = safeCssUrl(player.photo);
     $('dpi').textContent = player.dpi ?? '–';
     $('sensitivity').textContent = player.sensitivity != null ? Number(player.sensitivity).toFixed(2) : '–';
     const edpi = player.edpi != null ? player.edpi : (player.dpi && player.sensitivity ? Math.round(player.dpi * player.sensitivity) : null);
@@ -80,11 +82,12 @@ if (document.body.dataset.page === 'profile') {
     $('mousepadName').textContent = player.mousepad || 'Não informado';
     $('monitorName').textContent = player.monitor || 'Não informado';
     $('crosshairText').textContent = player.crosshair || 'Não informado';
-    $('crosshairImage').src = player.crosshairImage || 'assets/mira.png?v=4';
+    // safeUrl já devolve o valor escapado e validado (http(s) ou relativo).
+    $('crosshairImage').src = safeUrl(player.crosshairImage || 'assets/mira.png?v=4');
 
     Object.entries(player.links || {}).forEach(([key, value]) => {
       const link = $(`${key}Link`);
-      if (link) { link.href = value || '#'; link.style.display = value ? '' : 'none'; }
+      if (link) { link.href = safeUrl(value); link.style.display = value ? '' : 'none'; }
     });
 
     const gearGrid = document.querySelector('#gear .gear-grid');
@@ -98,7 +101,14 @@ if (document.body.dataset.page === 'profile') {
 
     if (player.game || Object.keys(player.social || {}).length) {
       const socialIcons = { Instagram: 'assets/brands/instagram.ico', Tracker: 'assets/brands/tracker.png', VLR: 'assets/brands/vlr.png' };
-      const social = Object.entries(player.social || {}).map(([label, href]) => `<a class="social-${esc(label.toLowerCase())}" href="${safeUrl(href)}" target="_blank" rel="noopener"><img src="${esc(socialIcons[label] || '')}" alt="" aria-hidden="true">${esc(label)} <span>↗</span></a>`).join('');
+      const social = Object.entries(player.social || {}).map(([label, href]) => {
+        // platform (Instagram, VLR...) também vem do banco: limita a classe CSS.
+        const slug = String(label).toLowerCase().replace(/[^a-z0-9_-]/g, '');
+        // ícone: safeUrl (não esc) porque o valor é um src de atributo
+        const icon = socialIcons[label] ? safeUrl(socialIcons[label]) : '';
+        const link = safeUrl(href);
+        return `<a class="social-${esc(slug)}" href="${link}" target="_blank" rel="noopener">${icon ? `<img src="${icon}" alt="" aria-hidden="true">` : ''}${esc(label)} <span>↗</span></a>`;
+      }).join('');
       if (!document.querySelector('.player-meta')) {
         document.querySelector('.profile-card').insertAdjacentHTML('afterend', `<section class="player-meta"><div><small>JOGO</small><strong>${esc(player.game) || 'Não informado'}</strong></div><div><small>AGENTE</small><strong>${esc(player.agents) || 'Não informado'}</strong></div>${social ? `<div class="player-social">${social}</div>` : ''}</section>`);
       }
