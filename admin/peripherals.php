@@ -93,13 +93,6 @@ document.getElementById('periphForm').addEventListener('submit', async (ev) => {
   } catch (err) { toast(err.message); }
 });
 
-function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'admin-toast show';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2500);
-}
 loadPeriphs();
 </script>
 

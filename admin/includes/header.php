@@ -142,4 +142,18 @@ window.adminJson = async function (url, method, payload) {
   if (!res.ok || !json.success) throw new Error(json.message || 'Erro na requisição.');
   return json;
 };
+
+// toast global (usado em vários formulários do painel)
+window.toast = function (msg) {
+  const text = String(msg ?? '');
+  if (!text) return;
+  const el = document.createElement('div');
+  el.className = 'admin-toast show';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
+};
 </script>

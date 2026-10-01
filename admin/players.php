@@ -81,14 +81,6 @@ async function loadPlayers() {
 
 document.getElementById('playersSearch').addEventListener('input', e => renderPlayers(e.currentTarget.value.trim().toLowerCase()));
 
-function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'admin-toast show';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2500);
-}
-
 loadPlayers();
 </script>
 

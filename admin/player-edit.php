@@ -115,7 +115,10 @@ async function init() {
 
 function fillSelect(sel, options, placeholderLabel) {
   const el = document.querySelector(sel);
-  el.innerHTML = `<option value="">— ${placeholderLabel} —</option>` + options.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+  if (!el) return;
+  // esc() em value e label: nomes de jogo/time/periférico vêm do banco.
+  el.innerHTML = `<option value="">— ${esc(placeholderLabel)} —</option>` +
+    options.map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
 }
 
 async function loadPlayer() {

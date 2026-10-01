@@ -72,14 +72,6 @@ async function loadComments() {
 
 document.getElementById('commentsSearch').addEventListener('input', e => renderComments(e.currentTarget.value.trim().toLowerCase()));
 
-function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'admin-toast show';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2500);
-}
-
 loadComments();
 </script>
 
