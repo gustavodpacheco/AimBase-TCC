@@ -149,14 +149,15 @@ const API = {
   },
 
   async handle(res) {
-    let json;
+    // JSON inválido também é erro: lançar sempre mantém um único contrato
+    // (try/catch) para o chamador, em vez de um retorno "sucesso" que
+    // mentia — o chamador antigo só checava res.success e engolia o erro.
+    let json = null;
     try {
       json = await res.json();
-    } catch {
-      return { success: false, message: 'Resposta inválida do servidor.', data: null };
-    }
-    if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Erro na requisição.');
+    } catch { /* resposta não-JSON: cai no throw abaixo */ }
+    if (!res.ok || !json || !json.success) {
+      throw new Error((json && json.message) || 'Resposta inválida do servidor.');
     }
     return json;
   },
@@ -172,7 +173,9 @@ function mapPlayerForUi(row) {
   (row.social || []).forEach(s => { socialObj[s.platform] = s.url; });
 
   const videoSettings = (row.video_settings || []).map(v => [v.setting_key, v.setting_value]);
-  const pcSpecs = (row.pc_specs || []).map(s => [s.label, s.label, s.link, s.image]);
+  // A UI (profile.js e attributes.js) lê [tipo, modelo, link, imagem]:
+  // o "small" é o tipo (Processador, Placa de vídeo...) e o "strong" o modelo.
+  const pcSpecs = (row.pc_specs || []).map(s => [s.spec_type, s.label, s.link, s.image]);
 
   const hasProductImages = settings.product_image_mouse || settings.product_image_keyboard ||
     settings.product_image_mousepad || settings.product_image_monitor || settings.product_image_headset;
