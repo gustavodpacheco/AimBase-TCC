@@ -1,5 +1,7 @@
 <?php
 /** Helper: liga a API e normaliza o caminho base (para subtemos do Laragon). */
+require_once __DIR__ . '/../../includes/auth.php';
+
 $baseHref = '/prosettings-page-main/';
 if (getenv('ADMIN_BASE_HREF')) {
     $baseHref = getenv('ADMIN_BASE_HREF');
@@ -8,25 +10,43 @@ $pageTitle = $pageTitle ?? 'Painel Admin';
 $apiBase = rtrim($baseHref, '/') . '/api';
 
 // --- Sessão compartilhada com a API (AIMBASE_SESSID) ---
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_start();
-}
+bootSession();
 
-// --- Proteção: exige usuário logado ---
-$adminUser = null;
-if (!empty($_SESSION['user_id'])) {
-    try {
-        require_once __DIR__ . '/../../includes/database.php';
-        $stmt = db()->prepare('SELECT id, username FROM users WHERE id = ?');
-        $stmt->execute([(int)$_SESSION['user_id']]);
-        $adminUser = $stmt->fetch();
-    } catch (Throwable $e) {
-        $adminUser = null;
-    }
-}
-if (!$adminUser) {
+// --- Proteção: exige usuário logado COM PAPEL admin ---
+$adminUser = currentUser();
+if ($adminUser === null) {
     header('Location: login.php');
+    exit;
+}
+if ($adminUser['role'] !== 'admin') {
+    http_response_code(403);
+    ?>
+    <!doctype html>
+    <html lang="pt-BR">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acesso negado — AimBase Admin</title>
+    <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/tokens.css">
+    <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/base.css">
+    <link rel="stylesheet" href="includes/admin.css">
+    </head>
+    <body class="dark" data-page="admin">
+    <main class="admin-main">
+      <div class="admin-title"><div><p class="kicker">AIMBASE</p><h1>Acesso negado</h1></div></div>
+      <div class="admin-panel">
+        <p class="admin-muted">
+          A conta <strong><?= e($adminUser['username']) ?></strong> não tem permissão de administrador.
+          Promova-a no banco com:<br>
+          <code>UPDATE users SET role = 'admin' WHERE username = '<?= e($adminUser['username']) ?>';</code>
+        </p>
+        <a class="btn" href="logout.php">Sair</a>
+        <a class="btn" href="<?= e($baseHref) ?>index.html">Voltar ao site</a>
+      </div>
+    </main>
+    </body>
+    </html>
+    <?php
     exit;
 }
 ?>

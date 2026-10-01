@@ -12,11 +12,18 @@
 
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../includes/auth.php';
 
 applyCors();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $pdo    = db();
+
+// Escritas (POST/PUT/DELETE) exigem sessão com role = 'admin'
+if ($method !== 'GET') {
+    bootSession();
+    requireRole('admin');
+}
 
 $allowedTypes = ['mouse', 'keyboard', 'mousepad', 'headset', 'monitor'];
 

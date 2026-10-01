@@ -13,18 +13,11 @@
 
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../includes/auth.php';
 
 applyCors();
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_set_cookie_params([
-        'httponly' => true,
-        'samesite' => 'Lax',
-        'path'     => '/',
-    ]);
-    session_start();
-}
+bootSession();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
@@ -32,16 +25,7 @@ $action = $_GET['action'] ?? '';
 if ($method === 'GET') {
     // ---- /me : retorna o usuário da sessão ----
     if ($action === 'me') {
-        if (empty($_SESSION['user_id'])) {
-            jsonResponse(['user' => null]);
-        }
-        $stmt = db()->prepare("SELECT id, username, email, created_at FROM users WHERE id = ?");
-        $stmt->execute([(int)$_SESSION['user_id']]);
-        $user = $stmt->fetch();
-        if (!$user) {
-            session_destroy();
-            jsonResponse(['user' => null]);
-        }
+        $user = currentUser();
         jsonResponse(['user' => $user]);
     }
 
@@ -70,17 +54,15 @@ if ($method === 'POST') {
         try {
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
             $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
-            $_SESSION['user_id'] = (int)$pdo->lastInsertId();
-            jsonResponse([
-                'user' => [
-                    'id'       => (int)$pdo->lastInsertId(),
-                    'username' => $username,
-                    'email'    => $email,
-                ],
-            ], true, 201, 'Conta criada. Boas-vindas ao AimBase.');
         } catch (PDOException $e) {
             errorResponse('E-mail ou username já está em uso.', 409);
         }
+
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = (int)$pdo->lastInsertId();
+
+        $user = currentUser();
+        jsonResponse(['user' => $user], true, 201, 'Conta criada. Boas-vindas ao AimBase.');
     }
 
     if ($action === 'login') {
@@ -102,13 +84,9 @@ if ($method === 'POST') {
 
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
-        jsonResponse([
-            'user' => [
-                'id'       => (int)$user['id'],
-                'username' => $user['username'],
-                'email'    => $user['email'],
-            ],
-        ], true, 200, 'Login realizado.');
+
+        $user = currentUser();
+        jsonResponse(['user' => $user], true, 200, 'Login realizado.');
     }
 
     if ($action === 'logout') {

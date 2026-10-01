@@ -1,0 +1,112 @@
+<?php
+/**
+ * Sessão e autorização (papéis) compartilhadas entre a API e o painel admin.
+ *
+ * - bootSession()  : inicia a sessão AIMBASE_SESSID com cookie HttpOnly/SameSite.
+ * - currentUser()  : usuário da sessão lido do banco (com role).
+ * - hasRole()      : verificação de papel.
+ * - requireUser()  : exige usuário autenticado (401).
+ * - requireRole()  : exige papel específico, ex.: requireRole('admin') (403).
+ *
+ * As respostas de erro usam errorResponse() de includes/functions.php.
+ */
+
+require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/functions.php';
+
+/** Inicia a sessão uma única vez por requisição. */
+function bootSession(): void
+{
+    if (session_status() !== PHP_SESSION_NONE) {
+        return;
+    }
+
+    session_name('AIMBASE_SESSID');
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'path'     => '/',
+        // Só marca Secure quando a requisição é HTTPS (no Laragon é HTTP).
+        'secure'   => isHttpsRequest(),
+    ]);
+    session_start();
+}
+
+/** Detecta HTTPS respeitando proxy reverso. */
+function isHttpsRequest(): bool
+{
+    if (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') {
+        return true;
+    }
+    return strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
+}
+
+/**
+ * Usuário da sessão (id, username, email, role) ou null.
+ * Resultado memoizado por requisição; cache invalida se a sessão for encerrada.
+ */
+function currentUser(): ?array
+{
+    static $loaded = false;
+    static $user    = null;
+
+    if ($loaded) {
+        return $user;
+    }
+    $loaded = true;
+
+    $id = $_SESSION['user_id'] ?? null;
+    if (!$id) {
+        return null;
+    }
+
+    try {
+        $stmt = db()->prepare('SELECT id, username, email, role, created_at FROM users WHERE id = ?');
+        $stmt->execute([(int)$id]);
+        $row = $stmt->fetch();
+    } catch (Throwable $e) {
+        $row = false;
+    }
+
+    if (!$row) {
+        // Sessão apontando para usuário inexistente (ex.: banco restaurado).
+        unset($_SESSION['user_id']);
+        return null;
+    }
+
+    $user = [
+        'id'       => (int)$row['id'],
+        'username' => $row['username'],
+        'email'    => $row['email'],
+        'role'     => $row['role'] ?? 'user',
+    ];
+
+    return $user;
+}
+
+/** Verifica se o usuário da sessão tem o papel informado. */
+function hasRole(string $role): bool
+{
+    $user = currentUser();
+    return $user !== null && $user['role'] === $role;
+}
+
+/** Exige usuário autenticado; encerra a requisição com 401 caso contrário. */
+function requireUser(): array
+{
+    $user = currentUser();
+    if ($user === null) {
+        errorResponse('Autenticação necessária.', 401);
+    }
+    return $user;
+}
+
+/** Exige o papel informado; encerra a requisição com 401/403 caso contrário. */
+function requireRole(string $role): array
+{
+    $user = requireUser();
+    if ($user['role'] !== $role) {
+        errorResponse('Permissão insuficiente.', 403);
+    }
+    return $user;
+}

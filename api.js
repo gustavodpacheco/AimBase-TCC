@@ -32,6 +32,7 @@ const API = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },
@@ -41,6 +42,7 @@ const API = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },
@@ -73,6 +75,7 @@ const API = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },
@@ -89,6 +92,7 @@ const API = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },
@@ -98,6 +102,7 @@ const API = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },
@@ -154,6 +159,7 @@ const API = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      credentials: 'same-origin',
     });
     return this.handle(res);
   },

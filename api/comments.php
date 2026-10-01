@@ -11,13 +11,11 @@
 
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../includes/auth.php';
 
 applyCors();
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_start();
-}
+bootSession();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $pdo    = db();
@@ -76,11 +74,9 @@ if ($method === 'DELETE') {
     if (!validId($id)) {
         errorResponse('ID inválido.', 400);
     }
-    // Somente permite excluir o próprio comentário se estiver logado com o mesmo autor associado.
-    // Esta versão não vincula comentário a usuário, então exige sessão de admin de demonstração.
-    if (empty($_SESSION['user_id'])) {
-        errorResponse('Não autorizado.', 403);
-    }
+    // Somente admin pode excluir comentários nesta etapa.
+    // (A3 passa a permitir também o autor do próprio comentário.)
+    requireRole('admin');
     $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
     $stmt->execute([(int)$id]);
     jsonResponse(null, true, 200, 'Comentário excluído.');

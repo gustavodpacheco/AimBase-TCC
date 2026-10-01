@@ -1,14 +1,9 @@
 <?php
-require __DIR__ . '/../includes/database.php';
-require __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 $baseHref = getenv('ADMIN_BASE_HREF') ?: '/prosettings-page-main/';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'path' => '/']);
-    session_start();
-}
+bootSession();
 
 if (!empty($_SESSION['user_id'])) {
     header('Location: index.php');
@@ -29,12 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = 'Informe usuário e senha.';
     } else {
-        $stmt = db()->prepare("SELECT id, username, password_hash FROM users WHERE username = ? OR email = ?");
+        $stmt = db()->prepare("SELECT id, username, role, password_hash FROM users WHERE username = ? OR email = ?");
         $stmt->execute([$username, $username]);
         $user = $stmt->fetch();
 
         if (!$user || !password_verify($password, $user['password_hash'])) {
             $error = 'Credenciais inválidas.';
+        } elseif (($user['role'] ?? 'user') !== 'admin') {
+            $error = 'Esta conta não tem permissão de administrador.';
         } else {
             session_regenerate_id(true);
             $_SESSION['user_id'] = (int)$user['id'];

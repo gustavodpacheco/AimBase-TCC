@@ -236,6 +236,8 @@ function renderAuth() {
   $('authTrigger').hidden = Boolean(user);
   $('authLogout').hidden = !user;
   if (user) $('authTrigger').textContent = user.username;
+  // A criação de jogador é uma escrita: só faz sentido para o painel (role=admin).
+  $('openModal').hidden = !(user && user.role === 'admin');
 }
 function setAuthMode(mode) {
   authMode = mode;
