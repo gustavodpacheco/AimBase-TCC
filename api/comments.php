@@ -12,6 +12,7 @@
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
 require __DIR__ . '/../includes/auth.php';
+require __DIR__ . '/../includes/rate_limit.php';
 
 applyCors();
 
@@ -19,6 +20,17 @@ bootSession();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $pdo    = db();
+
+/**
+ * Nome exibido do autor: sempre o username da sessão, limitado a 32
+ * caracteres (tamanho da coluna comments.author). Nunca vem do cliente.
+ */
+function commentAuthorName(array $user): string
+{
+    $name = trim((string)($user['username'] ?? ''));
+
+    return $name === '' ? 'usuário' : mb_substr($name, 0, 32);
+}
 
 if ($method === 'GET') {
     $playerId = $_GET['player_id'] ?? null;
@@ -31,26 +43,24 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
-    // Publicar exige token CSRF válido (o autor passa a vir da sessão no A3).
-    bootSession();
-    verifyCsrf();
+    // Comentários são da comunidade: exige sessão válida + token CSRF.
+    $user = requireUserWrite();
+
+    // 5 comentários por sessão+IP a cada 5 minutos.
+    rateLimitEnforce('comment', 5, 300);
 
     $data     = readJsonBody();
     $playerId = $data['player_id'] ?? null;
-    $author   = trim($data['author'] ?? '');
+    // O autor vem SEMPRE da sessão — o campo "author" do corpo é ignorado
+    // (impede falsificar o nome de outra pessoa).
+    $author   = commentAuthorName($user);
     $message  = trim($data['message'] ?? '');
 
     if (!validId($playerId)) {
         errorResponse('Informe player_id válido.', 400);
     }
-    if ($author === '') {
-        errorResponse('Informe seu nome.', 422);
-    }
     if ($message === '') {
         errorResponse('Escreva um comentário.', 422);
-    }
-    if (mb_strlen($author) > 32) {
-        errorResponse('O nome deve ter no máximo 32 caracteres.', 422);
     }
     if (mb_strlen($message) > 500) {
         errorResponse('O comentário deve ter no máximo 500 caracteres.', 422);
@@ -64,7 +74,7 @@ if ($method === 'POST') {
     }
 
     $stmt = $pdo->prepare("INSERT INTO comments (player_id, author, message) VALUES (?, ?, ?)");
-    $stmt->execute([(int)$playerId, mb_substr($author, 0, 32), mb_substr($message, 0, 500)]);
+    $stmt->execute([(int)$playerId, $author, mb_substr($message, 0, 500)]);
 
     $id = (int)$pdo->lastInsertId();
     $created = $pdo->prepare("SELECT id, player_id, author, message, created_at FROM comments WHERE id = ?");
@@ -78,9 +88,25 @@ if ($method === 'DELETE') {
     if (!validId($id)) {
         errorResponse('ID inválido.', 400);
     }
-    // Somente admin pode excluir comentários nesta etapa.
-    // (A3 passa a permitir também o autor do próprio comentário.)
-    requireAdminWrite();
+
+    $user = requireUserWrite();
+
+    $stmt = $pdo->prepare("SELECT id, author FROM comments WHERE id = ?");
+    $stmt->execute([(int)$id]);
+    $comment = $stmt->fetch();
+
+    if (!$comment) {
+        errorResponse('Comentário não encontrado.', 404);
+    }
+
+    // O autor do comentário pode apagar o próprio; admin apaga qualquer um.
+    $isAuthor = strcasecmp((string)$comment['author'], commentAuthorName($user)) === 0;
+    $isAdmin  = ($user['role'] ?? 'user') === 'admin';
+
+    if (!$isAuthor && !$isAdmin) {
+        errorResponse('Você só pode excluir seus próprios comentários.', 403);
+    }
+
     $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
     $stmt->execute([(int)$id]);
     jsonResponse(null, true, 200, 'Comentário excluído.');

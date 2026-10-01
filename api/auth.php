@@ -6,14 +6,17 @@
  * POST   /api/auth.php?action=login     -> autentica usuário (sessão)
  * POST   /api/auth.php?action=logout    -> encerra sessão
  * GET    /api/auth.php?action=me        -> retorna usuário logado (ou null)
+ * GET    /api/auth.php?action=csrf      -> devolve o token anti-CSRF da sessão
  *
  * Senhas são armazenadas com password_hash() e nunca em texto puro.
  * Sessões via PHP (session_start) com cookie HttpOnly.
+ * Login e registro têm rate limit por IP (contador em arquivo).
  */
 
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
 require __DIR__ . '/../includes/auth.php';
+require __DIR__ . '/../includes/rate_limit.php';
 
 applyCors();
 
@@ -46,6 +49,9 @@ if ($method === 'POST') {
     $data = readJsonBody();
 
     if ($action === 'register') {
+        // 5 contas por IP por hora: bloqueia criação em massa de contas.
+        rateLimitEnforce('register', 5, 3600, 'ip');
+
         $username = trim($data['username'] ?? '');
         $email    = trim($data['email'] ?? '');
         $password = (string)($data['password'] ?? '');
@@ -76,6 +82,9 @@ if ($method === 'POST') {
     }
 
     if ($action === 'login') {
+        // 10 tentativas por IP a cada 5 minutos (mesmo contador do /admin/login.php).
+        rateLimitEnforce('login', 10, 300, 'ip');
+
         $identifier = trim($data['email'] ?? '');
         $password   = (string)($data['password'] ?? '');
         $identifierLower = mb_strtolower($identifier);
@@ -94,6 +103,7 @@ if ($method === 'POST') {
 
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
+        rateLimitClear('login', 'ip');
 
         $user = currentUser();
         jsonResponse(['user' => $user], true, 200, 'Login realizado.');

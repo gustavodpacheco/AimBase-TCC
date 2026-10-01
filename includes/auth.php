@@ -126,8 +126,8 @@ function csrfToken(): string
     return $_SESSION['csrf_token'];
 }
 
-/** Valida o token CSRF (header X-CSRF-Token ou campo csrf_token); encerra com 403. */
-function verifyCsrf(): void
+/** Confere o token CSRF (header X-CSRF-Token ou campo csrf_token) sem encerrar a requisição. */
+function csrfIsValid(): bool
 {
     bootSession();
 
@@ -135,7 +135,14 @@ function verifyCsrf(): void
     $sent = is_string($sent) ? trim($sent) : '';
 
     $expected = $_SESSION['csrf_token'] ?? '';
-    if ($expected === '' || !is_string($expected) || !hash_equals($expected, $sent)) {
+
+    return is_string($expected) && $expected !== '' && hash_equals($expected, $sent);
+}
+
+/** Valida o token CSRF; encerra com 403 se ausente ou inválido. */
+function verifyCsrf(): void
+{
+    if (!csrfIsValid()) {
         errorResponse('Token CSRF inválido ou ausente.', 403);
     }
 }
@@ -148,6 +155,14 @@ function requireAdminWrite(): array
     bootSession();
     verifyCsrf();
     return requireRole('admin');
+}
+
+/** Encerra com 401/403 e devolve o usuário logado (qualquer papel), após validar o CSRF. */
+function requireUserWrite(): array
+{
+    bootSession();
+    verifyCsrf();
+    return requireUser();
 }
 
 /** Encerra a sessão do usuário e limpa o token CSRF. */

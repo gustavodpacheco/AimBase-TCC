@@ -145,10 +145,56 @@ if (document.body.dataset.page === 'profile') {
 
   function setupComments($, player, apiActive) {
     const isDb = apiActive && /^\d+$/.test(String(player.id));
-    $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel"><form class="comment-form" id="commentForm"><div class="comment-fields">' + (isDb ? '' : '<input name="author" maxlength="32" required placeholder="Seu nome">') + '<textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar</button></form><div class="comment-list" id="commentList"></div></div></section>');
     const commentsKey = `val-tactical-comments-${player.id}`;
     let comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
     const playerId = isDb ? Number(player.id) : null;
+
+    // Quem está logado (necessário porque o autor do comentário vem da sessão).
+    let currentUser = null;
+    if (isDb) {
+      API.me()
+        .then(res => { currentUser = (res.data && res.data.user) || null; })
+        .catch(() => { currentUser = null; })
+        .finally(mountForm);
+    } else {
+      mountForm();
+    }
+
+    function mountForm() {
+      // Sem API (modo demonstração) o formulário continua igual, com o campo de nome.
+      // Com API, só quem está logado pode comentar — e o nome vem da sessão.
+      const form = isDb
+        ? (currentUser
+            ? '<form class="comment-form" id="commentForm"><div class="comment-fields"><textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar como ' + esc(currentUser.username) + '</button></form>'
+            : '<p class="empty-comments">Entre com sua conta para comentar. <a href="index.html">Ir para o início</a></p>')
+        : '<form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="Seu nome"><textarea name="message" maxlength="500" required placeholder="Escreva um comentário..."></textarea></div><button type="submit">Publicar</button></form>';
+
+      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">COMUNIDADE</p><h2>Comentários</h2><p>Deixe uma dica ou opinião sobre o setup deste jogador.</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
+
+      const formEl = $('commentForm');
+      if (formEl) {
+        formEl.addEventListener('submit', async event => {
+          event.preventDefault();
+          const data = Object.fromEntries(new FormData(event.currentTarget));
+          if (isDb) {
+            try {
+              await API.createComment({ player_id: playerId, message: data.message.trim() });
+              event.currentTarget.reset();
+              await reload();
+              showToast('Comentário publicado.');
+            } catch (err) {
+              showToast(err.message || 'Não foi possível publicar o comentário.');
+            }
+          } else {
+            comments.unshift({ author: (data.author || 'Visitante').trim(), message: data.message.trim(), date: new Date().toISOString() });
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+            event.currentTarget.reset();
+            renderComments();
+            showToast('Comentário publicado.');
+          }
+        });
+      }
+    }
 
     async function reload() {
       if (isDb) {
@@ -159,27 +205,7 @@ if (document.body.dataset.page === 'profile') {
       }
       renderComments();
     }
-    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(comment.author.slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.created_at || comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
-    $('commentForm').addEventListener('submit', async event => {
-      event.preventDefault();
-      const data = Object.fromEntries(new FormData(event.currentTarget));
-      if (isDb) {
-        try {
-          await API.createComment({ player_id: playerId, author: data.author ? data.author.trim() : 'Visitante', message: data.message.trim() });
-          event.currentTarget.reset();
-          await reload();
-          showToast('Comentário publicado.');
-        } catch (err) {
-          showToast(err.message || 'Não foi possível publicar o comentário.');
-        }
-      } else {
-        comments.unshift({ author: (data.author || 'Visitante').trim(), message: data.message.trim(), date: new Date().toISOString() });
-        localStorage.setItem(commentsKey, JSON.stringify(comments));
-        event.currentTarget.reset();
-        renderComments();
-        showToast('Comentário publicado.');
-      }
-    });
+    const renderComments = () => { $('commentList').innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time>${new Date(comment.created_at || comment.date).toLocaleDateString('pt-BR')}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">Ainda não há comentários neste perfil.</p>'; };
     reload();
   }
 }
