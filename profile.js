@@ -339,7 +339,15 @@ if (document.body.dataset.page === 'profile') {
     const renderComments = () => {
       const list = $('commentList');
       if (!list) return;
-      list.innerHTML = comments.length ? comments.map(comment => `<article class="comment-item"><span class="comment-avatar">${esc(String(comment.author || '?').slice(0, 2).toUpperCase())}</span><div><strong>${esc(comment.author)}</strong><time datetime="${esc(comment.created_at || comment.date || '')}">${esc(formatDate(comment.created_at || comment.date))}</time><p>${esc(comment.message)}</p></div></article>`).join('') : '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>';
+      if (!comments.length) {
+        list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>';
+        return;
+      }
+      list.innerHTML = comments.map(comment => {
+        const author = comment.author || comment.username || '?';
+        const date = comment.created_at || comment.date || '';
+        return `<article class="comment-item"><span class="comment-avatar">${esc(String(author).slice(0, 2).toUpperCase())}</span><div><strong>${esc(author)}</strong><time datetime="${esc(date)}">${esc(formatDate(date))}</time><p>${esc(comment.message || '')}</p></div></article>`;
+      }).join('');
     };
   }
 }

@@ -41,6 +41,7 @@
 
 .comment-form {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: var(--space-4);
@@ -54,10 +55,16 @@
 
 .comment-form textarea {
   min-height: 72px;
+  width: 100%;
+}
+
+.comment-form input {
+  width: 100%;
 }
 
 .comment-form button {
   align-self: flex-end;
+  white-space: nowrap;
 }
 
 .comment-list {
