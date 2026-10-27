@@ -57,7 +57,10 @@
   "directory.kicker": "DIRECTORY",
   "directory.title": "Players",
   "directory.addLabel": "Add player",
-  "directory.players": { "one": "{{count}} player", "other": "{{count}} players" },
+  "directory.players": {
+    "one": "{{count}} player",
+    "other": "{{count}} players"
+  },
   "directory.noResults": "No players found.",
   "directory.tabs.all": "All",
   "directory.tabs.pro": "Pro Players",
@@ -177,7 +180,10 @@
   "toast.sessionClosed": "Signed out.",
   "toast.commentPublished": "Comment published.",
   "toast.commentFailed": "Could not publish the comment.",
-  "lineups.count": { "one": "{{count}} lineup", "other": "{{count}} lineups" },
+  "lineups.count": {
+    "one": "{{count}} lineup",
+    "other": "{{count}} lineups"
+  },
   "lineups.side.attack": "ATK",
   "lineups.side.defense": "DEF",
   "lineups.color.orange": "Made/learned by me",
@@ -192,5 +198,23 @@
   "lineups.title.line1": "LINEUPS",
   "lineups.title.line2": "TO",
   "lineups.title.line3": "COMPETE",
-  "lineups.desc": "VALORANT pixels, walls and lineups + useful CS2 smokes — straight from the meta."
+  "lineups.desc": "VALORANT pixels, walls and lineups + useful CS2 smokes — straight from the meta.",
+  "lineups.filters.game": "Game",
+  "lineups.filters.allGames": "All",
+  "lineups.filters.map": "Map",
+  "lineups.filters.allMaps": "All maps",
+  "lineups.filters.agent": "Agent",
+  "lineups.filters.allAgents": "All agents",
+  "lineups.filters.side": "Side",
+  "lineups.filters.allSides": "All sides",
+  "lineups.filters.side.atk": "ATK",
+  "lineups.filters.side.def": "DEF",
+  "lineups.filters.search": "Search",
+  "lineups.filters.searchPlaceholder": "Search by name or description",
+  "lineups.noResults": "No lineups found",
+  "lineups.legend": "Legend",
+  "lineups.legend.orange": "Made/learned by me",
+  "lineups.legend.purple": "VCT",
+  "lineups.legend.black": "Tseeky guide",
+  "lineups.legend.yellow": "YouTube (community)"
 }

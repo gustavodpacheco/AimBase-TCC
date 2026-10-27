@@ -57,7 +57,10 @@
   "directory.kicker": "RÉPERTOIRE",
   "directory.title": "Joueurs",
   "directory.addLabel": "Ajouter un joueur",
-  "directory.players": { "one": "{{count}} joueur", "other": "{{count}} joueurs" },
+  "directory.players": {
+    "one": "{{count}} joueur",
+    "other": "{{count}} joueurs"
+  },
   "directory.noResults": "Aucun joueur trouvé.",
   "directory.tabs.all": "Tous",
   "directory.tabs.pro": "Pro Players",
@@ -177,7 +180,10 @@
   "toast.sessionClosed": "Session fermée.",
   "toast.commentPublished": "Commentaire publié.",
   "toast.commentFailed": "Impossible de publier le commentaire.",
-  "lineups.count": { "one": "{{count}} lineup", "other": "{{count}} lineups" },
+  "lineups.count": {
+    "one": "{{count}} lineup",
+    "other": "{{count}} lineups"
+  },
   "lineups.side.attack": "ATK",
   "lineups.side.defense": "DEF",
   "lineups.color.orange": "Faite/apprise par moi",
@@ -192,5 +198,23 @@
   "lineups.title.line1": "LINEUPS",
   "lineups.title.line2": "POUR",
   "lineups.title.line3": "COMPÉTIR",
-  "lineups.desc": "Pixels, walls et lineups VALORANT + smokes CS2 utiles — tout droit du meta."
+  "lineups.desc": "Pixels, walls et lineups VALORANT + smokes CS2 utiles — tout droit du meta.",
+  "lineups.filters.game": "Jeu",
+  "lineups.filters.allGames": "Tous",
+  "lineups.filters.map": "Carte",
+  "lineups.filters.allMaps": "Toutes les cartes",
+  "lineups.filters.agent": "Agent",
+  "lineups.filters.allAgents": "Tous les agents",
+  "lineups.filters.side": "Côté",
+  "lineups.filters.allSides": "Tous les côtés",
+  "lineups.filters.side.atk": "ATK",
+  "lineups.filters.side.def": "DEF",
+  "lineups.filters.search": "Rechercher",
+  "lineups.filters.searchPlaceholder": "Rechercher par nom ou description",
+  "lineups.noResults": "Aucun lineup trouvé",
+  "lineups.legend": "Légende",
+  "lineups.legend.orange": "Fait/appris par moi",
+  "lineups.legend.purple": "VCT",
+  "lineups.legend.black": "Guide Tseeky",
+  "lineups.legend.yellow": "YouTube (communauté)"
 }

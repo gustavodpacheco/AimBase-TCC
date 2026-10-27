@@ -57,7 +57,10 @@
   "directory.kicker": "VERZEICHNIS",
   "directory.title": "Spieler",
   "directory.addLabel": "Spieler hinzufügen",
-  "directory.players": { "one": "{{count}} Spieler", "other": "{{count}} Spieler" },
+  "directory.players": {
+    "one": "{{count}} Spieler",
+    "other": "{{count}} Spieler"
+  },
   "directory.noResults": "Keine Spieler gefunden.",
   "directory.tabs.all": "Alle",
   "directory.tabs.pro": "Pro Players",
@@ -177,7 +180,10 @@
   "toast.sessionClosed": "Sitzung beendet.",
   "toast.commentPublished": "Kommentar veröffentlicht.",
   "toast.commentFailed": "Kommentar konnte nicht veröffentlicht werden.",
-  "lineups.count": { "one": "{{count}} Lineup", "other": "{{count}} Lineups" },
+  "lineups.count": {
+    "one": "{{count}} Lineup",
+    "other": "{{count}} Lineups"
+  },
   "lineups.side.attack": "ANG",
   "lineups.side.defense": "DEF",
   "lineups.color.orange": "Von mir erstellt/erlernt",
@@ -192,5 +198,23 @@
   "lineups.title.line1": "LINEUPS",
   "lineups.title.line2": "ZUM",
   "lineups.title.line3": "KÄMPFEN",
-  "lineups.desc": "VALORANT Pixels, Walls und Lineups + nützliche CS2-Smokes — direkt aus dem Meta."
+  "lineups.desc": "VALORANT Pixels, Walls und Lineups + nützliche CS2-Smokes — direkt aus dem Meta.",
+  "lineups.filters.game": "Spiel",
+  "lineups.filters.allGames": "Alle",
+  "lineups.filters.map": "Karte",
+  "lineups.filters.allMaps": "Alle Karten",
+  "lineups.filters.agent": "Agent",
+  "lineups.filters.allAgents": "Alle Agenten",
+  "lineups.filters.side": "Seite",
+  "lineups.filters.allSides": "Alle Seiten",
+  "lineups.filters.side.atk": "ANG",
+  "lineups.filters.side.def": "DEF",
+  "lineups.filters.search": "Suchen",
+  "lineups.filters.searchPlaceholder": "Nach Name oder Beschreibung suchen",
+  "lineups.noResults": "Keine Lineups gefunden",
+  "lineups.legend": "Legende",
+  "lineups.legend.orange": "Von mir erstellt/erlernt",
+  "lineups.legend.purple": "VCT",
+  "lineups.legend.black": "Tseeky-Guide",
+  "lineups.legend.yellow": "YouTube (Community)"
 }

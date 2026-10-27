@@ -37,17 +37,157 @@
   margin-inline: auto;
   padding: var(--space-7) clamp(20px, 6vw, 72px) var(--space-8);
   display: grid;
-  gap: var(--space-8);
+  gap: var(--space-6);
+}
+
+/* ----- Filtros ----- */
+.lineups-filters {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+  padding: var(--space-4);
+}
+
+.filters-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.filter-group {
+  grid-column: span 6;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.filter-group--agent {
+  display: none;
+}
+
+.filter-group--search {
+  grid-column: 1 / -1;
+}
+
+.filter-label {
+  font: 500 var(--fs-xs) var(--font-mono);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.filter-select,
+.filter-input {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-input);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  padding: 8px 10px;
+  font: 500 var(--fs-sm) var(--font-sans);
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  outline: none;
+  border-color: var(--accent-secondary);
+}
+
+@media (min-width: 768px) {
+  .filter-group {
+    grid-column: span 4;
+  }
+  .filter-group--search {
+    grid-column: span 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .filter-group {
+    grid-column: span 2;
+  }
+  .filter-group--agent.is-visible {
+    display: grid;
+  }
+  .filter-group--search {
+    grid-column: span 4;
+  }
+}
+
+/* ----- Legenda ----- */
+.lineups-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+  padding: var(--space-3) var(--space-4);
+}
+
+.legend-title {
+  font: 600 var(--fs-xs) var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.lineup-no-results {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: var(--space-6);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-card);
 }
 
 /* ----- Seção por mapa ----- */
 .lineup-map {
   display: grid;
   gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+}
+
+#lineupMaps {
+  display: grid;
+  gap: var(--space-8);
 }
 
 .lineup-map .section-heading {
-  align-items: baseline;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.lineup-map .section-heading > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.lineup-toggle {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform var(--t-fast);
+}
+
+.lineup-map.is-collapsed .lineup-toggle {
+  transform: rotate(-90deg);
+}
+
+.lineup-map.is-collapsed .clips-grid {
+  display: none;
 }
 
 .lineup-count {
@@ -80,13 +220,54 @@
 }
 
 /* As proporções são definidas na base (.clip-landscape 16:9, .clip-portrait 9:16). */
-.lineup-map .clip-card iframe {
+.lineup-map .clip-card iframe,
+.lineup-map .clip-card video {
   width: 100%;
   display: block;
   aspect-ratio: 16 / 9;
   border: 0;
   background: #000;
   border-radius: calc(var(--radius-card) - 4px);
+}
+
+.clip-facade {
+  position: relative;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: #000;
+  border-radius: calc(var(--radius-card) - 4px);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 16 / 9;
+}
+
+.clip-facade img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.clip-facade-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.clip-facade:hover .clip-facade-play {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* ----- Metadados do clipe (agente, lado, fonte) ----- */
@@ -153,7 +334,8 @@
    aguardando as versões full HD para o desktop.
    Seção sem versão desktop é ocultada no computador, mas mantida no mobile. */
 @media (min-width: 768px) {
-  .lineup-map--portrait-only {
-    display: none;
+  .clip-mobile-only {
+    display: none !important;
   }
+}
 }

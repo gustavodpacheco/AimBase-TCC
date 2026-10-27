@@ -57,7 +57,10 @@
   "directory.kicker": "DIRECTORIO",
   "directory.title": "Jugadores",
   "directory.addLabel": "Añadir jugador",
-  "directory.players": { "one": "{{count}} jugador", "other": "{{count}} jugadores" },
+  "directory.players": {
+    "one": "{{count}} jugador",
+    "other": "{{count}} jugadores"
+  },
   "directory.noResults": "No se encontraron jugadores.",
   "directory.tabs.all": "Todos",
   "directory.tabs.pro": "Pro Players",
@@ -177,7 +180,10 @@
   "toast.sessionClosed": "Sesión cerrada.",
   "toast.commentPublished": "Comentario publicado.",
   "toast.commentFailed": "No se pudo publicar el comentario.",
-  "lineups.count": { "one": "{{count}} lineup", "other": "{{count}} lineups" },
+  "lineups.count": {
+    "one": "{{count}} lineup",
+    "other": "{{count}} lineups"
+  },
   "lineups.side.attack": "ATK",
   "lineups.side.defense": "DEF",
   "lineups.color.orange": "Hecha/aprendida por mí",
@@ -192,5 +198,23 @@
   "lineups.title.line1": "LINEUPS",
   "lineups.title.line2": "PARA",
   "lineups.title.line3": "COMPETIR",
-  "lineups.desc": "Pixels, walls y lineups de VALORANT + smokes útiles de CS2 — directo del meta."
+  "lineups.desc": "Pixels, walls y lineups de VALORANT + smokes útiles de CS2 — directo del meta.",
+  "lineups.filters.game": "Juego",
+  "lineups.filters.allGames": "Todos",
+  "lineups.filters.map": "Mapa",
+  "lineups.filters.allMaps": "Todos los mapas",
+  "lineups.filters.agent": "Agente",
+  "lineups.filters.allAgents": "Todos los agentes",
+  "lineups.filters.side": "Lado",
+  "lineups.filters.allSides": "Todos los lados",
+  "lineups.filters.side.atk": "ATK",
+  "lineups.filters.side.def": "DEF",
+  "lineups.filters.search": "Buscar",
+  "lineups.filters.searchPlaceholder": "Buscar por nombre o descripción",
+  "lineups.noResults": "No se encontraron lineups",
+  "lineups.legend": "Leyenda",
+  "lineups.legend.orange": "Hecha/aprendida por mí",
+  "lineups.legend.purple": "VCT",
+  "lineups.legend.black": "Guía de Tseeky",
+  "lineups.legend.yellow": "YouTube (comunidad)"
 }

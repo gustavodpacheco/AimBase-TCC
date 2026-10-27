@@ -69,7 +69,51 @@
   </section>
 
   <main class="lineups-layout" id="lineups">
+    <section class="lineups-filters" aria-label="Filtros de lineups">
+      <div class="filters-row">
+        <div class="filter-group">
+          <label class="filter-label" for="lineupGameFilter" data-i18n="lineups.filters.game">Jogo</label>
+          <select id="lineupGameFilter" class="filter-select">
+            <option value="all" data-i18n="lineups.filters.allGames">Todos</option>
+            <option value="VALORANT">VALORANT</option>
+            <option value="CS2">CS2</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="lineupMapFilter" data-i18n="lineups.filters.map">Mapa</label>
+          <select id="lineupMapFilter" class="filter-select">
+            <option value="all" data-i18n="lineups.filters.allMaps">Todos os mapas</option>
+          </select>
+        </div>
+        <div class="filter-group filter-group--agent">
+          <label class="filter-label" for="lineupAgentFilter" data-i18n="lineups.filters.agent">Agente</label>
+          <select id="lineupAgentFilter" class="filter-select">
+            <option value="all" data-i18n="lineups.filters.allAgents">Todos os agentes</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="lineupSideFilter" data-i18n="lineups.filters.side">Lado</label>
+          <select id="lineupSideFilter" class="filter-select">
+            <option value="all" data-i18n="lineups.filters.allSides">Todos os lados</option>
+            <option value="attack" data-i18n="lineups.filters.side.atk">ATK</option>
+            <option value="defense" data-i18n="lineups.filters.side.def">DEF</option>
+          </select>
+        </div>
+        <div class="filter-group filter-group--search">
+          <label class="filter-label" for="lineupSearchFilter" data-i18n="lineups.filters.search">Buscar</label>
+          <input id="lineupSearchFilter" class="filter-input" type="search" data-i18n-placeholder="lineups.filters.searchPlaceholder" placeholder="Buscar por nome ou descrição">
+        </div>
+      </div>
+    </section>
+    <div class="lineups-legend" aria-label="Legenda">
+      <span class="legend-title" data-i18n="lineups.legend">Legenda</span>
+      <span class="legend-item"><span class="clip-color clip-color--orange"></span><span data-i18n="lineups.legend.orange">Feita/aprendida por mim</span></span>
+      <span class="legend-item"><span class="clip-color clip-color--purple"></span><span data-i18n="lineups.legend.purple">VCT</span></span>
+      <span class="legend-item"><span class="clip-color clip-color--black"></span><span data-i18n="lineups.legend.black">Guia Tseeky</span></span>
+      <span class="legend-item"><span class="clip-color clip-color--yellow"></span><span data-i18n="lineups.legend.yellow">YouTube (comunidade)</span></span>
+    </div>
     <div id="lineupMaps"></div>
+    <div id="lineupNoResults" class="lineup-no-results" style="display:none" data-i18n="lineups.noResults">Nenhuma lineup encontrada</div>
   </main>
 
   <footer class="site-footer">

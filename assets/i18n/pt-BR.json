@@ -57,7 +57,10 @@
   "directory.kicker": "DIRETÓRIO",
   "directory.title": "Jogadores",
   "directory.addLabel": "Adicionar jogador",
-  "directory.players": { "one": "{{count}} jogador", "other": "{{count}} jogadores" },
+  "directory.players": {
+    "one": "{{count}} jogador",
+    "other": "{{count}} jogadores"
+  },
   "directory.noResults": "Nenhum jogador encontrado.",
   "directory.tabs.all": "Todos",
   "directory.tabs.pro": "Pro Players",
@@ -177,7 +180,10 @@
   "toast.sessionClosed": "Sessão encerrada.",
   "toast.commentPublished": "Comentário publicado.",
   "toast.commentFailed": "Não foi possível publicar o comentário.",
-  "lineups.count": { "one": "{{count}} lineup", "other": "{{count}} lineups" },
+  "lineups.count": {
+    "one": "{{count}} lineup",
+    "other": "{{count}} lineups"
+  },
   "lineups.side.attack": "ATK",
   "lineups.side.defense": "DEF",
   "lineups.color.orange": "Feita/aprendida por mim",
@@ -192,5 +198,23 @@
   "lineups.title.line1": "LINEUPS",
   "lineups.title.line2": "PARA",
   "lineups.title.line3": "COMPETIR",
-  "lineups.desc": "Pixels, walls e lineups de VALORANT + smokes úteis de CS2 — direto do meta."
+  "lineups.desc": "Pixels, walls e lineups de VALORANT + smokes úteis de CS2 — direto do meta.",
+  "lineups.filters.game": "Jogo",
+  "lineups.filters.allGames": "Todos",
+  "lineups.filters.map": "Mapa",
+  "lineups.filters.allMaps": "Todos os mapas",
+  "lineups.filters.agent": "Agente",
+  "lineups.filters.allAgents": "Todos os agentes",
+  "lineups.filters.side": "Lado",
+  "lineups.filters.allSides": "Todos os lados",
+  "lineups.filters.side.atk": "ATK",
+  "lineups.filters.side.def": "DEF",
+  "lineups.filters.search": "Buscar",
+  "lineups.filters.searchPlaceholder": "Buscar por nome ou descrição",
+  "lineups.noResults": "Nenhuma lineup encontrada",
+  "lineups.legend": "Legenda",
+  "lineups.legend.orange": "Feita/aprendida por mim",
+  "lineups.legend.purple": "VCT",
+  "lineups.legend.black": "Guia Tseeky",
+  "lineups.legend.yellow": "YouTube (comunidade)"
 }
