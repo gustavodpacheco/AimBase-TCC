@@ -333,7 +333,13 @@ $('authLogout').addEventListener('click', async () => {
 });
 $('authClose').addEventListener('click', () => authModal.close());
 $('forgotPassword').addEventListener('click', () => setAuthMessage(I18N.t('auth.forgotInfo')));
-document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(I18N.t('auth.provider.demo', { provider: button.dataset.provider }))));
+document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => {
+  if (button.dataset.provider === 'Discord') {
+    window.open('https://discord.gg/pqPbX3uK9', '_blank', 'noopener,noreferrer');
+    return;
+  }
+  setAuthMessage(I18N.t('auth.provider.demo', { provider: button.dataset.provider }));
+}));
 $('authForm').addEventListener('submit', async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget));
