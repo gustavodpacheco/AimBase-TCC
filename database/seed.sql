@@ -461,11 +461,11 @@ FROM players p WHERE p.slug='pacheco'
 ON DUPLICATE KEY UPDATE label = VALUES(label);
 
 -- ============================================================
--- USERS (demo) - username: demo / senha: demo1234
+-- USERS
+-- Este arquivo NÃO cria nenhuma conta de login (nada de senha
+-- conhecida versionada). Para a conta de demonstração do painel,
+-- rode o database/dev/seed-dev.sql — apenas em desenvolvimento.
 -- ============================================================
-INSERT INTO users (username, email, password_hash)
-VALUES ('demo', 'demo@prosens.gg', '$2y$10$25GzknazIVPcGyikT19iG.m3bWtxT8hBqqM7mHjW7TR7eVZnrL802')
-ON DUPLICATE KEY UPDATE username = VALUES(username);
 
 -- ============================================================
 -- COMMENTS (exemplos)

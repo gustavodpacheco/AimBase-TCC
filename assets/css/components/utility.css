@@ -141,6 +141,52 @@
   color: var(--accent-primary);
 }
 
+/* ----- 404: jogador não encontrado (player.html) ----- */
+.profile-not-found {
+  text-align: center;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-alt);
+  border-radius: var(--radius-card);
+  padding: var(--space-7) var(--space-5);
+}
+
+.profile-not-found__code {
+  font: 800 clamp(3rem, 12vw, 5.5rem) var(--font-display);
+  line-height: 1;
+  color: var(--accent-primary);
+  margin: 0 0 var(--space-3);
+}
+
+.profile-not-found h1 {
+  font: 700 var(--fs-2xl) var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0 0 var(--space-3);
+}
+
+.profile-not-found__body {
+  color: var(--text-secondary);
+  margin: 0 auto var(--space-4);
+  max-width: 44ch;
+}
+
+.profile-not-found__slug {
+  display: inline-block;
+  font: 400 var(--fs-sm) var(--font-mono);
+  color: var(--text-muted);
+  background: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-btn);
+  padding: 6px 12px;
+  margin: 0 0 var(--space-5);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.profile-not-found .btn {
+  display: inline-block;
+}
+
 /* ----- Estado vazio da lista ----- */
 #playerList .directory-count {
   color: var(--text-secondary);

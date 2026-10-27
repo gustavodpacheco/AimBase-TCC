@@ -1,14 +1,10 @@
 <?php
-require __DIR__ . '/../includes/database.php';
-require __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/rate_limit.php';
 
 $baseHref = getenv('ADMIN_BASE_HREF') ?: '/prosettings-page-main/';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'path' => '/']);
-    session_start();
-}
+bootSession();
 
 if (!empty($_SESSION['user_id'])) {
     header('Location: index.php');
@@ -26,20 +22,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = (string)($_POST['password'] ?? '');
 
-    if ($username === '' || $password === '') {
-        $error = 'Informe usuário e senha.';
+    // O formulário do painel também é protegido contra CSRF (login CSRF).
+    if (!csrfIsValid()) {
+        $error = 'Sessão expirada. Recarregue a página e tente novamente.';
     } else {
-        $stmt = db()->prepare("SELECT id, username, password_hash FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $username]);
-        $user = $stmt->fetch();
+        // 10 tentativas por IP a cada 5 minutos (mesmo contador do login da API).
+        $retryAfter = rateLimitAttempt('login', 10, 300, 'ip');
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
-            $error = 'Credenciais inválidas.';
+        if ($retryAfter > 0) {
+            $error = 'Muitas tentativas de login. Aguarde ' . rateLimitWaitLabel($retryAfter) . ' e tente novamente.';
+        } elseif ($username === '' || $password === '') {
+            $error = 'Informe usuário e senha.';
         } else {
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = (int)$user['id'];
-            header('Location: index.php');
-            exit;
+            $stmt = db()->prepare("SELECT id, username, role, password_hash FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $username]);
+            $user = $stmt->fetch();
+
+            if (!$user || !password_verify($password, $user['password_hash'])) {
+                // Mensagem genérica: não revela se o usuário existe.
+                $error = 'Credenciais inválidas.';
+            } elseif (($user['role'] ?? 'user') !== 'admin') {
+                $error = 'Esta conta não tem permissão de administrador.';
+            } else {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = (int)$user['id'];
+                rateLimitClear('login', 'ip');
+                header('Location: index.php');
+                exit;
+            }
         }
     }
 }
@@ -95,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($error): ?><p class="login-error"><?= e($error) ?></p><?php endif; ?>
 
     <form method="post">
+      <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
       <label>Usuário ou e-mail
         <input name="username" required autofocus autocomplete="username">
       </label>
@@ -103,9 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </label>
       <button class="btn btn-primary" type="submit">Entrar</button>
     </form>
+    <?php if (isDevEnvironment()): ?>
     <p class="admin-muted" style="text-align:left;padding:var(--space-4) 0 0;font-size:0.7rem">
-      Usuário demo: <code>demo</code> / senha: <code>demo1234</code>
+      Ambiente de desenvolvimento: usuário <code>demo</code> / senha: <code>demo1234</code>
     </p>
+    <?php endif; ?>
   </div>
 </div>
 </body>

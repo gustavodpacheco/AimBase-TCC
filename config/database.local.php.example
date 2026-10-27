@@ -1,0 +1,11 @@
+<?php
+// Configuração local (não versionada). Exemplo:
+// return [
+//     "host"     => "127.0.0.1",
+//     "port"     => "3306",
+//     "database" => "prosettings",
+//     "username" => "root",
+//     "password" => "",
+//     "charset"  => "utf8mb4",
+// ];
+return [];

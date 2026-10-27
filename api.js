@@ -2,9 +2,54 @@
 // Camada de comunicação com a API PHP (REST)
 // Todas as chamadas retornam Promise de JSON padronizado:
 //   { success, message, data }
+//
+// Escritas (POST/PUT/DELETE) passam por API.write(), que:
+//   - envia o cookie de sessão (credentials: same-origin)
+//   - envia o token CSRF no header X-CSRF-Token
+//   - renova o token e repete UMA vez se a resposta for 403
 // ============================================================
 const API = {
   base: 'api',
+  csrfToken: null,
+
+  // ---- CSRF ----
+  async csrf(force = false) {
+    if (force) this.csrfToken = null;
+    if (this.csrfToken) return this.csrfToken;
+    // Mesmo tratamento das demais leituras: JSON inválido ou HTTP de erro viram
+    // Error com mensagem útil, em vez de SyntaxError cru do res.json().
+    const json = await this.get(`${this.base}/auth.php?action=csrf`, { credentials: 'same-origin' });
+    this.csrfToken = (json && json.data && json.data.token) || null;
+    if (!this.csrfToken) throw new Error('Não foi possível obter o token CSRF.');
+    return this.csrfToken;
+  },
+
+  /**
+   * Leitura: fetch + contrato único de erro via handle().
+   * Aceita as mesmas opções do fetch (credentials, signal, ...).
+   */
+  async get(url, options) {
+    return this.handle(await fetch(url, options));
+  },
+
+  /** Escrita autenticada: sessão + token CSRF. */
+  async write(url, method, payload) {
+    const token = await this.csrf();
+    const send = tk => fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': tk },
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+      credentials: 'same-origin',
+    });
+
+    let res = await send(token);
+    // Token expirado/sessão renovada: busca um novo e tenta mais uma vez.
+    if (res.status === 403) {
+      const fresh = await this.csrf(true);
+      res = await send(fresh);
+    }
+    return this.handle(res);
+  },
 
   // ---- Players ----
   async listPlayers(filters = {}) {
@@ -13,165 +58,110 @@ const API = {
       if (v !== undefined && v !== null && v !== '') qs.set(k, v);
     });
     const query = qs.toString() ? `?${qs.toString()}` : '';
-    const res = await fetch(`${this.base}/players.php${query}`);
-    return this.handle(res);
+    return this.get(`${this.base}/players.php${query}`);
   },
 
   async getPlayer(id) {
-    const res = await fetch(`${this.base}/player.php?id=${encodeURIComponent(id)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/player.php?id=${encodeURIComponent(id)}`);
   },
 
   async getPlayerBySlug(slug) {
-    const res = await fetch(`${this.base}/player.php?slug=${encodeURIComponent(slug)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/player.php?slug=${encodeURIComponent(slug)}`);
   },
 
   async createPlayer(payload) {
-    const res = await fetch(`${this.base}/players.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php`, 'POST', payload);
   },
 
   async updatePlayer(payload) {
-    const res = await fetch(`${this.base}/players.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php`, 'PUT', payload);
   },
 
   async deletePlayer(id) {
-    const res = await fetch(`${this.base}/players.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    return this.handle(res);
+    return this.write(`${this.base}/players.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   // ---- Games ----
   async listGames() {
-    const res = await fetch(`${this.base}/games.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/games.php`);
   },
 
   // ---- Teams ----
   async listTeams() {
-    const res = await fetch(`${this.base}/teams.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/teams.php`);
   },
 
   // ---- Filters ----
   async listFilters() {
-    const res = await fetch(`${this.base}/filters.php`);
-    return this.handle(res);
+    return this.get(`${this.base}/filters.php`);
   },
 
   async createTeam(payload) {
-    const res = await fetch(`${this.base}/teams.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/teams.php`, 'POST', payload);
   },
 
   // ---- Peripherals ----
   async listPeripherals(type) {
     const qs = type ? `?type=${encodeURIComponent(type)}` : '';
-    const res = await fetch(`${this.base}/peripherals.php${qs}`);
-    return this.handle(res);
+    return this.get(`${this.base}/peripherals.php${qs}`);
   },
 
   async createPeripheral(payload) {
-    const res = await fetch(`${this.base}/peripherals.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php`, 'POST', payload);
   },
 
   async updatePeripheral(payload) {
-    const res = await fetch(`${this.base}/peripherals.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php`, 'PUT', payload);
   },
 
   async deletePeripheral(id) {
-    const res = await fetch(`${this.base}/peripherals.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    return this.handle(res);
+    return this.write(`${this.base}/peripherals.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   // ---- Auth ----
   async register(credentials) {
-    const res = await fetch(`${this.base}/auth.php?action=register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=register`, 'POST', credentials);
   },
 
   async login(credentials) {
-    const res = await fetch(`${this.base}/auth.php?action=login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=login`, 'POST', credentials);
   },
 
   async logout() {
-    const res = await fetch(`${this.base}/auth.php?action=logout`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}',
-      credentials: 'same-origin',
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/auth.php?action=logout`, 'POST', {});
   },
 
   async me() {
-    const res = await fetch(`${this.base}/auth.php?action=me`, { credentials: 'same-origin' });
-    return this.handle(res);
+    return this.get(`${this.base}/auth.php?action=me`, { credentials: 'same-origin' });
   },
 
   // ---- Comments ----
   async listComments(playerId) {
-    const res = await fetch(`${this.base}/comments.php?player_id=${encodeURIComponent(playerId)}`);
-    return this.handle(res);
+    return this.get(`${this.base}/comments.php?player_id=${encodeURIComponent(playerId)}`);
   },
 
   async createComment(payload) {
-    const res = await fetch(`${this.base}/comments.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handle(res);
+    return this.write(`${this.base}/comments.php`, 'POST', payload);
   },
 
   async deleteComment(id) {
-    const res = await fetch(`${this.base}/comments.php?id=${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'same-origin' });
-    return this.handle(res);
+    return this.write(`${this.base}/comments.php?id=${encodeURIComponent(id)}`, 'DELETE');
   },
 
   async handle(res) {
-    let json;
+    // JSON inválido também é erro: lançar sempre mantém um único contrato
+    // (try/catch) para o chamador, em vez de um retorno "sucesso" que
+    // mentia — o chamador antigo só checava res.success e engolia o erro.
+    let json = null;
     try {
       json = await res.json();
-    } catch {
-      return { success: false, message: 'Resposta inválida do servidor.', data: null };
-    }
-    if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Erro na requisição.');
+    } catch { /* resposta não-JSON: cai no throw abaixo */ }
+    if (!res.ok || !json || !json.success) {
+      // Em erro de rede/5xx costuma vir HTML (page de erro do PHP) e não há
+      // message: incluí o status para o log do Laragon ajudar a diagnosticar.
+      const detail = (json && json.message)
+        || (res.ok ? 'Resposta inválida do servidor.' : `Falha na requisição (HTTP ${res.status}).`);
+      throw new Error(detail);
     }
     return json;
   },
@@ -187,7 +177,9 @@ function mapPlayerForUi(row) {
   (row.social || []).forEach(s => { socialObj[s.platform] = s.url; });
 
   const videoSettings = (row.video_settings || []).map(v => [v.setting_key, v.setting_value]);
-  const pcSpecs = (row.pc_specs || []).map(s => [s.label, s.label, s.link, s.image]);
+  // A UI (profile.js e attributes.js) lê [tipo, modelo, link, imagem]:
+  // o "small" é o tipo (Processador, Placa de vídeo...) e o "strong" o modelo.
+  const pcSpecs = (row.pc_specs || []).map(s => [s.spec_type, s.label, s.link, s.image]);
 
   const hasProductImages = settings.product_image_mouse || settings.product_image_keyboard ||
     settings.product_image_mousepad || settings.product_image_monitor || settings.product_image_headset;
@@ -217,10 +209,13 @@ function mapPlayerForUi(row) {
     id: String(row.id),
     name: row.real_name || row.nickname,
     tag: row.nickname,
-    team: row.team_name || 'Sem time',
+    // Vazio fica como null de propósito: o texto de fallback é traduzido em
+    // textOr() na hora da exibição (ver shared.js), para não ficar preso ao
+    // idioma carregado no momento do mapeamento.
+    team: row.team_name || null,
     teamLogo: row.team_logo,
-    role: row.role || 'Não informado',
-    country: row.country || 'Não informado',
+    role: row.role || null,
+    country: row.country || null,
     photo: row.photo,
     slug: row.slug,
     game: row.game_name || 'VALORANT',

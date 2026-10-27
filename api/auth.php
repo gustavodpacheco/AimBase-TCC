@@ -6,25 +6,21 @@
  * POST   /api/auth.php?action=login     -> autentica usuário (sessão)
  * POST   /api/auth.php?action=logout    -> encerra sessão
  * GET    /api/auth.php?action=me        -> retorna usuário logado (ou null)
+ * GET    /api/auth.php?action=csrf      -> devolve o token anti-CSRF da sessão
  *
  * Senhas são armazenadas com password_hash() e nunca em texto puro.
  * Sessões via PHP (session_start) com cookie HttpOnly.
+ * Login e registro têm rate limit por IP (contador em arquivo).
  */
 
 require __DIR__ . '/../includes/database.php';
 require __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../includes/auth.php';
+require __DIR__ . '/../includes/rate_limit.php';
 
 applyCors();
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('AIMBASE_SESSID');
-    session_set_cookie_params([
-        'httponly' => true,
-        'samesite' => 'Lax',
-        'path'     => '/',
-    ]);
-    session_start();
-}
+bootSession();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
@@ -32,26 +28,30 @@ $action = $_GET['action'] ?? '';
 if ($method === 'GET') {
     // ---- /me : retorna o usuário da sessão ----
     if ($action === 'me') {
-        if (empty($_SESSION['user_id'])) {
-            jsonResponse(['user' => null]);
-        }
-        $stmt = db()->prepare("SELECT id, username, email, created_at FROM users WHERE id = ?");
-        $stmt->execute([(int)$_SESSION['user_id']]);
-        $user = $stmt->fetch();
-        if (!$user) {
-            session_destroy();
-            jsonResponse(['user' => null]);
-        }
+        $user = currentUser();
         jsonResponse(['user' => $user]);
+    }
+
+    // ---- /csrf : devolve o token anti-CSRF desta sessão ----
+    if ($action === 'csrf') {
+        jsonResponse(['token' => csrfToken()]);
     }
 
     errorResponse('Ação inválida.', 400);
 }
 
 if ($method === 'POST') {
+    // Login, registro e logout alteram o estado da sessão: exigem token CSRF
+    // (evita login CSRF — um site externo "forçar" o login na sua sessão).
+    bootSession();
+    verifyCsrf();
+
     $data = readJsonBody();
 
     if ($action === 'register') {
+        // 5 contas por IP por hora: bloqueia criação em massa de contas.
+        rateLimitEnforce('register', 5, 3600, 'ip');
+
         $username = trim($data['username'] ?? '');
         $email    = trim($data['email'] ?? '');
         $password = (string)($data['password'] ?? '');
@@ -70,20 +70,21 @@ if ($method === 'POST') {
         try {
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
             $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
-            $_SESSION['user_id'] = (int)$pdo->lastInsertId();
-            jsonResponse([
-                'user' => [
-                    'id'       => (int)$pdo->lastInsertId(),
-                    'username' => $username,
-                    'email'    => $email,
-                ],
-            ], true, 201, 'Conta criada. Boas-vindas ao AimBase.');
         } catch (PDOException $e) {
             errorResponse('E-mail ou username já está em uso.', 409);
         }
+
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = (int)$pdo->lastInsertId();
+
+        $user = currentUser();
+        jsonResponse(['user' => $user], true, 201, 'Conta criada. Boas-vindas ao AimBase.');
     }
 
     if ($action === 'login') {
+        // 10 tentativas por IP a cada 5 minutos (mesmo contador do /admin/login.php).
+        rateLimitEnforce('login', 10, 300, 'ip');
+
         $identifier = trim($data['email'] ?? '');
         $password   = (string)($data['password'] ?? '');
         $identifierLower = mb_strtolower($identifier);
@@ -102,22 +103,14 @@ if ($method === 'POST') {
 
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
-        jsonResponse([
-            'user' => [
-                'id'       => (int)$user['id'],
-                'username' => $user['username'],
-                'email'    => $user['email'],
-            ],
-        ], true, 200, 'Login realizado.');
+        rateLimitClear('login', 'ip');
+
+        $user = currentUser();
+        jsonResponse(['user' => $user], true, 200, 'Login realizado.');
     }
 
     if ($action === 'logout') {
-        $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        }
-        session_destroy();
+        destroySession();
         jsonResponse(null, true, 200, 'Sessão encerrada.');
     }
 

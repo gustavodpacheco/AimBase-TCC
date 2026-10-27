@@ -115,7 +115,10 @@ async function init() {
 
 function fillSelect(sel, options, placeholderLabel) {
   const el = document.querySelector(sel);
-  el.innerHTML = `<option value="">— ${placeholderLabel} —</option>` + options.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+  if (!el) return;
+  // esc() em value e label: nomes de jogo/time/periférico vêm do banco.
+  el.innerHTML = `<option value="">— ${esc(placeholderLabel)} —</option>` +
+    options.map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
 }
 
 async function loadPlayer() {
@@ -256,12 +259,8 @@ document.getElementById('playerForm').addEventListener('submit', async (ev) => {
     }).filter(Boolean),
   };
   try {
-    let url = ADMIN_BASE + '/players.php';
-    let opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) };
-    if (EDIT_ID) { payload.id = EDIT_ID; opts.method = 'PUT'; }
-    const res = await fetch(url, opts);
-    const json = await res.json();
-    if (!json.success) { toast(json.message); return; }
+    if (EDIT_ID) payload.id = EDIT_ID;
+    const json = await adminJson(ADMIN_BASE + '/players.php', EDIT_ID ? 'PUT' : 'POST', payload);
     toast(json.message);
     setTimeout(() => location.href = 'players.php', 700);
   } catch (err) { toast(err.message); }
@@ -271,7 +270,7 @@ const delBtn = document.getElementById('delBtn');
 if (delBtn) delBtn.addEventListener('click', async () => {
   if (!confirm('Excluir este jogador definitivamente?')) return;
   try {
-    await fetch(`${ADMIN_BASE}/players.php?id=${EDIT_ID}`, { method: 'DELETE' });
+    await adminJson(`${ADMIN_BASE}/players.php?id=${EDIT_ID}`, 'DELETE');
     toast('Jogador excluído.');
     setTimeout(() => location.href = 'players.php', 700);
   } catch (err) { toast(err.message); }

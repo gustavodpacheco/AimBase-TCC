@@ -1,6 +1,6 @@
 // ============================================================
 // lineups.js - Página de lineups (lineups.html)
-// Depende de: shared.js (applyTheme), data.js (valLineups).
+// Depende de: shared.js (esc, safeUrl, initTheme), data.js (valLineups).
 // ============================================================
 
 if (document.body.dataset.page === 'lineups') {
@@ -77,7 +77,9 @@ if (document.body.dataset.page === 'lineups') {
     })),
   ];
 
-  const colorTitles = { orange: 'Feita/aprendida por mim', purple: 'VCT', black: 'Guia Tseeky', yellow: 'YouTube (comunidade)' };
+  // Fonte (tooltip) de cada cor de clipe, por idioma.
+  const colorTitles = { orange: 'lineups.color.orange', purple: 'lineups.color.purple', black: 'lineups.color.black', yellow: 'lineups.color.yellow' };
+  const sideTitles = { attack: 'lineups.side.attack', defense: 'lineups.side.defense' };
 
   function ytEmbed(url) {
     const str = String(url);
@@ -94,16 +96,16 @@ if (document.body.dataset.page === 'lineups') {
   function buildMedia(src, label) {
     const embed = ytEmbed(src);
     if (embed) {
-      return `<iframe src="${embed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${esc(label)}"></iframe>`;
+      return `<iframe src="${embed}" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${esc(label)}"></iframe>`;
     }
-    return `<video src="${safeUrl(src)}" controls preload="metadata" playsinline></video>`;
+    return `<video src="${safeUrl(src)}" controls preload="none" playsinline></video>`;
   }
 
   function clipCard(item) {
     const tags = [];
     if (item.agent) tags.push(`<span class="clip-agent">${esc(item.agent)}</span>`);
-    if (item.side) tags.push(`<span class="clip-side clip-side--${esc(item.side)}">${item.side === 'attack' ? 'ATK' : 'DEF'}</span>`);
-    const dot = item.color ? `<span class="clip-color clip-color--${esc(item.color)}" title="${esc(colorTitles[item.color] || '')}"></span>` : '';
+    if (item.side) tags.push(`<span class="clip-side clip-side--${esc(item.side)}">${esc(I18N.t(sideTitles[item.side] || 'lineups.side.attack'))}</span>`);
+    const dot = item.color ? `<span class="clip-color clip-color--${esc(item.color)}" title="${esc(I18N.t(colorTitles[item.color] || 'lineups.color.orange'))}"></span>` : '';
     const tagsHtml = (tags.length || item.color) ? `<div class="clip-tags">${dot}${tags.join('')}</div>` : '';
     const labelHtml = `<div class="clip-label">${tagsHtml}<small>${esc(item.label)}</small></div>`;
 
@@ -119,7 +121,8 @@ if (document.body.dataset.page === 'lineups') {
   }
 
   const container = document.getElementById('lineupMaps');
-  if (container) {
+  function renderLineups() {
+    if (!container) return;
     container.innerHTML = lineups.map(group => {
       const hasDesktop = group.items.some(item => !item.portraitOnly);
       const gameBadge = `<span class="lineup-game lineup-game--${esc(group.gameClass)}">${esc(group.game)}</span>`;
@@ -129,7 +132,7 @@ if (document.body.dataset.page === 'lineups') {
           <span class="section-icon">◈</span>
           <h2>${esc(group.map)}</h2>
           ${gameBadge}
-          <span class="lineup-count">${group.items.length} ${group.items.length === 1 ? 'lineup' : 'lineups'}</span>
+          <span class="lineup-count">${esc(I18N.t('lineups.count', { count: group.items.length }))}</span>
         </div>
         <div class="clips-grid">
           ${group.items.map(clipCard).join('')}
@@ -138,7 +141,9 @@ if (document.body.dataset.page === 'lineups') {
     }).join('');
   }
 
-  const toggle = document.getElementById('themeToggle');
-  if (toggle) toggle.addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
-  applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
+  renderLineups();
+  // Rótulos de cor/lado e a contagem plural são gerados por JS: redesenha ao
+  // trocar de idioma (o i18n.js não tem data-i18n para reescrever sozinho).
+  document.addEventListener('i18n:changed', renderLineups);
+  initTheme();
 }

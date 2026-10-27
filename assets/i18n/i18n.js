@@ -33,9 +33,50 @@
   };
 
   // Fallbacks para strings geradas por JS dinamicamente (antes do JSON carregar).
+  // Precisa cobrir as chaves que o JS monta em runtime (rótulos das faixas de
+  // sensibilidade, título da 404), senão o texto aparece como "sens.cs2.low".
   var JS_FALLBACKS = {
     'directory.players': { one: '{{count}} jogador', other: '{{count}} jogadores' },
     'directory.noResults': 'Nenhum jogador encontrado.',
+    'sens.low': 'Baixa',
+    'sens.medium': 'Média',
+    'sens.high': 'Alta',
+    'sens.valorant.low': 'Baixa (< 0.20)',
+    'sens.valorant.medium': 'Média (0.20–0.45)',
+    'sens.valorant.high': 'Alta (≥ 0.45)',
+    'sens.cs2.low': 'Baixa (< 1.00)',
+    'sens.cs2.medium': 'Média (1.00–2.00)',
+    'sens.cs2.high': 'Alta (≥ 2.00)',
+    'sens.r6.low': 'Baixa (< 6)',
+    'sens.r6.medium': 'Média (6–12)',
+    'sens.r6.high': 'Alta (≥ 12)',
+    'page.notFoundTitle': 'Jogador não encontrado',
+    'common.notInformed': 'Não informado',
+    'common.noTeam': 'Sem time',
+    'common.visitor': 'Visitante',
+    'toast.copyFailed': 'Não foi possível copiar.',
+    'toast.playerAdded': 'Jogador adicionado.',
+    'toast.playerAddFailed': 'Não foi possível adicionar o jogador.',
+    'toast.sessionClosed': 'Sessão encerrada.',
+    'toast.commentPublished': 'Comentário publicado.',
+    'toast.commentFailed': 'Não foi possível publicar o comentário.',
+    'lineups.count': { one: '{{count}} lineup', other: '{{count}} lineups' },
+
+    // script.js chama setAuthMode() já no parse, antes do dicionário carregar.
+    'auth.title.login': 'ENTRAR',
+    'auth.title.register': 'CRIAR CONTA',
+    'auth.kicker.login': 'ENTRAR',
+    'auth.kicker.register': 'NOVA CONTA',
+    'auth.intro.login': 'Acesse sua conta para gerenciar seu perfil.',
+    'auth.intro.register': 'Crie sua conta e entre para a comunidade.',
+    'auth.emailPlaceholder.login': 'E-mail ou username',
+    'auth.emailPlaceholder.register': 'E-mail',
+    'auth.submit.login': 'ENTRAR',
+    'auth.submit.register': 'CADASTRAR',
+    'auth.switch.prompt.login': 'Não tem conta?',
+    'auth.switch.prompt.register': 'Já tem conta?',
+    'auth.switch.action.login': 'Cadastre-se',
+    'auth.switch.action.register': 'Entrar',
   };
 
   var state = { lang: DEFAULT_LANG, dict: null, cache: {} };
@@ -105,6 +146,16 @@
     document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
       var val = t(el.getAttribute('data-i18n-aria-label'));
       if (el.getAttribute('aria-label') !== val) el.setAttribute('aria-label', val);
+    });
+    // alt em <img>: o aria-label sozinho não substitui o texto alternativo,
+    // então sem isso a imagem continua com o alt estático em português.
+    // Chave ausente não vira alt: t() devolveria o nome da chave, que um
+    // leitor de tela leria em voz alta.
+    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n-alt');
+      var val = t(key);
+      if (!val || val === key) return;
+      if (el.getAttribute('alt') !== val) el.setAttribute('alt', val);
     });
   }
 
@@ -214,9 +265,13 @@
       document.documentElement.lang = lang;
       apply();
       updateSwitcherUI();
-      document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: lang } }));
+      announce(lang);
       return true;
     });
+  }
+
+  function announce(lang) {
+    document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: lang } }));
   }
 
   // Reaplica traduções se algum script sobrescrever um elemento data-i18n.
@@ -239,7 +294,7 @@
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ['data-i18n', 'data-i18n-vars', 'data-i18n-placeholder', 'data-i18n-title', 'data-i18n-aria-label'],
+      attributeFilter: ['data-i18n', 'data-i18n-vars', 'data-i18n-placeholder', 'data-i18n-title', 'data-i18n-aria-label', 'data-i18n-alt'],
     });
   }
 
@@ -261,6 +316,9 @@
       updateSwitcherUI();
       document.querySelectorAll('[data-lang-switcher]').forEach(setupSwitcher);
       observeDynamicContent();
+      // Even listeners de conteúdo montado por JS (rótulos de filtro, título
+      // da 404) rodaram antes do dicionário carregar e usaram JS_FALLBACKS.
+      announce(state.lang);
     });
   }
 

@@ -21,10 +21,11 @@ async function loadPlayersFromApi() {
           id: String(row.id),
           name: row.real_name || row.nickname,
           tag: row.nickname,
-          team: row.team_name || 'Sem time',
+          // Vazio fica como null; o fallback traduzido é aplicado em textOr() na exibição.
+    team: row.team_name || null,
           teamLogo: row.team_logo,
-          role: row.role || 'Não informado',
-          country: row.country || 'Não informado',
+    role: row.role || null,
+    country: row.country || null,
           photo: row.photo,
           slug: row.slug,
           game: row.game_name || 'VALORANT',
@@ -51,11 +52,59 @@ async function loadPlayersFromApi() {
 const requestedPlayer = new URLSearchParams(window.location.search).get('player');
 let selectedId = null;
 let proOnly = false;
-const $ = (id) => document.getElementById(id);
-const toast = $('toast');
 
-function message(text) { toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
 function initials(name) { return (name || '').split(' ').map(part => part[0]).slice(0, 2).join('') || '?'; }
+
+/**
+ * Faixas de sensibilidade por jogo: [min, max).
+ *
+ * `min` é INCLUSIVO e `max` é EXCLUSIVO, ou seja, intervalos meio-abertos. Isso
+ * faz as três faixas particionarem o eixo sem sobreposição nem buraco, e casa
+ * com os rótulos traduzidos ("Baixa (< 0.20)", "Alta (≥ 0.45)").
+ * CS2 e R6 usam escalas diferentes do VALORANT: 0.35 é "baixa" num e "média" no
+ * outro, então um único par de limites classificava todo mundo errado.
+ */
+const SENSITIVITY_BANDS = {
+  'VALORANT': { low: [0, 0.20], medium: [0.20, 0.45], high: [0.45, Infinity] },
+  'Counter-Strike 2': { low: [0, 1.00], medium: [1.00, 2.00], high: [2.00, Infinity] },
+  'Rainbow Six': { low: [0, 6], medium: [6, 12], high: [12, Infinity] },
+};
+const SENSITIVITY_BAND_ORDER = ['low', 'medium', 'high'];
+// Nome canônico do jogo -> prefixo das chaves i18n das faixas.
+const SENSITIVITY_BAND_I18N = {
+  'VALORANT': 'valorant',
+  'Counter-Strike 2': 'cs2',
+  'Rainbow Six': 'r6',
+};
+
+/** O jogador está na faixa escolhida? */
+function matchesSensitivityBand(player, band) {
+  const bands = SENSITIVITY_BANDS[gameBadge(player.game).game];
+  if (!bands || !bands[band]) return false;
+  const raw = player.sensitivity;
+  // Sem sensibilidade no banco não é "baixa": antes, null <= 0.20 era true e
+  // o jogador sem o campo caía na faixa baixa.
+  if (raw == null || String(raw).trim() === '') return false;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < 0) return false;
+  const [min, max] = bands[band];
+  return value >= min && value < max;
+}
+
+/**
+ * Rótulos das faixas dependem do jogo escolhido: os números no texto
+ * ("Baixa (até 0.20)") só fazem sentido para a escala daquele jogo.
+ * Sem jogo selecionado, mostra só o nome da faixa.
+ */
+function updateSensitivityLabels() {
+  const game = $('gameFilter').value;
+  const prefix = SENSITIVITY_BAND_I18N[game];
+  SENSITIVITY_BAND_ORDER.forEach(band => {
+    const option = document.querySelector(`#sensitivityFilter option[value="${band}"]`);
+    if (!option) return;
+    option.textContent = I18N.t(prefix ? `sens.${prefix}.${band}` : `sens.${band}`);
+  });
+}
 
 function getFilteredPlayers() {
   const query = $('playerSearch').value.toLowerCase();
@@ -65,7 +114,7 @@ function getFilteredPlayers() {
   const game = $('gameFilter').value;
   const dpi = $('dpiFilter').value;
   const sensitivityRange = $('sensitivityFilter').value;
-  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || (sensitivityRange === 'low' && player.sensitivity <= .20) || (sensitivityRange === 'medium' && player.sensitivity > .20 && player.sensitivity <= .45) || (sensitivityRange === 'high' && player.sensitivity > .45)));
+  return players.filter(player => (proOnly ? player.isPro : true) && `${player.name} ${player.tag} ${player.team || ''} ${player.game || ''}`.toLowerCase().includes(query) && (!game || player.game === game) && (!role || player.role === role) && (!team || player.team === team) && (!country || player.country === country) && (!dpi || String(player.dpi) === dpi) && (!sensitivityRange || matchesSensitivityBand(player, sensitivityRange)));
 }
 function selectPlayer(id) {
   const player = players.find(p => p.id === id);
@@ -84,9 +133,11 @@ function gameBadge(game) {
 function homeCardHTML(player) {
   const badge = gameBadge(player.game);
   const avatar = player.photo
-    ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy">`
+    ? `<img class="home-card__photo" src="${safeUrl(player.photo)}" alt="${esc(player.name)}" loading="lazy" decoding="async">`
     : `<span class="home-card__photo home-card__initials">${esc(initials(player.name))}</span>`;
-  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(player.team)}">` : '';
+  // Traduzido na exibição (e não no mapeamento) para acompanhar troca de idioma.
+  const team = textOr(player.team, 'common.noTeam');
+  const teamLogo = player.teamLogo ? `<img class="home-card__team-logo" src="${safeUrl(player.teamLogo)}" alt="Logo ${esc(team)}" loading="lazy" decoding="async">` : '';
   return `<button class="home-card ${player.id === selectedId ? 'active' : ''}" data-id="${esc(player.id)}" type="button" data-game="${esc(badge.game)}">
     <div class="home-card__media">
       ${avatar}
@@ -96,8 +147,8 @@ function homeCardHTML(player) {
     <div class="home-card__body">
       <strong class="home-card__name">${esc(player.name)}</strong>
       <div class="home-card__meta">
-        <span class="home-card__team">${teamLogo}${esc(player.team)}</span>
-        <span class="home-card__country">${esc(player.country)}</span>
+        <span class="home-card__team">${teamLogo}${esc(team)}</span>
+        <span class="home-card__country">${esc(textOr(player.country, 'common.notInformed'))}</span>
       </div>
     </div>
   </button>`;
@@ -125,6 +176,16 @@ heroSearch.addEventListener('keydown', event => {
   if (event.key === 'Enter') { event.preventDefault(); $('players').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 });
 ['gameFilter', 'roleFilter', 'teamFilter', 'countryFilter', 'dpiFilter', 'sensitivityFilter'].forEach(id => $(id).addEventListener('change', renderList));
+// Trocar o jogo muda os números no rótulo das faixas de sensibilidade.
+$('gameFilter').addEventListener('change', updateSensitivityLabels);
+updateSensitivityLabels();
+// Ao trocar de idioma, os textos que o i18n.js não conhece precisam ser
+// reescritos: os rótulos das faixas e os fallbacks traduzidos dos cards
+// (time/país), que são montados por JS.
+document.addEventListener('i18n:changed', () => {
+  updateSensitivityLabels();
+  renderList();
+});
 
 // ---- Aba "Pro Players" ----
 function setProFilter(enabled) {
@@ -136,12 +197,12 @@ function setProFilter(enabled) {
 document.getElementById('tabAll').addEventListener('click', () => setProFilter(false));
 document.getElementById('tabPro').addEventListener('click', () => setProFilter(true));
 
-applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
-$('themeToggle').addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+initTheme();
 const updateHeaderSearch = () => document.body.classList.toggle('scrolled', window.scrollY > 110);
 updateHeaderSearch();
 window.addEventListener('scroll', updateHeaderSearch, { passive: true });
-document.querySelector('.footer-brand p').textContent = 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.';
+// A tagline do rodapé já vem traduzida por data-i18n="footer.desc" no HTML;
+// o script não deve sobrescrever isso com texto fixo em português.
 
 // ---- Modal de adicionar jogador (via API) ----
 const modal = $('playerModal');
@@ -164,10 +225,10 @@ $('playerForm').addEventListener('submit', async event => {
     const res = await API.createPlayer(payload);
     event.currentTarget.reset();
     modal.close();
-    message(res.message || 'Jogador adicionado.');
+    showToast(res.message || I18N.t('toast.playerAdded'));
     await refreshPlayers();
   } catch (err) {
-    message(err.message || 'Não foi possível adicionar o jogador.');
+    showToast(err.message || I18N.t('toast.playerAddFailed'));
   } finally {
     playerFormBusy = false;
   }
@@ -208,23 +269,25 @@ async function loadFilters() {
   } catch { /* mantém filtros estáticos */ }
 }
 
-async function refreshPlayers() {
+/**
+ * Carrega a lista de jogadores e escolhe o selecionado.
+ *
+ * `preferRequested` só vale no boot: a URL pode pedir um jogador específico
+ * (?player=). Depois de criar um jogador, o que importa é voltar ao topo da
+ * lista, senão a seleção fica presa num id que acabou de mudar.
+ */
+async function refreshPlayers(preferRequested = false) {
   const loaded = await loadPlayersFromApi();
-  if (!loaded) {
-    players = [...defaultPlayers, ...savedPlayers];
-  }
-  const validRequested = requestedPlayer && players.some(p => p.id === requestedPlayer);
+  if (loaded) apiActive = true;
+  if (!loaded) players = [...defaultPlayers, ...savedPlayers];
+  const validRequested = preferRequested && requestedPlayer && players.some(p => p.id === requestedPlayer);
   selectedId = validRequested ? requestedPlayer : (players[0] || {}).id || null;
   renderList();
 }
 
 (async function initHome() {
-  const loaded = await loadPlayersFromApi();
-  if (loaded) apiActive = true;
-  if (!loaded) players = [...defaultPlayers, ...savedPlayers];
-  selectedId = players[0] ? players[0].id : null;
+  await refreshPlayers(true);
   loadFilters();
-  renderList();
 })();
 
 // ---- Autenticação (via API + sessão) ----
@@ -236,33 +299,41 @@ function renderAuth() {
   $('authTrigger').hidden = Boolean(user);
   $('authLogout').hidden = !user;
   if (user) $('authTrigger').textContent = user.username;
+  // A criação de jogador é uma escrita: só faz sentido para o painel (role=admin).
+  $('openModal').hidden = !(user && user.role === 'admin');
 }
 function setAuthMode(mode) {
   authMode = mode;
   const isRegister = mode === 'register';
-  $('authTitle').textContent = isRegister ? 'CRIAR CONTA' : 'ENTRAR';
-  $('authKicker').textContent = isRegister ? 'NOVA CONTA' : 'ENTRAR';
-  $('authIntro').textContent = isRegister ? 'Crie sua conta e entre para a comunidade.' : 'Acesse sua conta para gerenciar seu perfil.';
+  const p = isRegister ? 'register' : 'login';
+  $('authTitle').textContent = I18N.t('auth.title.' + p);
+  $('authKicker').textContent = I18N.t('auth.kicker.' + p);
+  $('authIntro').textContent = I18N.t('auth.intro.' + p);
   $('usernameField').hidden = !isRegister;
   $('authUsername').required = isRegister;
-  $('authEmail').placeholder = isRegister ? 'E-mail' : 'E-mail ou username';
+  $('authEmail').placeholder = I18N.t('auth.emailPlaceholder.' + p);
+  $('authEmail').setAttribute('aria-label', I18N.t('auth.emailPlaceholder.' + p));
   $('authPassword').autocomplete = isRegister ? 'new-password' : 'current-password';
-  $('authSubmit').textContent = isRegister ? 'CADASTRAR' : 'ENTRAR';
-  $('authSwitchCopy').innerHTML = isRegister ? 'Já tem conta? <button id="authSwitch" type="button">Entrar</button>' : 'Não tem conta? <button id="authSwitch" type="button">Cadastre-se</button>';
-  $('authSwitch').addEventListener('click', () => setAuthMode(isRegister ? 'login' : 'register'));
+  $('authSubmit').textContent = I18N.t('auth.submit.' + p);
+  // Antes o innerHTML recriava o <button> a cada troca e o listener era
+  // religado, acumulando handlers no botão anterior. O botão agora é fixo no
+  // HTML e só os textos mudam.
+  $('authSwitchPrompt').textContent = I18N.t('auth.switch.prompt.' + p);
+  $('authSwitch').textContent = I18N.t('auth.switch.action.' + p);
   setAuthMessage('');
 }
+$('authSwitch').addEventListener('click', () => setAuthMode(authMode === 'register' ? 'login' : 'register'));
 function openAuth(mode = 'login') { setAuthMode(mode); authModal.showModal(); $('authEmail').focus(); }
 $('authTrigger').addEventListener('click', () => openAuth());
 $('authLogout').addEventListener('click', async () => {
   try { await API.logout(); } catch { /* ignora */ }
   currentUser = null;
   renderAuth();
-  message('Sessão encerrada.');
+  showToast(I18N.t('toast.sessionClosed'));
 });
 $('authClose').addEventListener('click', () => authModal.close());
-$('forgotPassword').addEventListener('click', () => setAuthMessage('Em uma integração real, enviaremos um link de recuperação para seu e-mail.'));
-document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(`Login com ${button.dataset.provider} é uma demonstração nesta versão.`)));
+$('forgotPassword').addEventListener('click', () => setAuthMessage(I18N.t('auth.forgotInfo')));
+document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => setAuthMessage(I18N.t('auth.provider.demo', { provider: button.dataset.provider }))));
 $('authForm').addEventListener('submit', async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget));
@@ -274,9 +345,11 @@ $('authForm').addEventListener('submit', async event => {
     currentUser = res.data.user;
     authModal.close();
     renderAuth();
-    message(authMode === 'register' ? 'Conta criada. Boas-vindas ao AimBase.' : `Bem-vindo, ${currentUser.username}.`);
+    showToast(authMode === 'register'
+      ? I18N.t('auth.toast.registered')
+      : I18N.t('auth.toast.welcome', { username: currentUser.username }));
   } catch (err) {
-    setAuthMessage(err.message || 'Não foi possível concluir a operação.');
+    setAuthMessage(err.message || I18N.t('auth.toast.failed'));
   }
 });
 
@@ -288,4 +361,7 @@ async function initAuth() {
   } catch { currentUser = null; }
   renderAuth();
 }
+// O HTML do modal de auth vem em português como valor inicial; sem esta chamada
+// o texto fixo ficaria visível até o usuário abrir o modal.
+setAuthMode('login');
 initAuth();

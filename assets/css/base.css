@@ -12,6 +12,8 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* compensa o header sticky (top: 0) ao usar âncoras como #players */
+  scroll-padding-top: 96px;
 }
 
 body {

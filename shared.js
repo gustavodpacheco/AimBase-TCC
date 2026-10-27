@@ -3,18 +3,63 @@
 // Carregado antes de script.js e profile.js
 // ============================================================
 
+/** Atalho para document.getElementById, usado por todas as páginas. */
+const $ = id => document.getElementById(id);
+
 /** Escapa texto para uso seguro em HTML (previne XSS). */
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 
-/** Sanitiza URLs de atributos href/src, bloqueando javascript: e afins. */
-const safeUrl = value => {
-  const url = String(value || '').trim();
-  if (!url) return '#';
+/**
+ * Valida uma URL e devolve a forma normalizada (sem escape), ou null.
+ *
+ * Regras:
+ *  - recusa javascript:, data:, vbscript:, file: e qualquer esquema fora de http(s);
+ *  - remove controles/tabs/newlines, que o parser de URL ignora e que
+ *    esconderiam esquemas perigosos ("java\tscript:alert(1)");
+ *  - normaliza via URL() para pegar "//evil.com" e "/\evil.com";
+ *  - recusa credenciais embutidas (https://user:pass@host);
+ *  - aceita apenas http(s) absolutos e caminhos relativos à própria origem.
+ */
+const validatedUrl = value => {
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+
+  const cleaned = raw.replace(/[\u0000-\u001F\u007F]/g, '');
+  if (!cleaned) return null;
+
+  let parsed;
   try {
-    const p = new URL(url, window.location.origin);
-    if (p.protocol === 'javascript:' || p.protocol === 'data:') return '#';
-  } catch { return '#'; }
-  return url;
+    parsed = new URL(cleaned, window.location.origin);
+  } catch {
+    return null;
+  }
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+  if (parsed.username || parsed.password) return null;
+
+  const isRelative = !/^[a-z][a-z0-9+.-]*:/i.test(cleaned) && !cleaned.startsWith('//');
+  return isRelative ? cleaned : parsed.href;
+};
+
+/**
+ * URL segura para atributos href/src: validada por validatedUrl e
+ * escapada com esc(), pronta para ser interpolada em aspas.
+ * Devolve '#' quando inválida.
+ */
+const safeUrl = value => {
+  const safe = validatedUrl(value);
+  return safe === null ? '#' : esc(safe);
+};
+
+/**
+ * URL segura para valores de CSS (ex.: style.backgroundImage).
+ * Devolve 'none' quando inválida e escapa " ' \ e ) para não
+ * conseguir fechar a regra url("...").
+ */
+const safeCssUrl = value => {
+  const safe = validatedUrl(value);
+  if (safe === null) return 'none';
+  return `url("${safe.replace(/["'()\\]/g, char => '\\' + char)}")`;
 };
 
 /** Exibe um toast breve. */
@@ -26,6 +71,30 @@ function showToast(text) {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+/**
+ * Texto de exibição para um campo que pode vir vazio do banco.
+ * A camada de dados guarda `null` (não um texto já traduzido) para que trocar
+ * o idioma não deixe rótulos velhos na tela; a tradução acontece na hora de
+ * exibir. Sem argumento `key`, devolve o próprio valor.
+ */
+function textOr(value, key) {
+  if (value !== null && value !== undefined && String(value).trim() !== '') return String(value);
+  return key ? I18N.t(key) : '';
+}
+
+/**
+ * Formata uma data conforme o idioma ativo, usando Intl.DateTimeFormat.
+ * Aceita string ISO, timestamp ou Date. Ausente/inválida vira '–', no mesmo
+ * padrão de placeholder usado nos demais campos.
+ */
+function formatDate(value, options) {
+  if (value === null || value === undefined || value === '') return '–';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '–';
+  const locale = (typeof I18N !== 'undefined' && I18N.lang) || 'pt-BR';
+  return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
 /** Aplica (e alterna) o tema claro/escuro. */
 function applyTheme(theme) {
   document.body.classList.toggle('dark', theme === 'dark');
@@ -34,12 +103,25 @@ function applyTheme(theme) {
   localStorage.setItem('val-tactical-theme', theme);
 }
 
+/**
+ * Aplica o tema salvo e liga o botão de alternância.
+ *
+ * As três páginas repetiam esse par (applyTheme no load + listener no toggle)
+ * e a do lineups ainda protegia o botão com um if. Aqui o elemento é opcional
+ * por decisão, e o estado inicial vem sempre do localStorage.
+ */
+function initTheme() {
+  applyTheme(localStorage.getItem('val-tactical-theme') || 'dark');
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) toggle.addEventListener('click', () => applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark'));
+}
+
 /** Copia texto para a área de transferência com feedback. */
 async function copyText(text, successMsg) {
   try {
     await navigator.clipboard.writeText(text);
     showToast(successMsg);
   } catch {
-    showToast('Não foi possível copiar.');
+    showToast(I18N.t('toast.copyFailed'));
   }
 }

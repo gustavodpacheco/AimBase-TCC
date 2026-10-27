@@ -30,7 +30,7 @@ function playerRows(list) {
     const l = pLabel(p);
     const name = p.real_name || p.nickname;
     return `<tr>
-      <td>${p.photo ? `<img class="admin-avatar" src="${window.safeAdminUrl ? safeAdminUrl(p.photo) : esc(p.photo)}">` : ''} <strong>${esc(name)}</strong></td>
+      <td>${p.photo ? `<img class="admin-avatar" src="${window.safeAdminUrl ? safeAdminUrl(p.photo) : esc(p.photo)}" alt="">` : ''} <strong>${esc(name)}</strong></td>
       <td>${p.is_pro ? '<span class="admin-badge admin-badge--pro">PRO</span> ' : ''}${esc(p.nickname)}</td>
       <td><span class="admin-badge">${esc(l.game)}</span></td>
       <td>${esc(l.dpi)}</td>
@@ -59,7 +59,7 @@ function renderPlayers(q = '') {
   document.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async () => {
     if (!confirm(`Excluir o jogador "${btn.dataset.name}"?`)) return;
     try {
-      await fetch(`${ADMIN_BASE}/players.php?id=${btn.dataset.del}`, { method: 'DELETE' });
+      await adminJson(`${ADMIN_BASE}/players.php?id=${btn.dataset.del}`, 'DELETE');
       toast('Jogador excluído.');
       loadPlayers();
     } catch (err) { toast(err.message); }
@@ -80,14 +80,6 @@ async function loadPlayers() {
 }
 
 document.getElementById('playersSearch').addEventListener('input', e => renderPlayers(e.currentTarget.value.trim().toLowerCase()));
-
-function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'admin-toast show';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2500);
-}
 
 loadPlayers();
 </script>
