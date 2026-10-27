@@ -17,7 +17,7 @@ const defaultPlayers = [{
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da interface', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'MSAA 4x'], ['Filtragem anisotrópica', '4x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Desligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['NVIDIA Reflex', 'On + Boost']],
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600', 'https://www.pichau.com.br/processador-amd-ryzen-5-5600-6-core-12-threads-3-5ghz-4-4ghz-turbo-cache-35mb-am4-100-100000927box', 'assets/rzn.jpg'], ['Placa de vídeo', 'RTX 3060 12GB', 'https://www.foxgamerinfo.com.br/product-page/placa-de-v%C3%ADdeo-geforce-rtx-3060-12gb-gddr6', 'assets/rtx.jpeg']],
   headset: { name: 'MCHOSE V9 Pro', link: 'https://pt.aliexpress.com/item/1005011745761008.html' },
-  productImages: { monitor: 'assets/products/superframe-sfp2415.jpg', mouse: 'assets/products/atk-a9-plus.jpg', keyboard: 'assets/products/madlions-68-he.jpg', headset: 'assets/products/mchose-v9-pro.jpg', mousepad: 'assets/products/atk-99g-xsoft.png' },
+  productImages: { monitor: 'assets/products/superframe-sfp2415.jpg', mouse: 'assets/products/atk-a9-plus.png', keyboard: 'assets/products/madlions-68-he.jpg', headset: 'assets/products/mchose-v9-pro.jpg', mousepad: 'assets/products/atk-99g-xsoft.png' },
   links: { mouse: 'https://pt.aliexpress.com/item/1005011812220400.html', keyboard: 'https://pt.aliexpress.com/item/1005008299208938.html', mousepad: 'https://pt.aliexpress.com/item/1005011561185122.html', monitor: 'https://www.terabyteshop.com.br/produto/33583' }
 }, {
   id: 'z4gb', name: 'Gabriel Felipi', tag: 'Z4GB#TOP1', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
@@ -38,7 +38,7 @@ const defaultPlayers = [{
   social: { Instagram: 'https://www.instagram.com/costa22_hand/' },
   headset: { name: 'TRUTHEAR x Crinacle ZERO In-ear Monitor', link: 'https://truthear.com/products/zero' },
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da interface', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'MSAA 4x'], ['Filtragem anisotrópica', '4x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Desligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['NVIDIA Reflex', 'On + Boost']],
-  productImages: { mouse: 'assets/products/tardus-logitech-g403-hero.jpg', keyboard: 'assets/products/tardus-ajazz-ak820.png', headset: 'assets/TRUTHEAR.jpg', monitor: 'assets/products/tardus-duex-dx270qgp165.jpg' },
+  productImages: { mouse: 'assets/products/tardus-logitech-g403-hero.png', keyboard: 'assets/products/tardus-ajazz-ak820.png', headset: 'assets/TRUTHEAR.jpg', monitor: 'assets/products/tardus-duex-dx270qgp165.jpg' },
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600G', 'https://www.mercadolivre.com.br/processador-amd-ryzen5-5600g-com-video-6-nucleos-12-fios-39ghz-am4-ryzen-5/p/MLB18424403', 'assets/ryzeng.webp'], ['Placa de vídeo', 'RTX 3060 8GB', 'https://www.kabum.com.br/produto/543498/placa-de-video-rtx-3060-gigabyte-gaming-oc-8gb-gddr6-128bits', 'assets/rtx.webp']],
   links: { mouse: 'https://www.kabum.com.br/produto/102649', keyboard: 'https://pt.aliexpress.com/item/1005007805708183.html', mousepad: '', monitor: 'https://www.setupninja.com.br/' }
 }, {
@@ -48,7 +48,7 @@ const defaultPlayers = [{
   social: { Instagram: 'https://www.instagram.com/dannzx_01/' },
   videoSettings: [['Resolução', '1280x960'], ['Proporção', '4:3'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da UI', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'Nenhum'], ['Filtragem anisotrópica', '1x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Ligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['NVIDIA Reflex', 'On + Boost']],
   headset: { name: 'Havit H2002D', link: 'https://www.amazon.com.br/Headphone-Ouvido-HV-H2002d-Microfone-Falante/dp/B07Y2G7VX5' },
-  productImages: { mouse: 'assets/products/danilo-delux-m800-pro.jpg', keyboard: 'assets/products/danilo-redragon-daksa.jpg', headset: 'assets/havit.webp', monitor: 'assets/products/danilo-lg-27gs60f-b.jpg' },
+  productImages: { mouse: 'assets/products/danilo-delux-m800-pro.png', keyboard: 'assets/products/danilo-redragon-daksa.jpg', headset: 'assets/havit.webp', monitor: 'assets/products/danilo-lg-27gs60f-b.jpg' },
   links: { mouse: 'https://www.mercadolivre.com.br/', keyboard: 'https://www.kabum.com.br/produto/202254', mousepad: '', monitor: 'https://www.kabum.com.br/produto/620992' },
   pcSpecs: [['Processador', 'AMD Ryzen 7 5700X', 'https://www.pichau.com.br/processador-amd-ryzen-7-5700x-8-core-16-threads-3-4ghz-4-6ghz-turbo-cache-36mb-am4-100-100000926wof', 'assets/ryzen7.jpg'], ['Placa de vídeo', 'RTX 3060 12GB', 'https://www.foxgamerinfo.com.br/product-page/placa-de-v%C3%ADdeo-geforce-rtx-3060-12gb-gddr6', 'assets/rtx.jpeg']]
 }, {
@@ -58,7 +58,7 @@ const defaultPlayers = [{
   headset: { name: 'Mintak Pro Wireless', link: 'https://titorion.com.br/product/headset-gamer-mintak-pro-wireless-2-4ghz-preto-1' },
   social: { Instagram: 'https://www.instagram.com/oggomes___/' },
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Qualidade', 'Baixa'], ['Multisampling Anti-Aliasing', 'Nenhum'], ['Filtro textures', 'Bilinear'], ['Shaders', 'Baixo'], ['Sombras', 'Desligadas'], ['Detalhes do modelo', 'Baixo'], ['Destaque de inimigo', 'Yellow (Deuteranopia)']],
-  productImages: { mouse: 'assets/attack.jpg', keyboard: 'assets/kumara.webp', headset: 'assets/mintak.webp', mousepad: 'assets/pad.webp', monitor: 'assets/products/igor-lg-27gs60f-b.jpg' },
+  productImages: { mouse: 'assets/attack.png', keyboard: 'assets/kumara.webp', headset: 'assets/mintak.webp', mousepad: 'assets/pad.webp', monitor: 'assets/products/igor-lg-27gs60f-b.jpg' },
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600G (vídeo integrado)', 'https://www.mercadolivre.com.br/processador-amd-ryzen5-5600g-com-video-6-nucleos-12-fios-39ghz-am4-ryzen-5/p/MLB18424403#polycard_client=search-desktop&float_highlight=last_units&be_origin=backend&overlay_label=not_apply&search_layout=grid&position=5&type=product&tracking_id=06f9e4ad-5d8d-43cb-ba03-5155137f32bb&wid=MLB3468315723&sid=search', 'assets/ryzeng.webp']],
   links: { mouse: 'https://attackshark.net.br/products/attack-shark-x11-wireless-gaming-mouse-charging-dock', keyboard: 'https://www.kabum.com.br/produto/93159/teclado-mecanico-gamer-redragon-kumara-anti-ghosting-rgb-switch-outemu-red-abnt2-preto-pt-k552rgb-1-pt-red', mousepad: 'https://www.magazineluiza.com.br/mousepad-preto-16x21-generico/p/ff5caef714/in/mspd/', monitor: 'https://www.kabum.com.br/produto/620992' }
 }, {
@@ -69,7 +69,7 @@ const defaultPlayers = [{
   social: { Instagram: 'https://www.instagram.com/thomas__evangelista' },
   videoSettings: [['Qualidade de Textura', 'Baixa'], ['Filtragem de Textura', 'Linear'], ['Qualidade de LOD', 'Alta'], ['Qualidade de Sombras', 'Média'], ['Reflexos, Oclusão de Ambiente e Efeitos de Lente', 'Desligados'], ['Campo de Visão (FOV)', '90'], ['Anti-Aliasing', 'Desligado'], ['Entrada de dados bruta', 'Ativado']],
   pcSpecs: [['Processador', 'AMD Ryzen 5 Pro 3600G', 'https://www.kabum.com.br/produto/688260/processador-amd-ryzen-5-pro-3600g-3-6ghz-4-2ghz-max-turbo-am4-oem', 'assets/3600.webp']],
-  productImages: { mouse: 'assets/notho.webp', keyboard: 'assets/dyau.jpg' },
+  productImages: { mouse: 'assets/notho.png', keyboard: 'assets/dyau.jpg' },
   links: { mouse: 'https://www.redragon.store/mouse-gamer-redragon-nothosaur-m606-3200-dp', keyboard: 'https://www.pichau.com.br/teclado-gamer-redragon-dyaus2-rgb-k509rgb-pt', mousepad: '', monitor: '' }
 }, {
   id: 'mgk', name: 'Miguel Marlon', tag: 'ferreirinhachb#3717', team: 'Free Agent', role: 'Iniciador', country: '🇧🇷 Brasil',
@@ -80,7 +80,7 @@ const defaultPlayers = [{
   headset: { name: 'QKZ In-ear', link: 'https://www.mercadolivre.com.br/fone-de-ouvido-gamer-dj-musicos-retorno-palco-inear-ccase-cor-preto/p/MLB57335841#polycard_client=search-desktop&be_origin=backend&overlay_label=not_apply&search_layout=grid&position=7&type=product&tracking_id=eeb7bae5-3c19-4de6-bac1-8f73d0129e99&wid=MLB5755630628&sid=search' },
   videoSettings: [['Resolução', '1280x960'], ['Proporção', '4:3'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da UI', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'Nenhum'], ['Filtragem anisotrópica', '1x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Desligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['NVIDIA Reflex', 'Ativado']],
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600GT (vídeo integrado)', 'https://www.pichau.com.br/processador-amd-ryzen-5-5600gt-6-core-12-threads-3-6ghz-4-6ghz-turbo-cache-19mb-am4-100-100001488box', 'assets/ryzengt.jpg']],
-  productImages: { mouse: 'assets/products/atk-a9-plus.jpg', keyboard: 'assets/products/teclado.webp', mousepad: 'assets/products/mousepad.webp', headset: 'assets/qkz.webp', monitor: 'assets/products/monitor.webp' },
+  productImages: { mouse: 'assets/products/atk-a9-plus.png', keyboard: 'assets/products/teclado.webp', mousepad: 'assets/products/mousepad.webp', headset: 'assets/qkz.webp', monitor: 'assets/products/monitor.webp' },
   links: { mouse: 'https://www.amazon.com/ATK-Dragonfly-A9-Lightweight-Adjustable/dp/B0FNC9H56K?th=1', keyboard: 'https://global.machenike.com/pt-br/products/k500', mousepad: 'https://www.amazon.com.br/Mouse-pad-pk-control-1/dp/B0DFW1CWPX', monitor: 'https://www.shop.samsung.com.br/monitor-samsung-essential-s3-32-polegadas/p' }
 }, {
   id: 'fallen', name: 'Gabriel Toledo', tag: 'FalleN', team: 'FURIA', role: 'IGL / AWP', country: '🇧🇷 Brasil',
@@ -102,7 +102,7 @@ const defaultPlayers = [{
   crosshair: '0;P;h;0;0l;4;0o;0;0a;1;0f;0;1b;0', crosshairImage: 'assets/++.png',
   social: { Instagram: 'https://www.instagram.com/aspaszin/', Twitter: 'https://x.com/aspaszin', Twitch: 'https://www.twitch.tv/aspaszin', Youtube: 'https://www.youtube.com/channel/UC54ubmq5wHM3fK0ERA856Zg' },
   headset: { name: 'Razer BlackShark V3 Pro', link: 'https://amzn.to/419l8Jy' },
-  productImages: { mouse: 'assets/gpro.jpg', keyboard: 'assets/atk.webp', mousepad: 'assets/qcK.jpg', monitor: 'assets/zowie.jpg', headset: 'assets/razer.jpg' },
+  productImages: { mouse: 'assets/gpro.png', keyboard: 'assets/atk.webp', mousepad: 'assets/qcK.jpg', monitor: 'assets/zowie.jpg', headset: 'assets/razer.jpg' },
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método de proporção', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Qualidade de material', 'Baixa'], ['Qualidade de textura', 'Baixa'], ['Qualidade de detalhe', 'Baixa'], ['Qualidade de interface', 'Baixa'], ['Vignette', 'Desligado'], ['VSync', 'Desligado'], ['Anti-Aliasing', 'Nenhum'], ['Filtragem anisotrópica', '1x'], ['Improve Clarity', 'Desligado'], ['Experimental Sharpening', 'Desligado'], ['Bloom', 'Ligado'], ['Distorção', 'Desligado'], ['Sombras projetadas', 'Desligado'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['Monitor · DyAc', 'Premium'], ['Monitor · Black eQualizer', '10'], ['Monitor · Color Vibrance', '10'], ['Monitor · Low Blue Light', '0'], ['Monitor · Picture Mode', 'FPS 1'], ['Monitor · Brilho', '88'], ['Monitor · Contraste', '50'], ['Monitor · Nitidez', '7'], ['Monitor · Gamma', '3'], ['Monitor · Temperatura de cor', 'User Define'], ['Monitor · RGB', '89/87/100'], ['Monitor · AMA', 'Premium'], ['GPU · Digital Vibrance', '50%'], ['Teclado · Código do perfil', '78f7950fb2896b5528db0b9c86b632249822']],
   pcSpecs: [['Processador', 'Intel Core i7-13700K', 'https://amzn.to/3J6SDEm', 'assets/i7.jpg'], ['Placa de vídeo', 'NVIDIA GeForce RTX 5080', 'https://amzn.to/4h9U4ir', 'assets/asus.jpg'], ['Gabinete', 'NZXT H7 Flow', 'https://amzn.to/4cpUm2T', 'assets/gabinete.jpg']],
   links: { mouse: 'https://amzn.to/3q86C2l', keyboard: 'https://amzn.to/4hrl3ac', mousepad: 'https://amzn.to/4tI6c0l', monitor: 'https://amzn.to/4a0nzAd' }
@@ -114,7 +114,7 @@ const defaultPlayers = [{
   crosshair: '0;P;c;7;o;1;d;1;a;0.943;0b;0;1b;0', crosshairImage: 'assets/download.png',
   social: { Twitter: 'https://twitter.com/NoiaFPS', Twitch: 'https://www.twitch.tv/NoiaVAL' },
   headset: { name: 'SteelSeries Arctis Nova Pro', link: 'https://amzn.to/3tMDkrP' },
-  productImages: { mouse: 'assets/wl.jpg', keyboard: 'assets/wooting.webp', mousepad: 'assets/artisan.jpg', monitor: 'assets/400hz.jpg', headset: 'assets/steel.jpg' },
+  productImages: { mouse: 'assets/wl.png', keyboard: 'assets/wooting.webp', mousepad: 'assets/artisan.jpg', monitor: 'assets/400hz.jpg', headset: 'assets/steel.jpg' },
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método de proporção', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade de interface', 'Baixa'], ['Vignette', 'Desligado'], ['VSync', 'Desligado'], ['Anti-Aliasing', 'Nenhum'], ['Filtragem anisotrópica', '8x'], ['Improve Clarity', 'Desligado'], ['Experimental Sharpening', 'Desligado'], ['Bloom', 'Desligado'], ['Distorção', 'Desligado'], ['Sombras projetadas', 'Desligado']],
   pcSpecs: [],
   links: { mouse: 'https://amzn.to/3TBrhen', keyboard: 'https://wooting.io/wooting-60he', mousepad: 'https://amzn.to/2K0cnMG', monitor: 'https://amzn.to/4cAR1xz' }

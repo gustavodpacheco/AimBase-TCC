@@ -261,6 +261,15 @@
     grid-template-columns: 1fr;
   }
 
+  .mouse-product {
+    flex-wrap: wrap;
+  }
+
+  .mouse-product > div {
+    flex: 1 1 120px;
+    min-width: 0;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }

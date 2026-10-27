@@ -103,10 +103,11 @@ INSERT INTO player_settings
 SELECT p.id, 1, 2, 3, 4, 5,
   800, 0.4500, 360, 1000, '1920x1080', '16:9', '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Jett', 'Exemplo.',
-  'assets/products/atk-a9-plus.jpg', 'assets/products/madlions-68-he.jpg', 'assets/products/atk-99g-xsoft.png', 'assets/products/superframe-sfp2415.jpg', 'assets/products/mchose-v9-pro.jpg',
+  'assets/products/atk-a9-plus.png', 'assets/products/madlions-68-he.jpg', 'assets/products/atk-99g-xsoft.png', 'assets/products/superframe-sfp2415.jpg', 'assets/products/mchose-v9-pro.jpg',
   'https://pt.aliexpress.com/item/1005011812220400.html', 'https://pt.aliexpress.com/item/1005008299208938.html', 'https://pt.aliexpress.com/item/1005011561185122.html', 'https://www.terabyteshop.com.br/produto/33583', 'https://pt.aliexpress.com/item/1005011745761008.html'
 FROM players p WHERE p.slug = 'pacheco'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), sensitivity = VALUES(sensitivity), edpi = VALUES(edpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), sensitivity = VALUES(sensitivity), edpi = VALUES(edpi),
+  product_image_mouse = VALUES(product_image_mouse);
 
 INSERT INTO player_settings
 (player_id, mouse_id, keyboard_id, mousepad_id, headset_id, monitor_id,
@@ -131,10 +132,10 @@ INSERT INTO player_settings
 SELECT p.id, 11, 12, NULL, 9,
   1600, 0.3200, 512, 1000, '1920x1080', '16:9', 'Não informado', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Sage', 'Exemplo.',
-  'assets/products/tardus-logitech-g403-hero.jpg', 'assets/products/tardus-ajazz-ak820.png', 'assets/products/tardus-duex-dx270qgp165.jpg',
+  'assets/products/tardus-logitech-g403-hero.png', 'assets/products/tardus-ajazz-ak820.png', 'assets/products/tardus-duex-dx270qgp165.jpg',
   'https://www.kabum.com.br/produto/102649', 'https://pt.aliexpress.com/item/1005007805708183.html', 'https://www.setupninja.com.br/'
 FROM players p WHERE p.slug = 'tardus'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), product_image_mouse = VALUES(product_image_mouse);
 
 INSERT INTO player_settings
 (player_id, mouse_id, monitor_id,
@@ -145,10 +146,10 @@ INSERT INTO player_settings
 SELECT p.id, 6, 9,
   1600, 0.1000, 160, 1000, '1920x1080', '16:9', 'Não informado', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Sova', 'Exemplo.',
-  'assets/products/danilo-delux-m800-pro.jpg', 'assets/products/danilo-lg-27gs60f-b.jpg',
+  'assets/products/danilo-delux-m800-pro.png', 'assets/products/danilo-lg-27gs60f-b.jpg',
   'https://www.mercadolivre.com.br/', 'https://www.kabum.com.br/produto/620992'
 FROM players p WHERE p.slug = 'danilo-andrade'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), product_image_mouse = VALUES(product_image_mouse);
 
 -- Pro players
 INSERT INTO player_settings
@@ -182,10 +183,10 @@ SELECT p.id,
   (SELECT id FROM peripherals WHERE slug = 'zowie-xl2586x'),
   800, 0.4000, 320, 1000, '1920x1080', '16:9', '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Jett', 'Config VALORANT (fonte: prosettings.net).',
-  'assets/gpro.jpg', 'assets/atk.webp', 'assets/qcK.jpg', 'assets/zowie.jpg', 'assets/razer.jpg',
+  'assets/gpro.png', 'assets/atk.webp', 'assets/qcK.jpg', 'assets/zowie.jpg', 'assets/razer.jpg',
   'https://amzn.to/3q86C2l', 'https://amzn.to/4hrl3ac', 'https://amzn.to/4tI6c0l', 'https://amzn.to/4a0nzAd', 'https://amzn.to/419l8Jy'
 FROM players p WHERE p.slug = 'aspas'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), product_image_mouse = VALUES(product_image_mouse);
 
 INSERT INTO player_settings
 (player_id, mouse_id, keyboard_id, mousepad_id, headset_id, monitor_id,
@@ -202,10 +203,10 @@ SELECT p.id,
   800, 0.2500, 200, NULL, '1920x1080', '16:9',
   '0;s;1;P;c;7;o;0.443;d;1;0t;6;0l;1;0o;0;0a;1;0f;0;1t;6;1l;1;1o;0;1a;1;1m;0;1f;0', 'assets/mira.png?v=4',
   NULL, NULL, NULL, NULL, 'Config VALORANT (fonte: prosettings.net).',
-  'assets/wl.jpg', 'assets/wooting.webp', 'assets/artisan.jpg', 'assets/400hz.jpg', 'assets/steel.jpg',
+  'assets/wl.png', 'assets/wooting.webp', 'assets/artisan.jpg', 'assets/400hz.jpg', 'assets/steel.jpg',
   'https://amzn.to/3TBrhen', 'https://wooting.io/wooting-60he', 'https://amzn.to/2K0cnMG', 'https://amzn.to/4cAR1xz', 'https://amzn.to/3tMDkrP'
 FROM players p WHERE p.slug = 'noia'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), product_image_mouse = VALUES(product_image_mouse);
 
 INSERT INTO player_settings
 (player_id, mouse_id, keyboard_id, mousepad_id, headset_id, monitor_id,
@@ -224,6 +225,17 @@ SELECT p.id,
   'https://amzn.to/3q86C2l', 'https://amzn.to/45VrFYV', 'https://amzn.to/2URoRXu', 'https://amzn.to/2Goc9fW', 'https://amzn.to/2SMq1pR'
 FROM players p WHERE p.slug = 'bizinha'
 ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+
+-- Fallback mouse photos (transparent backgrounds)
+UPDATE player_settings ps
+JOIN players p ON p.id = ps.player_id
+SET ps.product_image_mouse = 'assets/lobo.webp'
+WHERE p.slug = 'fallen';
+
+UPDATE player_settings ps
+JOIN players p ON p.id = ps.player_id
+SET ps.product_image_mouse = 'assets/log.webp'
+WHERE p.slug = 'bizinha';
 
 INSERT INTO player_video_settings (player_id, setting_key, setting_value, sort_order)
 SELECT pl.id, v.k, v.v, v.o

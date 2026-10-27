@@ -144,6 +144,22 @@ if (document.body.dataset.page === 'profile') {
       scopedRaw != null && String(scopedRaw).trim() !== '' && Number.isFinite(scopedNum) ? scopedNum.toFixed(2) : '–';
     const naoInformado = I18N.t('common.notInformed');
     $('mouseName').textContent = player.mouse || naoInformado;
+    const mouseThumbWrap = $('mouseThumbWrap');
+    const mouseThumb = $('mouseThumb');
+    const mouseFallback = $('mouseFallback');
+    const mouseImage = player.productImages?.mouse;
+    if (mouseThumbWrap && mouseThumb && mouseFallback) {
+      const hasMouseImage = Boolean(mouseImage);
+      mouseThumbWrap.hidden = !hasMouseImage;
+      mouseFallback.hidden = hasMouseImage;
+      if (hasMouseImage) {
+        mouseThumb.src = safeUrl(mouseImage);
+        mouseThumb.alt = player.mouse ? `${I18N.t('settings.productMouse')}: ${player.mouse}` : I18N.t('settings.productMouse');
+      } else {
+        mouseThumb.removeAttribute('src');
+        mouseThumb.alt = '';
+      }
+    }
     $('keyboardName').textContent = player.keyboard || naoInformado;
     $('mousepadName').textContent = player.mousepad || naoInformado;
     $('monitorName').textContent = player.monitor || naoInformado;

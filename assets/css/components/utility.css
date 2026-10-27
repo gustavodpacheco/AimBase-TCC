@@ -114,6 +114,31 @@
   opacity: 0.9;
 }
 
+.gear-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  flex: none;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-card);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  overflow: hidden;
+}
+
+.gear-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gear-thumb[hidden],
+.mouse-product .product-icon[hidden] {
+  display: none;
+}
+
 .mouse-product small {
   display: block;
   color: var(--text-muted);
