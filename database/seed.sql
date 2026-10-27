@@ -101,12 +101,12 @@ INSERT INTO player_settings
  product_image_mouse, product_image_keyboard, product_image_mousepad, product_image_monitor, product_image_headset,
  product_link_mouse, product_link_keyboard, product_link_mousepad, product_link_monitor, product_link_headset)
 SELECT p.id, 1, 2, 3, 4, 5,
-  800, 0.5000, 400, 1000, '1920x1080', '16:9', '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', 'assets/mira.png?v=4',
+  800, 0.4500, 360, 1000, '1920x1080', '16:9', '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Jett', 'Exemplo.',
   'assets/products/atk-a9-plus.jpg', 'assets/products/madlions-68-he.jpg', 'assets/products/atk-99g-xsoft.png', 'assets/products/superframe-sfp2415.jpg', 'assets/products/mchose-v9-pro.jpg',
   'https://pt.aliexpress.com/item/1005011812220400.html', 'https://pt.aliexpress.com/item/1005008299208938.html', 'https://pt.aliexpress.com/item/1005011561185122.html', 'https://www.terabyteshop.com.br/produto/33583', 'https://pt.aliexpress.com/item/1005011745761008.html'
 FROM players p WHERE p.slug = 'pacheco'
-ON DUPLICATE KEY UPDATE dpi = VALUES(dpi);
+ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), sensitivity = VALUES(sensitivity), edpi = VALUES(edpi);
 
 INSERT INTO player_settings
 (player_id, mouse_id, keyboard_id, mousepad_id, headset_id, monitor_id,

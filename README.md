@@ -45,6 +45,7 @@ C:\laragon\www\prosettings-page-main\
 ├── admin\               # Painel administrativo
 ├── config\              # Conexão: database.php (versionado) + database.local.php (seu)
 ├── database\            # schema.sql, seed.sql, migrations\ e dev\ (seed só local)
+├── docs\                # Monografia, diagramas, roteiro/slides e screenshots
 ├── includes\            # Helpers PHP (auth.php, functions.php, rate_limit.php, database.php)
 ├── storage\ratelimit\   # Contadores de rate limit (gerados em runtime, bloqueados na web)
 ├── assets\              # brands\, players\, products\, css\, js\, i18n\ + *.mp4
@@ -63,7 +64,9 @@ C:\laragon\www\prosettings-page-main\
 O CSS fica em `assets/css/` (tokens, base, layout, componentes e páginas). Não há
 `style.css` na raiz.
 
-> Acesse pelo navegador em: `http://localhost/prosettings-page-main/`
+> Acesse pelo navegador em: `http://localhost/prosettings-page-main/`. Se o
+> Apache estiver configurado na porta 8080 (como neste ambiente de validação),
+> use `http://localhost:8080/prosettings-page-main/`.
 
 ---
 
@@ -195,6 +198,13 @@ domínios em produção.
 | Perfil de jogador     | `http://localhost/prosettings-page-main/player.html?player=pacheco`    |
 | Lineups               | `http://localhost/prosettings-page-main/lineups.html`                  |
 | Painel administrativo | `http://localhost/prosettings-page-main/admin/index.php`               |
+
+> Se o Apache estiver na porta 8080, acrescente `:8080` a todas as URLs acima.
+
+O painel administrativo cobre o CRUD de **jogadores, jogos, times e periféricos**,
+além da moderação de comentários. Todas as páginas do painel exigem login com
+`role = admin`; o perfil de jogador exibe os comentários e exige login para
+publicar.
 
 O `player.html` aceita `?player=<slug>` ou `?id=<id>`. Um slug inexistente não
 carrega um perfil vazio: mostra a seção "Jogador não encontrado".
@@ -443,6 +453,20 @@ A tela de login do painel só sugere as credenciais com `APP_ENV=dev`.
 ## Relatório de melhorias
 
 O [`RELATORIO.md`](RELATORIO.md) traz o inventário das 19 melhorias da série
-`melhorias-seguranca` — o que cada commit fez, por quê, e as pendências conhecidas
-(migração não executada, clips de 4K no repositório, validação ainda não feita no
-navegador).
+`melhorias-seguranca` — o que cada commit fez e por quê — e a seção de ajustes
+finais feitos na `main` após o merge (correção dos comentários, CRUD de jogos,
+consistência do seed e validação HTTP/navegador). As pendências restantes são
+opcionais: clipes de 4K no repositório, metadados Open Graph genéricos no perfil
+dinâmico e integrações demonstrativas com Discord/Google.
+
+---
+
+## Documentação do TCC
+
+A pasta [`docs/`](docs/) reúne os artefatos acadêmicos:
+
+- [`docs/monografia.md`](docs/monografia.md) — monografia em Markdown com estrutura ABNT;
+- [`docs/diagramas.md`](docs/diagramas.md) — diagramas Mermaid (arquitetura, DER e fluxos);
+- [`docs/slides.md`](docs/slides.md) — roteiro e estrutura da apresentação;
+- [`docs/checklist-entrega.md`](docs/checklist-entrega.md) — conferência final;
+- [`docs/screenshots/`](docs/screenshots/) — capturas usadas na monografia e nos slides.

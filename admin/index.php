@@ -36,6 +36,7 @@ require __DIR__ . '/includes/header.php';
   <div class="admin-panel-head"><h2>Ações rápidas</h2></div>
   <div class="admin-form">
     <a class="btn btn-primary" href="players.php?new=1">+ Novo jogador</a>
+    <a class="btn" href="games.php">+ Novo jogo</a>
     <a class="btn" href="teams.php?new=1">+ Novo time</a>
     <a class="btn" href="peripherals.php?new=1">+ Novo periférico</a>
   </div>

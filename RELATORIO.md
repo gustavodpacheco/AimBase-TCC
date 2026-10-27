@@ -216,11 +216,32 @@ enfraquecer, mas porque a intenção original ("a retícula usa
 `index.html` deixou de ter esse bloco. As asserções novas verificam o
 contrapositivo: os ids duplicados não podem voltar.
 
+### Validação final na `main` (26/10/2026)
+
+Depois do merge, o sistema foi executado no Laragon (Apache na porta 8080,
+PHP 8.3 e MySQL 8.4) e validado por HTTP e por navegador headless:
+
+- endpoints públicos, 404 real de jogador e login/sessão com `role = admin`;
+- escritas sem login, sem CSRF e com CSRF inválido rejeitadas com 403;
+- CRUD de jogador e de jogo via API com sessão admin;
+- comentário autenticado (POST/DELETE), autor vindo da sessão e rate limit;
+- painel admin (painel, jogadores, jogos, times, periféricos, comentários e
+  edição de jogador) sem erros de console;
+- cinco idiomas (pt-BR, en, es, fr, de) com paridade de 194 chaves e troca
+  efetiva na interface;
+- tema claro/escuro, páginas públicas e mobile (390×844) sem overflow
+  horizontal;
+- `php -l` nos PHP alterados e `node --check` nos JS.
+
+Os screenshots dessa validação estão em `docs/screenshots/`.
+
+---
+
 ## 6. Pendências conhecidas
 
-- **Migração não executada**: `database/migrations/001_users_role.sql` não
-  foi rodada (fora do escopo de não tocar em banco). Se o `users.role` não
-  existir no banco, o `seed-dev.sql` avisa e não insere.
+- **Migração executada**: `database/migrations/001_users_role.sql` foi
+  aplicada em 26/10/2026 e o `database/dev/seed-dev.sql` promoveu a conta
+  `demo` a administradora, sem criar dados fictícios extras.
 - **Clipes de 4K**: os dois `.mp4` somam ≈36 MB no repositório. O
   `preload="none"` evita o download, mas recomprimir (ou mover para fora do
   repositório) traria ganho real de tamanho.
@@ -229,6 +250,48 @@ contrapositivo: os ids duplicados não podem voltar.
 - **Comentário com login**: em ausência de API/banco, o `profile.js` ainda
   guarda comentários no `localStorage` e aceita o nome digitado. Esse é o
   caminho de fallback (`apiActive === false`), não o caminho com banco.
-- **Confirmação no Laragon**: os testes são harnesses Node, e não passam
-  pelo PHP real via HTTP. Recomendo subir no Laragon e percorrer cadastro,
-  login, comentário, criação de jogador e o filtro por sensibilidade.
+- **Discord/Google e "esqueceu a senha"**: continuam demonstrativos. Para a
+  entrega, o caminho real é login/registro por e-mail; documentar as
+  integrações como trabalho futuro.
+
+---
+
+## 7. Ajustes finais na `main` (pós-merge)
+
+### 7.1 Comentários não apareciam no perfil
+
+`profile.js` chamava `reload()` antes de `mountForm()` injetar a seção
+`#comments`. O `renderComments()` tentava escrever em `#commentList` nulo,
+gerava `TypeError` no console e os comentários nunca eram exibidos — embora a
+API respondesse corretamente. A seção passou a ser montada primeiro (com
+`reload()` dentro de `mountForm()`) e `renderComments()` ganhou guarda para
+elemento ausente. Validado com comentário real: o texto aparece no perfil e o
+autor vem da sessão.
+
+### 7.2 CRUD de jogos no painel
+
+A API `api/games.php` já tinha POST/PUT/DELETE. Foi criada a página
+`admin/games.php` no mesmo padrão de times/periféricos, com listagem, criação,
+edição e exclusão via modal, além do link "Jogos" na navegação e do atalho no
+painel. Testado via API (criar, renomear e excluir) e no navegador sem erros de
+console.
+
+### 7.3 Consistência do seed do Pacheco
+
+O `data.js` mostrava `0.45` de sensibilidade, mas o `database/seed.sql` ainda
+gravava `0.5000` e o `ON DUPLICATE KEY UPDATE` só atualizava o DPI. O seed foi
+alinhado para `0.45` / eDPI `360` e passou a atualizar `sensitivity` e `edpi`.
+O banco local foi corrigido com o mesmo valor.
+
+### 7.4 Favicon no painel
+
+As páginas do admin não declaravam favicon, então o navegador pedia
+`/favicon.ico` na raiz e registrava 404. O `<link rel="icon">` foi adicionado
+ao `admin/login.php` e ao `admin/includes/header.php` (inclusive na tela de
+acesso negado).
+
+### 7.5 Documentação e screenshots
+
+Criada a pasta `docs/` com monografia, diagramas Mermaid, roteiro/slides,
+checklist de entrega e capturas de tela geradas por navegador headless
+(Edge/Chromium).

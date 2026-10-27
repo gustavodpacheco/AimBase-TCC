@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login — AimBase Admin</title>
+<link rel="icon" href="<?= e($baseHref) ?>assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/tokens.css">
 <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/base.css">
 <link rel="stylesheet" href="includes/admin.css">

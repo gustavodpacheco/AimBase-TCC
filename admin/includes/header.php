@@ -27,6 +27,7 @@ if ($adminUser['role'] !== 'admin') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Acesso negado — AimBase Admin</title>
+    <link rel="icon" href="<?= e($baseHref) ?>assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/tokens.css">
     <link rel="stylesheet" href="<?= e($baseHref) ?>assets/css/base.css">
     <link rel="stylesheet" href="includes/admin.css">
@@ -59,6 +60,7 @@ if ($adminUser['role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="<?= $baseHref ?>assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="<?= $baseHref ?>assets/css/tokens.css">
 <link rel="stylesheet" href="<?= $baseHref ?>assets/css/base.css">
 <link rel="stylesheet" href="<?= $baseHref ?>assets/css/layout.css">
@@ -71,6 +73,7 @@ if ($adminUser['role'] !== 'admin') {
   <nav class="admin-nav">
     <a href="index.php">Painel</a>
     <a href="players.php">Jogadores</a>
+    <a href="games.php">Jogos</a>
     <a href="teams.php">Times</a>
     <a href="peripherals.php">Periféricos</a>
     <a href="comments.php">Comentários</a>
