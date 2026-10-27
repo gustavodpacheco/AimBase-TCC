@@ -216,5 +216,15 @@
   "lineups.legend.orange": "Fait/appris par moi",
   "lineups.legend.purple": "VCT",
   "lineups.legend.black": "Guide Tseeky",
-  "lineups.legend.yellow": "YouTube (communauté)"
+  "lineups.legend.yellow": "YouTube (communauté)",
+  "comments.count": "Commentaires ({{count}})",
+  "comments.firstToComment": "Soyez le premier a commenter",
+  "comments.label.message": "Commentaire",
+  "comments.label.author": "Nom",
+  "comments.error.required": "Champ obligatoire",
+  "comments.error.maxLength": "Maximum {{max}} caracteres",
+  "comments.loading": "Chargement...",
+  "comments.success": "Commentaire envoye avec succes",
+  "comments.error": "Erreur lors de envoi du commentaire",
+  "comments.tableMissing": "Commentaires temporairement indisponibles"
 }

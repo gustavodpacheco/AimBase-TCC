@@ -9,6 +9,7 @@
   border-top: 1px solid var(--border-subtle);
   padding: var(--space-6) 0 0;
   margin: var(--space-4) 0 var(--space-7);
+  align-items: start;
 }
 
 /* A seção de comentários é inserida fora do .profile-layout (via JS),
@@ -45,16 +46,24 @@
   gap: var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: var(--space-4);
+  align-items: flex-start;
 }
 
 .comment-fields {
-  flex: 1;
+  flex: 1 1 100%;
   display: grid;
   gap: var(--space-2);
 }
 
+.comment-label {
+  font: 500 var(--fs-xs) var(--font-mono);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
 .comment-form textarea {
-  min-height: 72px;
+  min-height: 90px;
   width: 100%;
 }
 
@@ -63,8 +72,24 @@
 }
 
 .comment-form button {
-  align-self: flex-end;
+  align-self: flex-start;
   white-space: nowrap;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.comment-count {
+  font: 400 var(--fs-xs) var(--font-mono);
+  color: var(--text-muted);
+}
+
+.comment-error {
+  color: var(--accent-danger);
+  font-size: var(--fs-xs);
+  min-height: 1em;
 }
 
 .comment-list {
@@ -112,6 +137,7 @@
   font-size: var(--fs-sm);
   line-height: 1.6;
   max-width: 65ch;
+  word-break: break-word;
 }
 
 .empty-comments {

@@ -246,8 +246,9 @@ if (document.body.dataset.page === 'profile') {
     const f = {
       desc: I18N.t('footer.desc'), explore: I18N.t('footer.explore'), players: I18N.t('nav.players'),
       comments: I18N.t('comments.title'), contact: I18N.t('footer.contact'), credit: I18N.t('footer.credit'),
+      lineups: I18N.t('nav.lineups'), settings: I18N.t('footer.settings')
     };
-    $('toast').insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="#comments">${esc(f.comments)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
+    $('toast').insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="index.html#players">${esc(f.settings)}</a><a href="lineups.html">${esc(f.lineups)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="lineups.html">${esc(I18N.t('footer.lineupsLink'))}</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
   }
 
   function openCardModal(player) {
@@ -271,7 +272,8 @@ if (document.body.dataset.page === 'profile') {
   function setupComments($, player, apiActive) {
     const isDb = apiActive && /^\d+$/.test(String(player.id));
     const commentsKey = `val-tactical-comments-${player.id}`;
-    let comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+    let comments = [];
+    try { comments = JSON.parse(localStorage.getItem(commentsKey) || '[]'); } catch { comments = []; }
     const playerId = isDb ? Number(player.id) : null;
 
     // Quem está logado (necessário porque o autor do comentário vem da sessão).
@@ -290,38 +292,106 @@ if (document.body.dataset.page === 'profile') {
       // Com API, só quem está logado pode comentar — e o nome vem da sessão.
       const form = isDb
         ? (currentUser
-            ? '<form class="comment-form" id="commentForm"><div class="comment-fields"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submitAs', { username: currentUser.username })) + '</button></form>'
+            ? '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentMessage">' + esc(I18N.t('comments.label.message')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(I18N.t('comments.submitAs', { username: currentUser.username })) + '</button></form>'
             : '<p class="empty-comments">' + esc(I18N.t('comments.loginRequired')) + ' <a href="index.html">' + esc(I18N.t('comments.goHome')) + '</a></p>')
-        : '<form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="' + esc(I18N.t('comments.authorPlaceholder')) + '"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submit')) + '</button></form>';
+        : '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentAuthor">' + esc(I18N.t('comments.label.author')) + '</label><input id="commentAuthor" name="author" maxlength="32" required placeholder="' + esc(I18N.t('comments.authorPlaceholder')) + '"><div class="comment-error" id="commentAuthorError" aria-live="polite"></div><label class="comment-label" for="commentMessage">' + esc(I18N.t('comments.label.message')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(I18N.t('comments.submit')) + '</button></form>';
 
       // A seção é remontada a cada troca de idioma: a anterior sai antes para
       // não duplicar (o id #comments é único).
       const anterior = $('comments');
       if (anterior) anterior.remove();
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2>' + esc(I18N.t('comments.title')) + '</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
+      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2 id="commentsTitle">' + esc(I18N.t('comments.count', { count: 0 })) + '</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
 
       reload();
 
       const formEl = $('commentForm');
+      const msgEl = $('commentMessage');
+      const authorEl = $('commentAuthor');
+      const msgCount = $('commentMsgCount');
+      const msgErr = $('commentMsgError');
+      const authorErr = $('commentAuthorError');
+      const submitBtn = $('commentSubmit');
+
+      if (msgEl && msgCount) {
+        const updateCount = () => { msgCount.textContent = (msgEl.value || '').length + '/500'; };
+        msgEl.addEventListener('input', updateCount);
+        updateCount();
+      }
+
       if (formEl) {
         formEl.addEventListener('submit', async event => {
           event.preventDefault();
+          if (msgErr) msgErr.textContent = '';
+          if (authorErr) authorErr.textContent = '';
+
           const data = Object.fromEntries(new FormData(event.currentTarget));
+          let hasError = false;
+
+          if (!isDb) {
+            const authorVal = (data.author || '').trim();
+            if (!authorVal) {
+              if (authorErr) authorErr.textContent = I18N.t('comments.error.required');
+              hasError = true;
+            } else if (authorVal.length > 32) {
+              if (authorErr) authorErr.textContent = I18N.t('comments.error.maxLength', { max: 32 });
+              hasError = true;
+            }
+          }
+
+          const messageVal = (data.message || '').trim();
+          if (!messageVal) {
+            if (msgErr) msgErr.textContent = I18N.t('comments.error.required');
+            hasError = true;
+          } else if (messageVal.length > 500) {
+            if (msgErr) msgErr.textContent = I18N.t('comments.error.maxLength', { max: 500 });
+            hasError = true;
+          }
+
+          if (hasError) return;
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.dataset.originalText = submitBtn.textContent;
+            submitBtn.textContent = I18N.t('comments.loading');
+          }
+
           if (isDb) {
             try {
-              await API.createComment({ player_id: playerId, message: data.message.trim() });
-              event.currentTarget.reset();
+              await API.createComment({ player_id: playerId, message: messageVal });
+              if (msgEl) msgEl.value = '';
+              if (msgCount) msgCount.textContent = '0/500';
               await reload();
               showToast(I18N.t('toast.commentPublished'));
             } catch (err) {
-              showToast(err.message || I18N.t('toast.commentFailed'));
+              const msg = (err && err.message) ? err.message : I18N.t('toast.commentFailed');
+              if (msg.toLowerCase().includes('table') || msg.toLowerCase().includes('comments')) {
+                showToast(I18N.t('comments.tableMissing'));
+              } else {
+                showToast(msg);
+              }
+            } finally {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = submitBtn.dataset.originalText || I18N.t('comments.submitAs', { username: currentUser?.username || '' });
+              }
             }
           } else {
-            comments.unshift({ author: (data.author || I18N.t('common.visitor')).trim(), message: data.message.trim(), date: new Date().toISOString() });
-            localStorage.setItem(commentsKey, JSON.stringify(comments));
-            event.currentTarget.reset();
-            renderComments();
-            showToast(I18N.t('toast.commentPublished'));
+            try {
+              comments.unshift({ author: ((data.author || I18N.t('common.visitor')).trim()).slice(0, 32), message: messageVal, date: new Date().toISOString() });
+              localStorage.setItem(commentsKey, JSON.stringify(comments));
+              if (authorEl) authorEl.value = '';
+              if (msgEl) msgEl.value = '';
+              if (msgCount) msgCount.textContent = '0/500';
+              renderComments();
+              showToast(I18N.t('toast.commentPublished'));
+            } catch (err) {
+              showToast(I18N.t('toast.commentFailed'));
+            } finally {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = submitBtn.dataset.originalText || I18N.t('comments.submit');
+              }
+            }
           }
         });
       }
@@ -332,15 +402,21 @@ if (document.body.dataset.page === 'profile') {
         try {
           const res = await API.listComments(playerId);
           comments = (res.data && res.data.comments) || [];
-        } catch { /* mantém vazio */ }
+        } catch {
+          comments = [];
+        }
       }
       renderComments();
     }
     const renderComments = () => {
       const list = $('commentList');
+      const title = $('commentsTitle');
       if (!list) return;
+      if (title) {
+        title.textContent = I18N.t('comments.count', { count: comments.length });
+      }
       if (!comments.length) {
-        list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>';
+        list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.firstToComment')) + '</p>';
         return;
       }
       list.innerHTML = comments.map(comment => {

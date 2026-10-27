@@ -216,5 +216,15 @@
   "lineups.legend.orange": "Von mir erstellt/erlernt",
   "lineups.legend.purple": "VCT",
   "lineups.legend.black": "Tseeky-Guide",
-  "lineups.legend.yellow": "YouTube (Community)"
+  "lineups.legend.yellow": "YouTube (Community)",
+  "comments.count": "Kommentare ({{count}})",
+  "comments.firstToComment": "Sei der Erste, der kommentiert",
+  "comments.label.message": "Kommentar",
+  "comments.label.author": "Name",
+  "comments.error.required": "Pflichtfeld",
+  "comments.error.maxLength": "Maximal {{max}} Zeichen",
+  "comments.loading": "Ladt...",
+  "comments.success": "Kommentar erfolgreich gesendet",
+  "comments.error": "Fehler beim Senden des Kommentars",
+  "comments.tableMissing": "Kommentare vorubergehend nicht verfugbar"
 }
