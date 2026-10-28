@@ -9,7 +9,7 @@
 - Adicionados titulos, rotulos, placeholders e textos via i18n com reaplicacao em troca de idioma e apos injecoes por JS.
 - Implementada contagem de caracteres, validacao (obrigatorios, limite), erros traduzidos e estados de carregando/sucesso/erro.
 - Renderizacao segura com escape de texto do usuario.
-- Lista de comentarios atualiza sem recarregar, mostrando Seja o primeiro a comentar quando vazio.
+- Lista de comentarios atualiza sem recarregar.
 - API de comentarios ja utiliza PDO com prepared statements e validacao no servidor.
 - Criada migration api/migrations/001_create_comments_table.sql (nao executada).
 
@@ -22,8 +22,6 @@
 
 ### Decisoes
 - Mantido fluxo existente com API quando disponivel e fallback localStorage quando nao.
-- Adicionadas chaves de i18n novas.
-- Mensagem amigavel para caso de tabela ausente.
 
 ## ETAPA 2: Rodape
 ### O que foi feito
@@ -41,7 +39,7 @@
 ### O que foi feito
 - Barra de filtros (jogo, mapa, agente, lado, busca) com filtro sem recarregar e estado nenhuma lineup encontrada.
 - Secoes por mapa com cabecalho alinhado a esquerda, badge do jogo e contagem a direita, mais espaco entre secoes e accordion colapsavel.
-- Cards padronizados: 3 colunas desktop, 2 tablet, 1 mobile, mesma proporcao e tags padronizadas.
+- Cards padronizados: 3 colunas desktop, 2 tablet, 1 mobile.
 - Desempenho: thumbnails facade para YouTube com clique para carregar iframe.
 - Legenda para bolinhas coloridas com textos traduzidos via data-i18n nos 5 idiomas.
 - Mantido tema escuro/cores/fontes e toggle funcionando.
@@ -57,18 +55,31 @@
 ### Decisoes
 - Mantido stack existente, sem libs externas.
 
-## Migrations SQL para executar manualmente
+## Correção bug intermitente player.html
+### Investigação
+- Ordem: i18n.js carrega antes, mas fetch do dicionário é assíncrono; profile.js inseria rodapé/comentários sem aguardar dicionário e sem try/catch.
+- Tradução podia rodar antes do elemento existir ou antes do dicionário pronto; erros interrompiam inicialização.
+
+### Correção
+- i18n.js: adicionados fallbacks para comentários/rodapé, try/catch no init e announce.
+- Scripts com defer em player/index/lineups.
+- profile.js: init e render com try/catch, rodapé recriado com fallbacks e tradução segura.
+- Mantidos textos padrão em HTML.
+
+### Migrations SQL para executar manualmente
 - api/migrations/001_create_comments_table.sql
 
-## O que nao conseguiu fazer
-- Verificacao com php -l e node --check nao disponivel no ambiente.
+## O que não conseguiu fazer
+- Teste em navegador com Disable cache/Slow 3G não realizado aqui (sem acesso ao navegador). Verificar recarregando 20x com essas condições.
 
 ## O que testar no navegador
-- Pagina de jogador: comentarios (formulario, validacao, lista, troca de idioma)
-- Rodape em index/player/lineups
-- Pagina de lineups: filtros, accordion, grid, facade, legenda, tema claro/escuro
+- Player: comentários, rodapé, traduções após F5
+- Index e Lineups: traduções
+- Troca de idioma
 
 ## Commits
+563ebf7 fix: estabilizar traducoes na player.html com try/catch e defer
+a98ed00 fix: corrigir exibicao da secao de comentarios
 1e866c4 feat: melhorar comentarios com validacao, i18n e layout; corrigir rodape; criar migration de comments
 1ea689c fix: corrigir layout e exibicao dos comentarios
 00313a8 fix: redirecionar para Discord no mesmo clique
