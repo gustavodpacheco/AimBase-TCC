@@ -300,7 +300,7 @@ if (document.body.dataset.page === 'profile') {
       // não duplicar (o id #comments é único).
       const anterior = $('comments');
       if (anterior) anterior.remove();
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2 id="commentsTitle">' + esc(I18N.t('comments.count', { count: 0 })) + '</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
+      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2 id="commentsTitle">' + esc(I18N.t('comments.title')) + ' (0)</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
 
       reload();
 
@@ -413,7 +413,12 @@ if (document.body.dataset.page === 'profile') {
       const title = $('commentsTitle');
       if (!list) return;
       if (title) {
-        title.textContent = I18N.t('comments.count', { count: comments.length });
+        const countText = I18N.t('comments.count', { count: comments.length });
+        if (countText && countText.indexOf('{{count}}') === -1) {
+          title.textContent = countText;
+        } else {
+          title.textContent = `${I18N.t('comments.title')} (${comments.length})`;
+        }
       }
       if (!comments.length) {
         list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.firstToComment')) + '</p>';

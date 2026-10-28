@@ -12,6 +12,12 @@
   align-items: start;
 }
 
+.comments-section h2 {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
 /* A seção de comentários é inserida fora do .profile-layout (via JS),
    então alinhamos à mesma largura do conteúdo do perfil. */
 .comments-section.profile-comments {
