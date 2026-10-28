@@ -61,6 +61,32 @@
     'toast.commentPublished': 'Comentário publicado.',
     'toast.commentFailed': 'Não foi possível publicar o comentário.',
     'lineups.count': { one: '{{count}} lineup', other: '{{count}} lineups' },
+    'comments.kicker': 'COMUNIDADE',
+    'comments.title': 'Comentários',
+    'comments.intro': 'Deixe uma dica ou opinião sobre o setup deste jogador.',
+    'comments.placeholder': 'Escreva um comentário...',
+    'comments.authorPlaceholder': 'Seu nome',
+    'comments.submit': 'Publicar',
+    'comments.submitAs': 'Publicar como {{username}}',
+    'comments.empty': 'Ainda não há comentários neste perfil.',
+    'comments.loginRequired': 'Entre com sua conta para comentar.',
+    'comments.goHome': 'Ir para o início',
+    'comments.count': 'Comentários ({{count}})',
+    'comments.firstToComment': 'Seja o primeiro a comentar',
+    'comments.label.message': 'Comentário',
+    'comments.label.author': 'Nome',
+    'comments.error.required': 'Campo obrigatório',
+    'comments.error.maxLength': 'Máximo de {{max}} caracteres',
+    'comments.loading': 'Carregando...',
+    'comments.success': 'Comentário enviado com sucesso',
+    'comments.error': 'Erro ao enviar comentário',
+    'comments.tableMissing': 'Comentários temporariamente indisponíveis',
+    'footer.desc': 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.',
+    'footer.explore': 'Explorar',
+    'footer.contact': 'Contato',
+    'footer.credit': 'CRIADO PARA COMPETIR',
+    'footer.settings': 'Settings',
+    'footer.lineupsLink': 'Ver lineups',
 
     // script.js chama setAuthMode() já no parse, antes do dicionário carregar.
     'auth.title.login': 'ENTRAR',
@@ -310,15 +336,21 @@
       if (!dict) return load(DEFAULT_LANG);
       return dict;
     }).then(function (dict) {
-      state.dict = dict;
+      if (dict) state.dict = dict;
       document.documentElement.lang = state.lang;
-      apply();
-      updateSwitcherUI();
-      document.querySelectorAll('[data-lang-switcher]').forEach(setupSwitcher);
-      observeDynamicContent();
+      try { apply(); } catch (e) { /* não quebra inicialização */ }
+      try { updateSwitcherUI(); } catch (e) { /* ignora */ }
+      try { document.querySelectorAll('[data-lang-switcher]').forEach(setupSwitcher); } catch (e) { /* ignora */ }
+      try { observeDynamicContent(); } catch (e) { /* ignora */ }
       // Even listeners de conteúdo montado por JS (rótulos de filtro, título
       // da 404) rodaram antes do dicionário carregar e usaram JS_FALLBACKS.
-      announce(state.lang);
+      try { announce(state.lang); } catch (e) { /* ignora */ }
+    }).catch(function () {
+      try { apply(); } catch (e) { /* ignora */ }
+      try { updateSwitcherUI(); } catch (e) { /* ignora */ }
+      try { document.querySelectorAll('[data-lang-switcher]').forEach(setupSwitcher); } catch (e) { /* ignora */ }
+      try { observeDynamicContent(); } catch (e) { /* ignora */ }
+      try { announce(state.lang); } catch (e) { /* ignora */ }
     });
   }
 

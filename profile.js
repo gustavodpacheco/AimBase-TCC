@@ -13,58 +13,66 @@ if (document.body.dataset.page === 'profile') {
   let listenersBound = false;
 
   (async function initProfile() {
-    const id = new URLSearchParams(window.location.search).get('player');
-    let player = null;
-    let apiActive = false;
+    try {
+      const id = new URLSearchParams(window.location.search).get('player');
+      let player = null;
+      let apiActive = false;
 
-    if (id) {
-      try {
-        const res = await API.getPlayerBySlug(id);
-        if (res.success && res.data) {
-          player = mapPlayerForUi(res.data);
-          apiActive = true;
+      if (id) {
+        try {
+          const res = await API.getPlayerBySlug(id);
+          if (res.success && res.data) {
+            player = mapPlayerForUi(res.data);
+            apiActive = true;
 
-          // Mescla dados estáticos (card personalizado, atributos FIFA e clips)
-          // quando o jogador também existe no fallback (data.js).
-          const staticProfile = defaultPlayers.find(dp => dp.id === player.slug || dp.slug === player.slug);
-          if (staticProfile) {
-            if (!player.cardImage && staticProfile.cardImage) player.cardImage = staticProfile.cardImage;
-            if (!player.clips && staticProfile.clips) player.clips = staticProfile.clips;
-            const staticAttrs = staticProfile.attrs || {};
-            Object.keys(staticAttrs).forEach(key => {
-              if (staticAttrs[key] != null && player.attrs && player.attrs[key] == null) {
-                player.attrs[key] = staticAttrs[key];
-              }
-            });
+            // Mescla dados estáticos (card personalizado, atributos FIFA e clips)
+            // quando o jogador também existe no fallback (data.js).
+            const staticProfile = defaultPlayers.find(dp => dp.id === player.slug || dp.slug === player.slug);
+            if (staticProfile) {
+              if (!player.cardImage && staticProfile.cardImage) player.cardImage = staticProfile.cardImage;
+              if (!player.clips && staticProfile.clips) player.clips = staticProfile.clips;
+              const staticAttrs = staticProfile.attrs || {};
+              Object.keys(staticAttrs).forEach(key => {
+                if (staticAttrs[key] != null && player.attrs && player.attrs[key] == null) {
+                  player.attrs[key] = staticAttrs[key];
+                }
+              });
+            }
           }
-        }
-      } catch (err) { /* fallback abaixo */ }
-    }
-    // Sem ?player= na URL não há perfil a exibir: mostro a tela 404 em vez
-    // de abrir o primeiro jogador da lista sem contexto.
-    if (!player) {
-      const profilePlayers = [...defaultPlayers, ...savedPlayers];
-      player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
-    }
+        } catch (err) { /* fallback abaixo */ }
+      }
+      // Sem ?player= na URL não há perfil a exibir: mostro a tela 404 em vez
+      // de abrir o primeiro jogador da lista sem contexto.
+      if (!player) {
+        const profilePlayers = [...(defaultPlayers || []), ...(savedPlayers || [])];
+        player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
+      }
 
-    if (!player) {
-      showNotFound(id);
+      if (!player) {
+        showNotFound(id);
+        setupPageChrome();
+        return;
+      }
+
+      currentPlayer = player;
+      currentApiActive = apiActive;
+      renderProfile(player, apiActive);
       setupPageChrome();
-      return;
+    } catch (e) {
+      setupPageChrome();
     }
-
-    currentPlayer = player;
-    currentApiActive = apiActive;
-    renderProfile(player, apiActive);
-    setupPageChrome();
   })();
 
   // A troca de idioma precisa redesenhar o perfil: os fallbacks traduzidos
   // (time, função, país, periféricos) são montados por JS e não têm
   // data-i18n para o i18n.js reescrever sozinho.
   document.addEventListener('i18n:changed', () => {
-    if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
-    else setupPageChrome();
+    try {
+      if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
+      else setupPageChrome();
+    } catch (e) {
+      setupPageChrome();
+    }
   });
 
   /** Tela 404: esconde o perfil e mostra o aviso de "não encontrado". */
@@ -94,10 +102,14 @@ if (document.body.dataset.page === 'profile') {
   }
 
   function renderProfile(player, apiActive) {
-    document.title = `${player.tag} — AimBase`;
+    try {
+      document.title = `${player.tag} — AimBase`;
+    } catch (e) {}
     // Cartão do jogador (carta personalizada p/ Pacheco, dinâmico p/ os demais).
     const fifaCardEl = $('fifaCard');
-    if (fifaCardEl) fifaCardEl.innerHTML = fifaCardHTML(player, { large: true });
+    if (fifaCardEl) {
+      try { fifaCardEl.innerHTML = fifaCardHTML(player, { large: true }); } catch (e) {}
+    }
 
     // Seções montadas por JS: removidas antes de recriar, senão a troca de
     // idioma (que chama renderProfile de novo) duplicaria cada bloco.
@@ -222,33 +234,49 @@ if (document.body.dataset.page === 'profile') {
     // Os listeners são registrados uma vez: renderProfile roda de novo a cada
     // troca de idioma e religá-los a cada passada duplicaria os toasts.
     if (!listenersBound) {
-      listenersBound = true;
-      const viewBtn = $('viewCardBtn');
-      if (viewBtn) {
-        // Lê currentPlayer no clique: na troca de idioma o objeto é substituído
-        // e o listener precisa enxergar o valor atualizado.
-        viewBtn.addEventListener('click', () => { if (currentPlayer) openCardModal(currentPlayer); });
-      }
-      $('copySettings').addEventListener('click', () => copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, I18N.t('toast.copySettings')));
-      $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, I18N.t('toast.crosshairCopied')));
-      setupCardModal();
+      try {
+        listenersBound = true;
+        const viewBtn = $('viewCardBtn');
+        if (viewBtn) {
+          // Lê currentPlayer no clique: na troca de idioma o objeto é substituído
+          // e o listener precisa enxergar o valor atualizado.
+          viewBtn.addEventListener('click', () => { if (currentPlayer) openCardModal(currentPlayer); });
+        }
+        const copyBtn = $('copySettings');
+        if (copyBtn) copyBtn.addEventListener('click', () => { try { copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, (typeof I18N !== 'undefined' && I18N.t ? I18N.t('toast.copySettings') : 'Settings copiadas.')); } catch(e){} });
+        const crossBtn = $('crosshairCode');
+        if (crossBtn) crossBtn.addEventListener('click', () => { try { copyText(player.crosshair, (typeof I18N !== 'undefined' && I18N.t ? I18N.t('toast.crosshairCopied') : 'Código da retícula copiado.')); } catch(e){} });
+        setupCardModal();
+      } catch (e) {}
     }
-    setupComments($, player, apiActive);
+    try { setupComments($, player, apiActive); } catch (e) {}
   }
 
   // Tema e rodapé: aplicados nos dois caminhos (perfil e 404) para que a
   // tela de erro não fique sem o toggle de tema funcionando.
   function setupPageChrome() {
-    initTheme();
+    try { initTheme(); } catch (e) {}
     // Recriado a cada chamada para o texto acompanhar a troca de idioma.
     const rodapeAntigo = document.querySelector('.site-footer');
     if (rodapeAntigo) rodapeAntigo.remove();
+    const t = (k, fb) => { try { if (typeof I18N !== 'undefined' && I18N.t) return I18N.t(k); } catch(e){} return fb || k; };
     const f = {
-      desc: I18N.t('footer.desc'), explore: I18N.t('footer.explore'), players: I18N.t('nav.players'),
-      comments: I18N.t('comments.title'), contact: I18N.t('footer.contact'), credit: I18N.t('footer.credit'),
-      lineups: I18N.t('nav.lineups'), settings: I18N.t('footer.settings')
+      desc: t('footer.desc', 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.'),
+      explore: t('footer.explore', 'Explorar'),
+      players: t('nav.players', 'Jogadores'),
+      comments: t('comments.title', 'Comentários'),
+      contact: t('footer.contact', 'Contato'),
+      credit: t('footer.credit', 'CRIADO PARA COMPETIR'),
+      lineups: t('nav.lineups', 'Lineups'),
+      settings: t('footer.settings', 'Settings'),
+      lineupsLink: t('footer.lineupsLink', 'Ver lineups')
     };
-    $('toast').insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="index.html#players">${esc(f.settings)}</a><a href="lineups.html">${esc(f.lineups)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="lineups.html">${esc(I18N.t('footer.lineupsLink'))}</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
+    try {
+      const toastEl = $('toast');
+      if (toastEl) {
+        toastEl.insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="index.html#players">${esc(f.settings)}</a><a href="lineups.html">${esc(f.lineups)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="lineups.html">${esc(f.lineupsLink)}</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
+      }
+    } catch (e) {}
   }
 
   function openCardModal(player) {
