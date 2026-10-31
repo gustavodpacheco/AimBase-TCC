@@ -12,7 +12,42 @@ if (document.body.dataset.page === 'profile') {
   let currentApiActive = false;
   let listenersBound = false;
 
+  /**
+   * Espera o dicionário inicial do i18n. Se o fetch falhar, I18N.ready também
+   * resolve e a página segue com os fallbacks embutidos/português.
+   */
+  function waitForI18n() {
+    try {
+      if (typeof I18N !== 'undefined' && I18N.ready) {
+        return Promise.resolve(I18N.ready).catch(() => {});
+      }
+    } catch (e) { /* segue sem esperar */ }
+    return Promise.resolve();
+  }
+
+  /**
+   * Tradução com reserva em português. I18N.t pode devolver '' enquanto o
+   * dicionário carrega (ou a própria chave quando ela não existe); nesses
+   * casos usamos o texto de reserva para o conteúdo montado por JS nunca
+   * aparecer vazio.
+   */
+  function tr(key, fallbackPtBR, vars) {
+    let text = '';
+    try {
+      if (typeof I18N !== 'undefined' && I18N.t) text = I18N.t(key, vars);
+    } catch (e) { /* usa a reserva */ }
+    if (!text || text === key) text = fallbackPtBR != null ? fallbackPtBR : key;
+    if (vars && typeof text === 'string') {
+      text = text.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (match, name) => {
+        const value = vars[name];
+        return value === undefined || value === null ? match : String(value);
+      });
+    }
+    return text;
+  }
+
   (async function initProfile() {
+    const i18nReady = waitForI18n();
     try {
       const id = new URLSearchParams(window.location.search).get('player');
       let player = null;
@@ -48,6 +83,10 @@ if (document.body.dataset.page === 'profile') {
         player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
       }
 
+      // Nada é renderizado antes do dicionário terminar de carregar (ou de o
+      // fetch falhar e os fallbacks entrarem em vigor).
+      await i18nReady;
+
       if (!player) {
         showNotFound(id);
         setupPageChrome();
@@ -59,6 +98,7 @@ if (document.body.dataset.page === 'profile') {
       renderProfile(player, apiActive);
       setupPageChrome();
     } catch (e) {
+      await i18nReady;
       setupPageChrome();
     }
   })();
@@ -66,7 +106,8 @@ if (document.body.dataset.page === 'profile') {
   // A troca de idioma precisa redesenhar o perfil: os fallbacks traduzidos
   // (time, função, país, periféricos) são montados por JS e não têm
   // data-i18n para o i18n.js reescrever sozinho.
-  document.addEventListener('i18n:changed', () => {
+  document.addEventListener('i18n:changed', async () => {
+    await waitForI18n();
     try {
       if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
       else setupPageChrome();
@@ -98,7 +139,7 @@ if (document.body.dataset.page === 'profile') {
   /** Mantém o título da aba traduzido enquanto a tela 404 estiver visível. */
   function updateNotFoundTitle() {
     if (!notFoundShown) return;
-    document.title = `${I18N.t('page.notFoundTitle')} — AimBase`;
+    document.title = `${tr('page.notFoundTitle', 'Jogador não encontrado')} — AimBase`;
   }
 
   function renderProfile(player, apiActive) {
@@ -259,17 +300,16 @@ if (document.body.dataset.page === 'profile') {
     // Recriado a cada chamada para o texto acompanhar a troca de idioma.
     const rodapeAntigo = document.querySelector('.site-footer');
     if (rodapeAntigo) rodapeAntigo.remove();
-    const t = (k, fb) => { try { if (typeof I18N !== 'undefined' && I18N.t) return I18N.t(k); } catch(e){} return fb || k; };
     const f = {
-      desc: t('footer.desc', 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.'),
-      explore: t('footer.explore', 'Explorar'),
-      players: t('nav.players', 'Jogadores'),
-      comments: t('comments.title', 'Comentários'),
-      contact: t('footer.contact', 'Contato'),
-      credit: t('footer.credit', 'CRIADO PARA COMPETIR'),
-      lineups: t('nav.lineups', 'Lineups'),
-      settings: t('footer.settings', 'Settings'),
-      lineupsLink: t('footer.lineupsLink', 'Ver lineups')
+      desc: tr('footer.desc', 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.'),
+      explore: tr('footer.explore', 'Explorar'),
+      players: tr('nav.players', 'Jogadores'),
+      comments: tr('comments.title', 'Comentários'),
+      contact: tr('footer.contact', 'Contato'),
+      credit: tr('footer.credit', 'CRIADO PARA COMPETIR'),
+      lineups: tr('nav.lineups', 'Lineups'),
+      settings: tr('footer.settings', 'Settings'),
+      lineupsLink: tr('footer.lineupsLink', 'Ver lineups')
     };
     try {
       const toastEl = $('toast');
@@ -320,15 +360,15 @@ if (document.body.dataset.page === 'profile') {
       // Com API, só quem está logado pode comentar — e o nome vem da sessão.
       const form = isDb
         ? (currentUser
-            ? '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentMessage">' + esc(I18N.t('comments.label.message')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(I18N.t('comments.submitAs', { username: currentUser.username })) + '</button></form>'
-            : '<p class="empty-comments">' + esc(I18N.t('comments.loginRequired')) + ' <a href="index.html">' + esc(I18N.t('comments.goHome')) + '</a></p>')
-        : '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentAuthor">' + esc(I18N.t('comments.label.author')) + '</label><input id="commentAuthor" name="author" maxlength="32" required placeholder="' + esc(I18N.t('comments.authorPlaceholder')) + '"><div class="comment-error" id="commentAuthorError" aria-live="polite"></div><label class="comment-label" for="commentMessage">' + esc(I18N.t('comments.label.message')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(I18N.t('comments.submit')) + '</button></form>';
+            ? '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentMessage">' + esc(tr('comments.label.message', 'Comentário')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(tr('comments.placeholder', 'Escreva um comentário...')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(tr('comments.submitAs', 'Publicar como {{username}}', { username: currentUser.username })) + '</button></form>'
+            : '<p class="empty-comments">' + esc(tr('comments.loginRequired', 'Entre com sua conta para comentar.')) + ' <a href="index.html">' + esc(tr('comments.goHome', 'Ir para o início')) + '</a></p>')
+        : '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentAuthor">' + esc(tr('comments.label.author', 'Nome')) + '</label><input id="commentAuthor" name="author" maxlength="32" required placeholder="' + esc(tr('comments.authorPlaceholder', 'Seu nome')) + '"><div class="comment-error" id="commentAuthorError" aria-live="polite"></div><label class="comment-label" for="commentMessage">' + esc(tr('comments.label.message', 'Comentário')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(tr('comments.placeholder', 'Escreva um comentário...')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(tr('comments.submit', 'Publicar')) + '</button></form>';
 
       // A seção é remontada a cada troca de idioma: a anterior sai antes para
       // não duplicar (o id #comments é único).
       const anterior = $('comments');
       if (anterior) anterior.remove();
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2 id="commentsTitle">' + esc(I18N.t('comments.title')) + ' (0)</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
+      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(tr('comments.kicker', 'COMUNIDADE')) + '</p><h2 id="commentsTitle">' + esc(tr('comments.title', 'Comentários')) + ' (0)</h2><p>' + esc(tr('comments.intro', 'Deixe uma dica ou opinião sobre o setup deste jogador.')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
 
       reload();
 
@@ -358,20 +398,20 @@ if (document.body.dataset.page === 'profile') {
           if (!isDb) {
             const authorVal = (data.author || '').trim();
             if (!authorVal) {
-              if (authorErr) authorErr.textContent = I18N.t('comments.error.required');
+              if (authorErr) authorErr.textContent = tr('comments.error.required', 'Campo obrigatório');
               hasError = true;
             } else if (authorVal.length > 32) {
-              if (authorErr) authorErr.textContent = I18N.t('comments.error.maxLength', { max: 32 });
+              if (authorErr) authorErr.textContent = tr('comments.error.maxLength', 'Máximo de {{max}} caracteres', { max: 32 });
               hasError = true;
             }
           }
 
           const messageVal = (data.message || '').trim();
           if (!messageVal) {
-            if (msgErr) msgErr.textContent = I18N.t('comments.error.required');
+            if (msgErr) msgErr.textContent = tr('comments.error.required', 'Campo obrigatório');
             hasError = true;
           } else if (messageVal.length > 500) {
-            if (msgErr) msgErr.textContent = I18N.t('comments.error.maxLength', { max: 500 });
+            if (msgErr) msgErr.textContent = tr('comments.error.maxLength', 'Máximo de {{max}} caracteres', { max: 500 });
             hasError = true;
           }
 
@@ -380,7 +420,7 @@ if (document.body.dataset.page === 'profile') {
           if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.dataset.originalText = submitBtn.textContent;
-            submitBtn.textContent = I18N.t('comments.loading');
+            submitBtn.textContent = tr('comments.loading', 'Carregando...');
           }
 
           if (isDb) {
@@ -389,35 +429,35 @@ if (document.body.dataset.page === 'profile') {
               if (msgEl) msgEl.value = '';
               if (msgCount) msgCount.textContent = '0/500';
               await reload();
-              showToast(I18N.t('toast.commentPublished'));
+              showToast(tr('toast.commentPublished', 'Comentário publicado.'));
             } catch (err) {
-              const msg = (err && err.message) ? err.message : I18N.t('toast.commentFailed');
+              const msg = (err && err.message) ? err.message : tr('toast.commentFailed', 'Não foi possível publicar o comentário.');
               if (msg.toLowerCase().includes('table') || msg.toLowerCase().includes('comments')) {
-                showToast(I18N.t('comments.tableMissing'));
+                showToast(tr('comments.tableMissing', 'Comentários temporariamente indisponíveis'));
               } else {
                 showToast(msg);
               }
             } finally {
               if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = submitBtn.dataset.originalText || I18N.t('comments.submitAs', { username: currentUser?.username || '' });
+                submitBtn.textContent = submitBtn.dataset.originalText || tr('comments.submitAs', 'Publicar como {{username}}', { username: currentUser?.username || '' });
               }
             }
           } else {
             try {
-              comments.unshift({ author: ((data.author || I18N.t('common.visitor')).trim()).slice(0, 32), message: messageVal, date: new Date().toISOString() });
+              comments.unshift({ author: ((data.author || tr('common.visitor', 'Visitante')).trim()).slice(0, 32), message: messageVal, date: new Date().toISOString() });
               localStorage.setItem(commentsKey, JSON.stringify(comments));
               if (authorEl) authorEl.value = '';
               if (msgEl) msgEl.value = '';
               if (msgCount) msgCount.textContent = '0/500';
               renderComments();
-              showToast(I18N.t('toast.commentPublished'));
+              showToast(tr('toast.commentPublished', 'Comentário publicado.'));
             } catch (err) {
-              showToast(I18N.t('toast.commentFailed'));
+              showToast(tr('toast.commentFailed', 'Não foi possível publicar o comentário.'));
             } finally {
               if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = submitBtn.dataset.originalText || I18N.t('comments.submit');
+                submitBtn.textContent = submitBtn.dataset.originalText || tr('comments.submit', 'Publicar');
               }
             }
           }
@@ -441,15 +481,15 @@ if (document.body.dataset.page === 'profile') {
       const title = $('commentsTitle');
       if (!list) return;
       if (title) {
-        const countText = I18N.t('comments.count', { count: comments.length });
+        const countText = tr('comments.count', 'Comentários ({{count}})', { count: comments.length });
         if (countText && countText.indexOf('{{count}}') === -1) {
           title.textContent = countText;
         } else {
-          title.textContent = `${I18N.t('comments.title')} (${comments.length})`;
+          title.textContent = `${tr('comments.title', 'Comentários')} (${comments.length})`;
         }
       }
       if (!comments.length) {
-        list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.firstToComment')) + '</p>';
+        list.innerHTML = '<p class="empty-comments">' + esc(tr('comments.firstToComment', 'Seja o primeiro a comentar')) + '</p>';
         return;
       }
       list.innerHTML = comments.map(comment => {

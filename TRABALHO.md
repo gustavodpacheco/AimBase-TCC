@@ -69,7 +69,34 @@
 ### Migrations SQL para executar manualmente
 - api/migrations/001_create_comments_table.sql
 
-## O que não conseguiu fazer
+## Correção da corrida do i18n (player.html: comentários e rodapé)
+### Investigação
+- Confirmada a causa: o `i18n.js` carrega antes, mas o `fetch` do dicionário é assíncrono. O `profile.js` montava perfil/comentários/rodapé sem esperar, e `I18N.t` não lança erro quando o dicionário ainda não chegou — devolve `''` para chaves sem fallback embutido (ou a própria chave quando ausente).
+- Os `JS_FALLBACKS` adicionados antes já cobriam as chaves de comentários/rodapé, o que mascarava parte do problema; a corrida continuava real para qualquer chave fora dessa lista e o estado dependia do tempo de rede/cache.
+- Caminhos verificados para o Vercel: `assets/i18n/` é relativo ao documento e os cinco arquivos existem com o casing exato das chaves de `SUPPORTED` (`pt-BR.json`, `en.json`, `es.json`, `fr.json`, `de.json`). Não foi necessário alterar caminhos.
+
+### Correção
+- `assets/i18n/i18n.js`: exposto `I18N.ready`, uma Promise que resolve quando o dicionário inicial termina de carregar — inclusive quando o `fetch` falha ou ocorre erro síncrono, caso em que o site segue com os fallbacks.
+- `profile.js`: `initProfile` aguarda `I18N.ready` antes de renderizar perfil, tela 404, comentários e rodapé; o listener de `i18n:changed` também aguarda antes de redesenhar.
+- `profile.js`: criado `tr(key, fallbackPtBR, vars)`, que usa o texto em português quando `I18N.t` devolve vazio ou a própria chave, com interpolação de `vars`. Aplicado em `mountForm`, `renderComments`, mensagens de validação/toast dos comentários e em `setupPageChrome` (substituindo o helper `t` antigo).
+- Layout, fluxo de API/CSRF e escape com `esc()` mantidos.
+
+### Testes executados
+- `node --check assets/i18n/i18n.js`
+- `node --check profile.js`
+- Harness Node temporário com dicionário atrasado em 150 ms: antes do `ready`, `I18N.t` devolve fallback/chave vazia conforme o caso, mas `tr` sempre devolve texto; após o `ready`, usa o dicionário carregado.
+- Harness com `fetch` rejeitando: `I18N.ready` resolve e `tr` continua preenchendo com português.
+- Confirmado que os cinco `.json` existem nos caminhos/casing usados pelo `fetch`.
+
+### O que testar no navegador
+- Na `player.html`, abrir DevTools > Network > marcar **Disable cache** e throttling **Slow 3G**; recarregar com F5 20 vezes.
+- Em todas as cargas, conferir: kicker "COMUNIDADE", título "Comentários", descrição, labels/placeholders e botão "Publicar"; rodapé com descrição, Explorar, Contato e "CRIADO PARA COMPETIR".
+- Trocar o idioma (pt-BR -> en -> es -> fr -> de) e confirmar que comentários/rodapé atualizam sem duplicar seções.
+- Testar comentário no fallback localStorage (Vercel sem API), validação de campos vazios/limite e recarregar a página.
+- Abrir uma URL com `?player=inexistente` e conferir a tela 404 traduzida.
+- Repetir com rede rápida/cache normal para garantir que não ficou mais lento nem duplicou listeners.
+
+
 - Teste em navegador com Disable cache/Slow 3G não realizado aqui (sem acesso ao navegador). Verificar recarregando 20x com essas condições.
 
 ## O que testar no navegador
