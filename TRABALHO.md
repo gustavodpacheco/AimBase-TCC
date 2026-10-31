@@ -139,3 +139,23 @@ bbcf166 feat: reorganizar pagina lineups com filtros, accordion, grid padronizad
 - Em 768px e 390px: banner continua oculto (comportamento antigo) e sem scroll horizontal.
 - Trocar entre os 5 idiomas e conferir o `aria-label` do link (DevTools > Accessibility).
 - Clicar em "Continuar com Discord" no modal de login: deve continuar indo para o mesmo convite.
+
+## Mouse do Gustavo Pacheco — Kysona Jupiter Pro
+### O que foi feito
+- `data.js` (fallback): mouse do perfil `pacheco` alterado para `Kysona Jupiter Pro`, foto para `assets/products/kysona.webp` e link para a loja da Kysona.
+- Banco local: cadastrado o periférico `Kysona Jupiter Pro` (slug `kysona-jupiter-pro`) e atualizado o `player_settings` do Pacheco (`mouse_id`, `product_image_mouse` e `product_link_mouse`).
+- Criada a migration `database/migrations/002_pacheco_kysona_jupiter_pro.sql`, idempotente, para aplicar a mesma mudança em outros ambientes.
+- `database/seed.sql` atualizado para novas instalações já nascerem com o mouse e a foto corretos.
+- `assets/products/kysona.webp` mantido como enviado (990×990, fundo branco). O PNG não foi alterado.
+
+### Testes executados
+- `node --check data.js`.
+- `GET /api/player.php?slug=pacheco` retornando `mouse_model = "Kysona Jupiter Pro"`, `product_image_mouse = "assets/products/kysona.webp"` e o link da Kysona.
+- Perfil carregado em Chrome headless: nome exibido `Kysona Jupiter Pro`, miniatura e card do mouse apontando para `assets/products/kysona.webp`, link correto em ambos e sem overflow horizontal.
+- `assets/products/kysona.webp` responde HTTP 200 (`image/webp`, 11.808 bytes) e decodifica em 990×990.
+
+### O que testar no navegador
+- Abrir `player.html?player=pacheco` (ou o perfil do Pacheco pela home) e conferir o card MOUSE com nome "Kysona Jupiter Pro", foto e link abrindo a loja em nova aba.
+- Rolar até a seção de gear e conferir a foto também no card de produto.
+- Observação: a `kysona.webp` tem fundo branco (não transparente). No card ela aparece como uma área branca, comportamento igual ao de outros produtos em JPG. Se quiser o fundo removido, é só gerar uma versão PNG/WebP com transparência.
+- Se o banco não for atualizado automaticamente, rodar `database/migrations/002_pacheco_kysona_jupiter_pro.sql` no MySQL.

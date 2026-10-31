@@ -6,7 +6,7 @@
 const defaultPlayers = [{
   id: 'pacheco', name: 'Gustavo Pacheco 🐐', tag: 'TNG', team: 'Teenagers', role: 'Duelista', country: '🇧🇷 Brasil',
   cardImage: 'assets/players/pacheco-card.png',
-  photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.45, mouse: 'ATK A9 Plus', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
+  photo: 'assets/gustavo-pacheco.jpg', dpi: 800, sensitivity: 0.45, mouse: 'Kysona Jupiter Pro', keyboard: 'Madlions 68 HE', mousepad: 'ATK 99G X Soft', monitor: 'SuperFrame SFP2415 FHD 185Hz',
   crosshair: '0;P;t;1;o;1;d;1;0b;0;0a;1;0f;0;1b;0;1m;0;1f;0', crosshairImage: 'assets/ponto.png?v=1',
   game: 'VALORANT', agents: 'Jett', scopedSensitivity: 1.0,
   // DADOS DE EXEMPLO do card estilo "FIFA" (até a estrutura real vir da API).
@@ -17,8 +17,8 @@ const defaultPlayers = [{
   videoSettings: [['Resolução', '1920x1080'], ['Proporção', '16:9'], ['Método', 'Fill'], ['Modo de exibição', 'Tela cheia'], ['Renderização multithread', 'Ligada'], ['Material / textura / detalhe', 'Baixo'], ['Qualidade da interface', 'Baixa'], ['Vignette / VSync', 'Desligados'], ['Anti-aliasing', 'MSAA 4x'], ['Filtragem anisotrópica', '4x'], ['Improve Clarity / Sharpening', 'Desligados'], ['Bloom', 'Desligado'], ['Distortion / sombras', 'Desligados'], ['Destaque de inimigo', 'Yellow (Deuteranopia)'], ['NVIDIA Reflex', 'On + Boost']],
   pcSpecs: [['Processador', 'AMD Ryzen 5 5600', 'https://www.pichau.com.br/processador-amd-ryzen-5-5600-6-core-12-threads-3-5ghz-4-4ghz-turbo-cache-35mb-am4-100-100000927box', 'assets/rzn.jpg'], ['Placa de vídeo', 'RTX 3060 12GB', 'https://www.foxgamerinfo.com.br/product-page/placa-de-v%C3%ADdeo-geforce-rtx-3060-12gb-gddr6', 'assets/rtx.jpeg']],
   headset: { name: 'MCHOSE V9 Pro', link: 'https://pt.aliexpress.com/item/1005011745761008.html' },
-  productImages: { monitor: 'assets/products/superframe-sfp2415.jpg', mouse: 'assets/products/atk-a9-plus.png', keyboard: 'assets/products/madlions-68-he.jpg', headset: 'assets/products/mchose-v9-pro.jpg', mousepad: 'assets/products/atk-99g-xsoft.png' },
-  links: { mouse: 'https://pt.aliexpress.com/item/1005011812220400.html', keyboard: 'https://pt.aliexpress.com/item/1005008299208938.html', mousepad: 'https://pt.aliexpress.com/item/1005011561185122.html', monitor: 'https://www.terabyteshop.com.br/produto/33583' }
+  productImages: { monitor: 'assets/products/superframe-sfp2415.jpg', mouse: 'assets/products/kysona.webp', keyboard: 'assets/products/madlions-68-he.jpg', headset: 'assets/products/mchose-v9-pro.jpg', mousepad: 'assets/products/atk-99g-xsoft.png' },
+  links: { mouse: 'https://shop.kysona.com/pt/products/kysona-jupiter-wireless-gaming-mouse?variant=50419738968379', keyboard: 'https://pt.aliexpress.com/item/1005008299208938.html', mousepad: 'https://pt.aliexpress.com/item/1005011561185122.html', monitor: 'https://www.terabyteshop.com.br/produto/33583' }
 }, {
   id: 'z4gb', name: 'Gabriel Felipi', tag: 'Z4GB#TOP1', team: 'Free Agent', role: 'Duelista', country: '🇧🇷 Brasil',
   cardImage: 'assets/players/gabriel final card.jpeg',
