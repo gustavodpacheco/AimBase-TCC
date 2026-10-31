@@ -89,6 +89,7 @@
     'footer.credit': 'CRIADO PARA COMPETIR',
     'footer.settings': 'Settings',
     'footer.lineupsLink': 'Ver lineups',
+    'hero.discordCta': 'Entrar no Discord da AimBase',
 
     // script.js chama setAuthMode() já no parse, antes do dicionário carregar.
     'auth.title.login': 'ENTRAR',

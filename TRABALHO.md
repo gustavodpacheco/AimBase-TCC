@@ -114,3 +114,28 @@ a0a3095 Revert "fix: tornar botao Discord no link direto"
 0765f2c fix: tornar botao Discord um link direto
 989c784 feat: abrir convite do Discord ao clicar em Entrar no Discord
 bbcf166 feat: reorganizar pagina lineups com filtros, accordion, grid padronizado e lazy-load
+
+## Banner do Discord clicável (index.html)
+### O que foi feito
+- `index.html`: a `img.hero-banner` foi envolvida em `.hero-banner-wrap`, que herdou o posicionamento/máscara/sombra que antes ficavam na imagem. A imagem manteve `width="2040"`, `height="660"`, `decoding="async"` e `fetchpriority="high"`; o `assets/final.png` não foi alterado.
+- Dentro do wrapper foi adicionado um `<a class="hero-banner-discord" id="heroDiscordLink">` invisível sobre o botão desenhado, com medidas em porcentagem para acompanhar a imagem em qualquer largura.
+- Medidas tiradas do PNG 2040x660: botão em x 144-774, y 492-600. Em porcentagem: `left 7.0588%`, `top 74.5455%`, `width 30.9314%`, `height 16.5152%`.
+- O convite antigo desenhado abaixo do botão (x 130-710, y 608-660) é coberto por uma sobreposição na cor `#0d0f16`: `left 6.3725%`, `top 92.1212%`, `width 28.4314%`, `height 7.8788%`, com `pointer-events: none`, sem encostar na área do botão.
+- O link abre em nova aba com `target="_blank"` e `rel="noopener noreferrer"`, tem `aria-label` traduzido via `data-i18n-aria-label="hero.discordCta"` e a chave nova foi criada nos 5 dicionários (`pt-BR`, `en`, `es`, `fr`, `de`) com paridade de 223 chaves.
+- `shared.js`: criada a constante `DISCORD_INVITE = 'https://discord.gg/pqPbX3uK9'`. O banner (`script.js`) e o botão "Continuar com Discord" do login passaram a usar essa constante; o comportamento do login não mudou.
+- CSS: `cursor: pointer`, sem sublinhado, hover leve e `:focus-visible` com contorno visível. Como o wrapper agora tem a máscara/hover, a sobreposição do texto antigo desaparece junto com o banner.
+- `responsive.css`: a regra que escondia `.hero-banner` em `≤1024px` agora esconde `.hero-banner-wrap`, mantendo o comportamento anterior do layout.
+
+### Testes executados
+- `node --check shared.js`, `node --check script.js` e `node --check assets/i18n/i18n.js`.
+- JSON dos 5 idiomas válidos e com as mesmas 223 chaves.
+- Harness headless (Chrome/CDP) em 1440px e 1025px: overlay medido em `left 7.0580%`, `top 74.5452%`, `width 30.9289%`, `height 16.5151%` sobre a imagem; `href`/`target`/`rel`/`aria-label` corretos; máscara abaixo do botão; sem overflow horizontal.
+- Em 768px e 390px o banner continua `display: none` por regra que já existia antes desta mudança (`≤1024px`). Nessas larguras não há botão visível nem overflow; exibir o banner no mobile seria uma mudança de layout separada.
+
+### O que testar no navegador
+- Em 1440px e perto de 1025px: passar o mouse no botão "ENTRAR NO DISCORD" do banner (deve mostrar o hover) e clicar — deve abrir o convite em nova aba.
+- Navegar por Tab até o banner: o contorno de foco deve aparecer ao redor do botão.
+- Conferir que o texto antigo (`discord.gg/WEHbrPxZM`) não aparece e que a cobertura não cobre o botão.
+- Em 768px e 390px: banner continua oculto (comportamento antigo) e sem scroll horizontal.
+- Trocar entre os 5 idiomas e conferir o `aria-label` do link (DevTools > Accessibility).
+- Clicar em "Continuar com Discord" no modal de login: deve continuar indo para o mesmo convite.

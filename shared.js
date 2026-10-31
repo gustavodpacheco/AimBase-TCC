@@ -6,6 +6,9 @@
 /** Atalho para document.getElementById, usado por todas as páginas. */
 const $ = id => document.getElementById(id);
 
+/** Convite oficial do Discord — usado no banner do hero e no login. */
+const DISCORD_INVITE = 'https://discord.gg/pqPbX3uK9';
+
 /** Escapa texto para uso seguro em HTML (previne XSS). */
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 
