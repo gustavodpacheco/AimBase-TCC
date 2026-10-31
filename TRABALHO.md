@@ -146,16 +146,16 @@ bbcf166 feat: reorganizar pagina lineups com filtros, accordion, grid padronizad
 - Banco local: cadastrado o periférico `Kysona Jupiter Pro` (slug `kysona-jupiter-pro`) e atualizado o `player_settings` do Pacheco (`mouse_id`, `product_image_mouse` e `product_link_mouse`).
 - Criada a migration `database/migrations/002_pacheco_kysona_jupiter_pro.sql`, idempotente, para aplicar a mesma mudança em outros ambientes.
 - `database/seed.sql` atualizado para novas instalações já nascerem com o mouse e a foto corretos.
-- `assets/products/kysona.webp` mantido como enviado (990×990, fundo branco). O PNG não foi alterado.
+- Fundo branco removido da `assets/products/kysona.webp` (flood fill a partir das bordas + limpeza de componentes soltos), preservando o produto. A imagem foi recortada para 585×843 e salva em WebP com canal alpha. O `assets/final.png` não foi alterado.
 
 ### Testes executados
 - `node --check data.js`.
 - `GET /api/player.php?slug=pacheco` retornando `mouse_model = "Kysona Jupiter Pro"`, `product_image_mouse = "assets/products/kysona.webp"` e o link da Kysona.
 - Perfil carregado em Chrome headless: nome exibido `Kysona Jupiter Pro`, miniatura e card do mouse apontando para `assets/products/kysona.webp`, link correto em ambos e sem overflow horizontal.
-- `assets/products/kysona.webp` responde HTTP 200 (`image/webp`, 11.808 bytes) e decodifica em 990×990.
+- `assets/products/kysona.webp` responde HTTP 200 (`image/webp`, 13.272 bytes) e decodifica em 585×843 com alpha: cantos totalmente transparentes e 40,5% dos pixels transparentes.
 
 ### O que testar no navegador
 - Abrir `player.html?player=pacheco` (ou o perfil do Pacheco pela home) e conferir o card MOUSE com nome "Kysona Jupiter Pro", foto e link abrindo a loja em nova aba.
 - Rolar até a seção de gear e conferir a foto também no card de produto.
-- Observação: a `kysona.webp` tem fundo branco (não transparente). No card ela aparece como uma área branca, comportamento igual ao de outros produtos em JPG. Se quiser o fundo removido, é só gerar uma versão PNG/WebP com transparência.
+- Conferir se a borda do mouse ficou limpa sobre o fundo escuro do card (sem halo branco). Se aparecer algum resíduo, avisar para ajustar a tolerância da remoção.
 - Se o banco não for atualizado automaticamente, rodar `database/migrations/002_pacheco_kysona_jupiter_pro.sql` no MySQL.
