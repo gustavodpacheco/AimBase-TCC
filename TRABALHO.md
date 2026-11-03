@@ -142,20 +142,40 @@ bbcf166 feat: reorganizar pagina lineups com filtros, accordion, grid padronizad
 
 ## Mouse do Gustavo Pacheco — Kysona Jupiter Pro
 ### O que foi feito
-- `data.js` (fallback): mouse do perfil `pacheco` alterado para `Kysona Jupiter Pro`, foto para `assets/products/kysona.webp` e link para a loja da Kysona.
+- `data.js` (fallback): mouse do perfil `pacheco` alterado para `Kysona Jupiter Pro`, foto para `assets/products/kysona-removebg-preview.png` e link para a loja da Kysona.
 - Banco local: cadastrado o periférico `Kysona Jupiter Pro` (slug `kysona-jupiter-pro`) e atualizado o `player_settings` do Pacheco (`mouse_id`, `product_image_mouse` e `product_link_mouse`).
 - Criada a migration `database/migrations/002_pacheco_kysona_jupiter_pro.sql`, idempotente, para aplicar a mesma mudança em outros ambientes.
 - `database/seed.sql` atualizado para novas instalações já nascerem com o mouse e a foto corretos.
-- Fundo branco removido da `assets/products/kysona.webp` (flood fill a partir das bordas + limpeza de componentes soltos), preservando o produto. A imagem foi recortada para 585×843 e salva em WebP com canal alpha. O `assets/final.png` não foi alterado.
+- A remoção automática do fundo na `kysona.webp` ficou quebrada. A foto foi substituída pela versão já sem fundo enviada em `assets/products/kysona-removebg-preview.png` (500×500, 67,8% de transparência). O `kysona.webp` antigo foi removido e o `assets/final.png` não foi alterado.
+- Criada a migration `database/migrations/003_pacheco_kysona_imagem_transparente.sql` para atualizar o caminho da foto no banco.
 
 ### Testes executados
 - `node --check data.js`.
-- `GET /api/player.php?slug=pacheco` retornando `mouse_model = "Kysona Jupiter Pro"`, `product_image_mouse = "assets/products/kysona.webp"` e o link da Kysona.
-- Perfil carregado em Chrome headless: nome exibido `Kysona Jupiter Pro`, miniatura e card do mouse apontando para `assets/products/kysona.webp`, link correto em ambos e sem overflow horizontal.
-- `assets/products/kysona.webp` responde HTTP 200 (`image/webp`, 13.272 bytes) e decodifica em 585×843 com alpha: cantos totalmente transparentes e 40,5% dos pixels transparentes.
+- `GET /api/player.php?slug=pacheco` retornando `mouse_model = "Kysona Jupiter Pro"`, `product_image_mouse = "assets/products/kysona-removebg-preview.png"` e o link da Kysona.
+- Perfil carregado em Chrome headless: nome exibido `Kysona Jupiter Pro`, miniatura e card do mouse apontando para `assets/products/kysona-removebg-preview.png`, link correto em ambos e sem overflow horizontal.
+- `assets/products/kysona-removebg-preview.png` válido em 500×500, com cantos transparentes, 67,8% de pixels totalmente transparentes e bordas com alpha parcial (anti-aliasing).
 
 ### O que testar no navegador
 - Abrir `player.html?player=pacheco` (ou o perfil do Pacheco pela home) e conferir o card MOUSE com nome "Kysona Jupiter Pro", foto e link abrindo a loja em nova aba.
 - Rolar até a seção de gear e conferir a foto também no card de produto.
-- Conferir se a borda do mouse ficou limpa sobre o fundo escuro do card (sem halo branco). Se aparecer algum resíduo, avisar para ajustar a tolerância da remoção.
-- Se o banco não for atualizado automaticamente, rodar `database/migrations/002_pacheco_kysona_jupiter_pro.sql` no MySQL.
+- Conferir a foto do mouse no card e na miniatura do perfil sobre o fundo escuro, sem áreas brancas ou recortes quebrados.
+- Se o banco não for atualizado automaticamente, rodar `database/migrations/002_pacheco_kysona_jupiter_pro.sql`. Se o ambiente já tinha aplicado a versão antiga da 002 (com `kysona.webp`), rodar também `database/migrations/003_pacheco_kysona_imagem_transparente.sql`.
+
+## Remoção dos comentários e novo rodapé
+### O que foi feito
+- Removida a seção de comentários da `player.html` e toda a lógica `setupComments` de `profile.js`, além dos estilos e seletores de comentários.
+- Removida a aba "Comentários" do painel admin (`admin/comments.php` e o link no menu).
+- Rodapé refeito nas páginas `index.html`, `player.html` e `lineups.html`: marca + descrição + atalho para o Discord, colunas "Explorar" e "Contato" e barra inferior com copyright, crédito e "Voltar ao topo".
+- O rodapé da `player.html` agora é estático no HTML (antes era injetado por JS), então a tradução via `data-i18n` acompanha a troca de idioma sem corrida com o carregamento do dicionário.
+- Novas chaves i18n `footer.community` e `footer.backToTop` nos cinco idiomas.
+
+### Testes executados
+- `node --check profile.js` e `node --check assets/i18n/i18n.js`.
+- Os cinco JSON de idioma continuam válidos e com paridade de 225 chaves.
+- Contagem de tags `<footer>`, `<nav>`, `<div>` e `<a>` conferida nas três páginas.
+
+### O que testar no navegador
+- Abrir `player.html?player=pacheco`: a seção de comentários não deve existir e o rodapé deve aparecer completo.
+- Trocar o idioma e conferir descrição, "Comunidade", "Explorar", "Contato", crédito e "Voltar ao topo".
+- Conferir o rodapé em `index.html` e `lineups.html` em desktop e mobile (colunas empilhadas e barra inferior).
+- No painel admin, confirmar que a aba "Comentários" não aparece mais.

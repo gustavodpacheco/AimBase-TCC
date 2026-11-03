@@ -28,7 +28,7 @@ ON DUPLICATE KEY UPDATE
 UPDATE player_settings ps
 JOIN players p ON p.id = ps.player_id
 SET ps.mouse_id            = (SELECT id FROM peripherals WHERE slug = 'kysona-jupiter-pro'),
-    ps.product_image_mouse = 'assets/products/kysona.webp',
+    ps.product_image_mouse = 'assets/products/kysona-removebg-preview.png',
     ps.product_link_mouse  = 'https://shop.kysona.com/pt/products/kysona-jupiter-wireless-gaming-mouse?variant=50419738968379'
 WHERE p.slug = 'pacheco';
 

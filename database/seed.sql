@@ -105,7 +105,7 @@ SELECT p.id,
   (SELECT id FROM peripherals WHERE slug = 'kysona-jupiter-pro'), 2, 3, 4, 5,
   800, 0.4500, 360, 1000, '1920x1080', '16:9', '0;P;h;0;f;0;0l;4;0o;0;0a;1;0f;0;1b;0', 'assets/mira.png?v=4',
   1, 1.0000, NULL, 'Jett', 'Exemplo.',
-  'assets/products/kysona.webp', 'assets/products/madlions-68-he.jpg', 'assets/products/atk-99g-xsoft.png', 'assets/products/superframe-sfp2415.jpg', 'assets/products/mchose-v9-pro.jpg',
+  'assets/products/kysona-removebg-preview.png', 'assets/products/madlions-68-he.jpg', 'assets/products/atk-99g-xsoft.png', 'assets/products/superframe-sfp2415.jpg', 'assets/products/mchose-v9-pro.jpg',
   'https://shop.kysona.com/pt/products/kysona-jupiter-wireless-gaming-mouse?variant=50419738968379', 'https://pt.aliexpress.com/item/1005008299208938.html', 'https://pt.aliexpress.com/item/1005011561185122.html', 'https://www.terabyteshop.com.br/produto/33583', 'https://pt.aliexpress.com/item/1005011745761008.html'
 FROM players p WHERE p.slug = 'pacheco'
 ON DUPLICATE KEY UPDATE dpi = VALUES(dpi), sensitivity = VALUES(sensitivity), edpi = VALUES(edpi),
