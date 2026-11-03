@@ -32,7 +32,6 @@
   <link rel="stylesheet" href="assets/css/components/player-card.css">
   <link rel="stylesheet" href="assets/css/components/filters.css">
   <link rel="stylesheet" href="assets/css/components/profile-hero.css">
-  <link rel="stylesheet" href="assets/css/components/comments.css">
   <link rel="stylesheet" href="assets/css/components/utility.css">
   <link rel="stylesheet" href="assets/css/components/player-card-fifa.css">
   <link rel="stylesheet" href="assets/css/pages/index.css">
@@ -40,7 +39,7 @@
   <link rel="stylesheet" href="assets/css/language-switcher.css">
 </head>
 
-<body data-page="home" class="dark">
+<body id="top" data-page="home" class="dark">
   <header class="site-header">
     <a class="logo" href="#"><span class="logo-dot">A</span>Aim<span>Base</span></a>
     <nav class="top-nav" aria-label="Navegação principal"><a class="active" href="#inicio" data-i18n="nav.home">Início</a><a
@@ -160,18 +159,33 @@
   </main>
 
   <footer class="site-footer">
-    <div class="footer-brand"><a class="logo" href="#inicio"><span class="logo-dot">A</span>Aim<span>Base</span></a>
-      <p data-i18n="footer.desc">Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a class="logo" href="#inicio"><span class="logo-dot">A</span>Aim<span>Base</span></a>
+        <p data-i18n="footer.desc">Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+        <a class="footer-community" href="https://discord.gg/pqPbX3uK9" target="_blank" rel="noopener">
+          <span class="footer-community__dot" aria-hidden="true"></span>
+          <span data-i18n="footer.community">Comunidade</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <nav class="footer-col" aria-label="Explorar" data-i18n-aria-label="footer.explore">
+        <h3 data-i18n="footer.explore">Explorar</h3>
+        <a href="#players" data-i18n="nav.players">Jogadores</a>
+        <a href="#players" data-i18n="footer.settings">Settings</a>
+        <a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
+      </nav>
+      <nav class="footer-col" aria-label="Contato" data-i18n-aria-label="footer.contact">
+        <h3 data-i18n="footer.contact">Contato</h3>
+        <a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a>
+        <a href="https://discord.gg/pqPbX3uK9" target="_blank" rel="noopener">Discord ↗</a>
+      </nav>
     </div>
-    <div>
-      <h3 data-i18n="footer.explore">Explorar</h3><a href="#players" data-i18n="nav.players">Jogadores</a><a
-        href="#players" data-i18n="footer.settings">Settings</a><a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
+    <div class="footer-bottom">
+      <span>© 2026 AIMBASE</span>
+      <span class="footer-credit" data-i18n="footer.credit">CRIADO PARA COMPETIR</span>
+      <a class="footer-top" href="#top" data-i18n="footer.backToTop">Voltar ao topo ↑</a>
     </div>
-    <div>
-      <h3 data-i18n="footer.contact">Contato</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a
-        href="#players" data-i18n="footer.playersLink">Ver jogadores</a>
-    </div>
-    <div class="footer-credit"><span>© 2026 AIMBASE</span><span data-i18n="footer.credit">CRIADO PARA COMPETIR</span></div>
   </footer>
   <nav class="mobile-nav" aria-label="Navegação mobile"><a href="#inicio"><span>⌂</span><span data-i18n="mobile.home">Início</span></a><a
       href="#players"><span>◫</span><span data-i18n="mobile.players">Players</span></a><a href="#players"><span>⌖</span><span

@@ -76,7 +76,6 @@ if ($adminUser['role'] !== 'admin') {
     <a href="games.php">Jogos</a>
     <a href="teams.php">Times</a>
     <a href="peripherals.php">Periféricos</a>
-    <a href="comments.php">Comentários</a>
   </nav>
   <div class="admin-tools">
     <?php if ($adminUser): ?>

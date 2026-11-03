@@ -87,6 +87,8 @@
     'footer.explore': 'Explorar',
     'footer.contact': 'Contato',
     'footer.credit': 'CRIADO PARA COMPETIR',
+    'footer.community': 'Comunidade',
+    'footer.backToTop': 'Voltar ao topo',
     'footer.settings': 'Settings',
     'footer.lineupsLink': 'Ver lineups',
     'hero.discordCta': 'Entrar no Discord da AimBase',

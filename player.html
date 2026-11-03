@@ -26,13 +26,12 @@
 <link rel="stylesheet" href="assets/css/components/buttons.css">
 <link rel="stylesheet" href="assets/css/components/forms.css">
 <link rel="stylesheet" href="assets/css/components/profile-hero.css">
-<link rel="stylesheet" href="assets/css/components/comments.css">
 <link rel="stylesheet" href="assets/css/components/utility.css">
 <link rel="stylesheet" href="assets/css/components/player-card-fifa.css">
 <link rel="stylesheet" href="assets/css/responsive.css">
 <link rel="stylesheet" href="assets/css/language-switcher.css">
 </head>
-<body data-page="profile" class="dark">
+<body id="top" data-page="profile" class="dark">
 <header class="site-header">
   <a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
   <nav class="top-nav"><a href="index.html" data-i18n="nav.home">Início</a><a class="active" href="#players" data-i18n="nav.profile">Jogador</a></nav>
@@ -120,6 +119,35 @@
     </section>
   </section>
 </main>
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a>
+      <p data-i18n="footer.desc">Configurações competitivas de múltiplos jogos, feitas pela comunidade.</p>
+      <a class="footer-community" href="https://discord.gg/pqPbX3uK9" target="_blank" rel="noopener">
+        <span class="footer-community__dot" aria-hidden="true"></span>
+        <span data-i18n="footer.community">Comunidade</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <nav class="footer-col" aria-label="Explorar" data-i18n-aria-label="footer.explore">
+      <h3 data-i18n="footer.explore">Explorar</h3>
+      <a href="index.html#players" data-i18n="nav.players">Jogadores</a>
+      <a href="index.html#players" data-i18n="footer.settings">Settings</a>
+      <a href="lineups.html" data-i18n="nav.lineups">Lineups</a>
+    </nav>
+    <nav class="footer-col" aria-label="Contato" data-i18n-aria-label="footer.contact">
+      <h3 data-i18n="footer.contact">Contato</h3>
+      <a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a>
+      <a href="https://discord.gg/pqPbX3uK9" target="_blank" rel="noopener">Discord ↗</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AIMBASE</span>
+    <span class="footer-credit" data-i18n="footer.credit">CRIADO PARA COMPETIR</span>
+    <a class="footer-top" href="#top" data-i18n="footer.backToTop">Voltar ao topo ↑</a>
+  </div>
+</footer>
 <dialog class="card-modal" id="cardModal" aria-label="Carta completa do jogador">
   <button type="button" class="close-modal card-modal__close" id="cardModalClose" aria-label="Fechar">✕</button>
   <div class="card-modal__body" id="cardModalBody"></div>

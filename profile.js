@@ -1,6 +1,6 @@
 // ============================================================
 // profile.js - Lógica da página de perfil (player.html)
-// Depende de: shared.js (esc, safeUrl, showToast, applyTheme, copyText),
+// Depende de: shared.js (esc, safeUrl, initTheme, copyText),
 //             api.js (API, mapPlayerForUi).
 // ============================================================
 
@@ -290,33 +290,13 @@ if (document.body.dataset.page === 'profile') {
         setupCardModal();
       } catch (e) {}
     }
-    try { setupComments($, player, apiActive); } catch (e) {}
   }
 
-  // Tema e rodapé: aplicados nos dois caminhos (perfil e 404) para que a
-  // tela de erro não fique sem o toggle de tema funcionando.
+  // Tema: aplicado nos dois caminhos (perfil e 404) para que a tela de erro
+  // não fique sem o toggle funcionando. O rodapé é estático no HTML e o
+  // i18n.js cuida da tradução pelos atributos data-i18n.
   function setupPageChrome() {
     try { initTheme(); } catch (e) {}
-    // Recriado a cada chamada para o texto acompanhar a troca de idioma.
-    const rodapeAntigo = document.querySelector('.site-footer');
-    if (rodapeAntigo) rodapeAntigo.remove();
-    const f = {
-      desc: tr('footer.desc', 'Configurações competitivas de múltiplos jogos, feitas pela comunidade.'),
-      explore: tr('footer.explore', 'Explorar'),
-      players: tr('nav.players', 'Jogadores'),
-      comments: tr('comments.title', 'Comentários'),
-      contact: tr('footer.contact', 'Contato'),
-      credit: tr('footer.credit', 'CRIADO PARA COMPETIR'),
-      lineups: tr('nav.lineups', 'Lineups'),
-      settings: tr('footer.settings', 'Settings'),
-      lineupsLink: tr('footer.lineupsLink', 'Ver lineups')
-    };
-    try {
-      const toastEl = $('toast');
-      if (toastEl) {
-        toastEl.insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="index.html#players">${esc(f.settings)}</a><a href="lineups.html">${esc(f.lineups)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a><a href="lineups.html">${esc(f.lineupsLink)}</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
-      }
-    } catch (e) {}
   }
 
   function openCardModal(player) {
@@ -337,166 +317,4 @@ if (document.body.dataset.page === 'profile') {
     modal.addEventListener('cancel', () => modal.close());
   }
 
-  function setupComments($, player, apiActive) {
-    const isDb = apiActive && /^\d+$/.test(String(player.id));
-    const commentsKey = `val-tactical-comments-${player.id}`;
-    let comments = [];
-    try { comments = JSON.parse(localStorage.getItem(commentsKey) || '[]'); } catch { comments = []; }
-    const playerId = isDb ? Number(player.id) : null;
-
-    // Quem está logado (necessário porque o autor do comentário vem da sessão).
-    let currentUser = null;
-    if (isDb) {
-      API.me()
-        .then(res => { currentUser = (res.data && res.data.user) || null; })
-        .catch(() => { currentUser = null; })
-        .finally(mountForm);
-    } else {
-      mountForm();
-    }
-
-    function mountForm() {
-      // Sem API (modo demonstração) o formulário continua igual, com o campo de nome.
-      // Com API, só quem está logado pode comentar — e o nome vem da sessão.
-      const form = isDb
-        ? (currentUser
-            ? '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentMessage">' + esc(tr('comments.label.message', 'Comentário')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(tr('comments.placeholder', 'Escreva um comentário...')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(tr('comments.submitAs', 'Publicar como {{username}}', { username: currentUser.username })) + '</button></form>'
-            : '<p class="empty-comments">' + esc(tr('comments.loginRequired', 'Entre com sua conta para comentar.')) + ' <a href="index.html">' + esc(tr('comments.goHome', 'Ir para o início')) + '</a></p>')
-        : '<form class="comment-form" id="commentForm" novalidate><div class="comment-fields"><label class="comment-label" for="commentAuthor">' + esc(tr('comments.label.author', 'Nome')) + '</label><input id="commentAuthor" name="author" maxlength="32" required placeholder="' + esc(tr('comments.authorPlaceholder', 'Seu nome')) + '"><div class="comment-error" id="commentAuthorError" aria-live="polite"></div><label class="comment-label" for="commentMessage">' + esc(tr('comments.label.message', 'Comentário')) + '</label><textarea id="commentMessage" name="message" maxlength="500" required placeholder="' + esc(tr('comments.placeholder', 'Escreva um comentário...')) + '"></textarea><div class="comment-meta"><span class="comment-count" id="commentMsgCount">0/500</span></div><div class="comment-error" id="commentMsgError" aria-live="polite"></div></div><button type="submit" id="commentSubmit">' + esc(tr('comments.submit', 'Publicar')) + '</button></form>';
-
-      // A seção é remontada a cada troca de idioma: a anterior sai antes para
-      // não duplicar (o id #comments é único).
-      const anterior = $('comments');
-      if (anterior) anterior.remove();
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(tr('comments.kicker', 'COMUNIDADE')) + '</p><h2 id="commentsTitle">' + esc(tr('comments.title', 'Comentários')) + ' (0)</h2><p>' + esc(tr('comments.intro', 'Deixe uma dica ou opinião sobre o setup deste jogador.')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
-
-      reload();
-
-      const formEl = $('commentForm');
-      const msgEl = $('commentMessage');
-      const authorEl = $('commentAuthor');
-      const msgCount = $('commentMsgCount');
-      const msgErr = $('commentMsgError');
-      const authorErr = $('commentAuthorError');
-      const submitBtn = $('commentSubmit');
-
-      if (msgEl && msgCount) {
-        const updateCount = () => { msgCount.textContent = (msgEl.value || '').length + '/500'; };
-        msgEl.addEventListener('input', updateCount);
-        updateCount();
-      }
-
-      if (formEl) {
-        formEl.addEventListener('submit', async event => {
-          event.preventDefault();
-          if (msgErr) msgErr.textContent = '';
-          if (authorErr) authorErr.textContent = '';
-
-          const data = Object.fromEntries(new FormData(event.currentTarget));
-          let hasError = false;
-
-          if (!isDb) {
-            const authorVal = (data.author || '').trim();
-            if (!authorVal) {
-              if (authorErr) authorErr.textContent = tr('comments.error.required', 'Campo obrigatório');
-              hasError = true;
-            } else if (authorVal.length > 32) {
-              if (authorErr) authorErr.textContent = tr('comments.error.maxLength', 'Máximo de {{max}} caracteres', { max: 32 });
-              hasError = true;
-            }
-          }
-
-          const messageVal = (data.message || '').trim();
-          if (!messageVal) {
-            if (msgErr) msgErr.textContent = tr('comments.error.required', 'Campo obrigatório');
-            hasError = true;
-          } else if (messageVal.length > 500) {
-            if (msgErr) msgErr.textContent = tr('comments.error.maxLength', 'Máximo de {{max}} caracteres', { max: 500 });
-            hasError = true;
-          }
-
-          if (hasError) return;
-
-          if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.dataset.originalText = submitBtn.textContent;
-            submitBtn.textContent = tr('comments.loading', 'Carregando...');
-          }
-
-          if (isDb) {
-            try {
-              await API.createComment({ player_id: playerId, message: messageVal });
-              if (msgEl) msgEl.value = '';
-              if (msgCount) msgCount.textContent = '0/500';
-              await reload();
-              showToast(tr('toast.commentPublished', 'Comentário publicado.'));
-            } catch (err) {
-              const msg = (err && err.message) ? err.message : tr('toast.commentFailed', 'Não foi possível publicar o comentário.');
-              if (msg.toLowerCase().includes('table') || msg.toLowerCase().includes('comments')) {
-                showToast(tr('comments.tableMissing', 'Comentários temporariamente indisponíveis'));
-              } else {
-                showToast(msg);
-              }
-            } finally {
-              if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = submitBtn.dataset.originalText || tr('comments.submitAs', 'Publicar como {{username}}', { username: currentUser?.username || '' });
-              }
-            }
-          } else {
-            try {
-              comments.unshift({ author: ((data.author || tr('common.visitor', 'Visitante')).trim()).slice(0, 32), message: messageVal, date: new Date().toISOString() });
-              localStorage.setItem(commentsKey, JSON.stringify(comments));
-              if (authorEl) authorEl.value = '';
-              if (msgEl) msgEl.value = '';
-              if (msgCount) msgCount.textContent = '0/500';
-              renderComments();
-              showToast(tr('toast.commentPublished', 'Comentário publicado.'));
-            } catch (err) {
-              showToast(tr('toast.commentFailed', 'Não foi possível publicar o comentário.'));
-            } finally {
-              if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = submitBtn.dataset.originalText || tr('comments.submit', 'Publicar');
-              }
-            }
-          }
-        });
-      }
-    }
-
-    async function reload() {
-      if (isDb) {
-        try {
-          const res = await API.listComments(playerId);
-          comments = (res.data && res.data.comments) || [];
-        } catch {
-          comments = [];
-        }
-      }
-      renderComments();
-    }
-    const renderComments = () => {
-      const list = $('commentList');
-      const title = $('commentsTitle');
-      if (!list) return;
-      if (title) {
-        const countText = tr('comments.count', 'Comentários ({{count}})', { count: comments.length });
-        if (countText && countText.indexOf('{{count}}') === -1) {
-          title.textContent = countText;
-        } else {
-          title.textContent = `${tr('comments.title', 'Comentários')} (${comments.length})`;
-        }
-      }
-      if (!comments.length) {
-        list.innerHTML = '<p class="empty-comments">' + esc(tr('comments.firstToComment', 'Seja o primeiro a comentar')) + '</p>';
-        return;
-      }
-      list.innerHTML = comments.map(comment => {
-        const author = comment.author || comment.username || '?';
-        const date = comment.created_at || comment.date || '';
-        return `<article class="comment-item"><span class="comment-avatar">${esc(String(author).slice(0, 2).toUpperCase())}</span><div><strong>${esc(author)}</strong><time datetime="${esc(date)}">${esc(formatDate(date))}</time><p>${esc(comment.message || '')}</p></div></article>`;
-      }).join('');
-    };
-  }
 }
