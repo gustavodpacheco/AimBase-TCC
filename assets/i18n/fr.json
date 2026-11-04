@@ -54,6 +54,7 @@
   "hero.card.focus": "AXE",
   "hero.card.focusValue": "RÉGLAGES DE JEUX",
   "hero.card.games": "TOUS",
+  "hero.discordCta": "Rejoindre AimBase sur Discord",
   "directory.kicker": "RÉPERTOIRE",
   "directory.title": "Joueurs",
   "directory.addLabel": "Ajouter un joueur",
@@ -148,6 +149,8 @@
   "footer.playersLink": "Voir les joueurs",
   "footer.lineupsLink": "Voir les lineups",
   "footer.credit": "CRÉÉ POUR COMPÉTIR",
+  "footer.community": "Communauté",
+  "footer.backToTop": "Retour en haut",
   "gear.monitor": "Écran",
   "gear.mouse": "Souris",
   "gear.keyboard": "Clavier",
@@ -216,5 +219,15 @@
   "lineups.legend.orange": "Fait/appris par moi",
   "lineups.legend.purple": "VCT",
   "lineups.legend.black": "Guide Tseeky",
-  "lineups.legend.yellow": "YouTube (communauté)"
+  "lineups.legend.yellow": "YouTube (communauté)",
+  "comments.count": "Commentaires ({{count}})",
+  "comments.firstToComment": "Soyez le premier a commenter",
+  "comments.label.message": "Commentaire",
+  "comments.label.author": "Nom",
+  "comments.error.required": "Champ obligatoire",
+  "comments.error.maxLength": "Maximum {{max}} caracteres",
+  "comments.loading": "Chargement...",
+  "comments.success": "Commentaire envoye avec succes",
+  "comments.error": "Erreur lors de envoi du commentaire",
+  "comments.tableMissing": "Commentaires temporairement indisponibles"
 }

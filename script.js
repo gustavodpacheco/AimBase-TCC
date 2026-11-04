@@ -333,9 +333,11 @@ $('authLogout').addEventListener('click', async () => {
 });
 $('authClose').addEventListener('click', () => authModal.close());
 $('forgotPassword').addEventListener('click', () => setAuthMessage(I18N.t('auth.forgotInfo')));
+const heroDiscordLink = $('heroDiscordLink');
+if (heroDiscordLink) heroDiscordLink.href = DISCORD_INVITE;
 document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => {
   if (button.dataset.provider === 'Discord') {
-    window.location.href = 'https://discord.gg/pqPbX3uK9';
+    window.location.href = DISCORD_INVITE;
     return;
   }
   setAuthMessage(I18N.t('auth.provider.demo', { provider: button.dataset.provider }));

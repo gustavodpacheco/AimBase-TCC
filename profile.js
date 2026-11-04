@@ -1,6 +1,6 @@
 // ============================================================
 // profile.js - Lógica da página de perfil (player.html)
-// Depende de: shared.js (esc, safeUrl, showToast, applyTheme, copyText),
+// Depende de: shared.js (esc, safeUrl, initTheme, copyText),
 //             api.js (API, mapPlayerForUi).
 // ============================================================
 
@@ -12,59 +12,108 @@ if (document.body.dataset.page === 'profile') {
   let currentApiActive = false;
   let listenersBound = false;
 
+  /**
+   * Espera o dicionário inicial do i18n. Se o fetch falhar, I18N.ready também
+   * resolve e a página segue com os fallbacks embutidos/português.
+   */
+  function waitForI18n() {
+    try {
+      if (typeof I18N !== 'undefined' && I18N.ready) {
+        return Promise.resolve(I18N.ready).catch(() => {});
+      }
+    } catch (e) { /* segue sem esperar */ }
+    return Promise.resolve();
+  }
+
+  /**
+   * Tradução com reserva em português. I18N.t pode devolver '' enquanto o
+   * dicionário carrega (ou a própria chave quando ela não existe); nesses
+   * casos usamos o texto de reserva para o conteúdo montado por JS nunca
+   * aparecer vazio.
+   */
+  function tr(key, fallbackPtBR, vars) {
+    let text = '';
+    try {
+      if (typeof I18N !== 'undefined' && I18N.t) text = I18N.t(key, vars);
+    } catch (e) { /* usa a reserva */ }
+    if (!text || text === key) text = fallbackPtBR != null ? fallbackPtBR : key;
+    if (vars && typeof text === 'string') {
+      text = text.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (match, name) => {
+        const value = vars[name];
+        return value === undefined || value === null ? match : String(value);
+      });
+    }
+    return text;
+  }
+
   (async function initProfile() {
-    const id = new URLSearchParams(window.location.search).get('player');
-    let player = null;
-    let apiActive = false;
+    const i18nReady = waitForI18n();
+    try {
+      const id = new URLSearchParams(window.location.search).get('player');
+      let player = null;
+      let apiActive = false;
 
-    if (id) {
-      try {
-        const res = await API.getPlayerBySlug(id);
-        if (res.success && res.data) {
-          player = mapPlayerForUi(res.data);
-          apiActive = true;
+      if (id) {
+        try {
+          const res = await API.getPlayerBySlug(id);
+          if (res.success && res.data) {
+            player = mapPlayerForUi(res.data);
+            apiActive = true;
 
-          // Mescla dados estáticos (card personalizado, atributos FIFA e clips)
-          // quando o jogador também existe no fallback (data.js).
-          const staticProfile = defaultPlayers.find(dp => dp.id === player.slug || dp.slug === player.slug);
-          if (staticProfile) {
-            if (!player.cardImage && staticProfile.cardImage) player.cardImage = staticProfile.cardImage;
-            if (!player.clips && staticProfile.clips) player.clips = staticProfile.clips;
-            const staticAttrs = staticProfile.attrs || {};
-            Object.keys(staticAttrs).forEach(key => {
-              if (staticAttrs[key] != null && player.attrs && player.attrs[key] == null) {
-                player.attrs[key] = staticAttrs[key];
-              }
-            });
+            // Mescla dados estáticos (card personalizado, atributos FIFA e clips)
+            // quando o jogador também existe no fallback (data.js).
+            const staticProfile = defaultPlayers.find(dp => dp.id === player.slug || dp.slug === player.slug);
+            if (staticProfile) {
+              if (!player.cardImage && staticProfile.cardImage) player.cardImage = staticProfile.cardImage;
+              if (!player.clips && staticProfile.clips) player.clips = staticProfile.clips;
+              const staticAttrs = staticProfile.attrs || {};
+              Object.keys(staticAttrs).forEach(key => {
+                if (staticAttrs[key] != null && player.attrs && player.attrs[key] == null) {
+                  player.attrs[key] = staticAttrs[key];
+                }
+              });
+            }
           }
-        }
-      } catch (err) { /* fallback abaixo */ }
-    }
-    // Sem ?player= na URL não há perfil a exibir: mostro a tela 404 em vez
-    // de abrir o primeiro jogador da lista sem contexto.
-    if (!player) {
-      const profilePlayers = [...defaultPlayers, ...savedPlayers];
-      player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
-    }
+        } catch (err) { /* fallback abaixo */ }
+      }
+      // Sem ?player= na URL não há perfil a exibir: mostro a tela 404 em vez
+      // de abrir o primeiro jogador da lista sem contexto.
+      if (!player) {
+        const profilePlayers = [...(defaultPlayers || []), ...(savedPlayers || [])];
+        player = profilePlayers.find(item => item.id === id || item.slug === id) || null;
+      }
 
-    if (!player) {
-      showNotFound(id);
+      // Nada é renderizado antes do dicionário terminar de carregar (ou de o
+      // fetch falhar e os fallbacks entrarem em vigor).
+      await i18nReady;
+
+      if (!player) {
+        showNotFound(id);
+        setupPageChrome();
+        return;
+      }
+
+      currentPlayer = player;
+      currentApiActive = apiActive;
+      renderProfile(player, apiActive);
       setupPageChrome();
-      return;
+    } catch (e) {
+      await i18nReady;
+      setupPageChrome();
     }
-
-    currentPlayer = player;
-    currentApiActive = apiActive;
-    renderProfile(player, apiActive);
-    setupPageChrome();
   })();
 
   // A troca de idioma precisa redesenhar o perfil: os fallbacks traduzidos
   // (time, função, país, periféricos) são montados por JS e não têm
   // data-i18n para o i18n.js reescrever sozinho.
-  document.addEventListener('i18n:changed', () => {
-    if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
-    else setupPageChrome();
+  document.addEventListener('i18n:changed', async () => {
+    await waitForI18n();
+    try {
+      if (currentPlayer) renderProfile(currentPlayer, currentApiActive);
+      else setupPageChrome();
+    } catch (e) {
+      setupPageChrome();
+    }
   });
 
   /** Tela 404: esconde o perfil e mostra o aviso de "não encontrado". */
@@ -90,14 +139,18 @@ if (document.body.dataset.page === 'profile') {
   /** Mantém o título da aba traduzido enquanto a tela 404 estiver visível. */
   function updateNotFoundTitle() {
     if (!notFoundShown) return;
-    document.title = `${I18N.t('page.notFoundTitle')} — AimBase`;
+    document.title = `${tr('page.notFoundTitle', 'Jogador não encontrado')} — AimBase`;
   }
 
   function renderProfile(player, apiActive) {
-    document.title = `${player.tag} — AimBase`;
+    try {
+      document.title = `${player.tag} — AimBase`;
+    } catch (e) {}
     // Cartão do jogador (carta personalizada p/ Pacheco, dinâmico p/ os demais).
     const fifaCardEl = $('fifaCard');
-    if (fifaCardEl) fifaCardEl.innerHTML = fifaCardHTML(player, { large: true });
+    if (fifaCardEl) {
+      try { fifaCardEl.innerHTML = fifaCardHTML(player, { large: true }); } catch (e) {}
+    }
 
     // Seções montadas por JS: removidas antes de recriar, senão a troca de
     // idioma (que chama renderProfile de novo) duplicaria cada bloco.
@@ -222,32 +275,28 @@ if (document.body.dataset.page === 'profile') {
     // Os listeners são registrados uma vez: renderProfile roda de novo a cada
     // troca de idioma e religá-los a cada passada duplicaria os toasts.
     if (!listenersBound) {
-      listenersBound = true;
-      const viewBtn = $('viewCardBtn');
-      if (viewBtn) {
-        // Lê currentPlayer no clique: na troca de idioma o objeto é substituído
-        // e o listener precisa enxergar o valor atualizado.
-        viewBtn.addEventListener('click', () => { if (currentPlayer) openCardModal(currentPlayer); });
-      }
-      $('copySettings').addEventListener('click', () => copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, I18N.t('toast.copySettings')));
-      $('crosshairCode').addEventListener('click', () => copyText(player.crosshair, I18N.t('toast.crosshairCopied')));
-      setupCardModal();
+      try {
+        listenersBound = true;
+        const viewBtn = $('viewCardBtn');
+        if (viewBtn) {
+          // Lê currentPlayer no clique: na troca de idioma o objeto é substituído
+          // e o listener precisa enxergar o valor atualizado.
+          viewBtn.addEventListener('click', () => { if (currentPlayer) openCardModal(currentPlayer); });
+        }
+        const copyBtn = $('copySettings');
+        if (copyBtn) copyBtn.addEventListener('click', () => { try { copyText(`${player.name} — ${player.tag}\nDPI: ${player.dpi}\nSensibilidade: ${player.sensitivity}\neDPI: ${edpi ?? ''}\nRetícula: ${player.crosshair}`, (typeof I18N !== 'undefined' && I18N.t ? I18N.t('toast.copySettings') : 'Settings copiadas.')); } catch(e){} });
+        const crossBtn = $('crosshairCode');
+        if (crossBtn) crossBtn.addEventListener('click', () => { try { copyText(player.crosshair, (typeof I18N !== 'undefined' && I18N.t ? I18N.t('toast.crosshairCopied') : 'Código da retícula copiado.')); } catch(e){} });
+        setupCardModal();
+      } catch (e) {}
     }
-    setupComments($, player, apiActive);
   }
 
-  // Tema e rodapé: aplicados nos dois caminhos (perfil e 404) para que a
-  // tela de erro não fique sem o toggle de tema funcionando.
+  // Tema: aplicado nos dois caminhos (perfil e 404) para que a tela de erro
+  // não fique sem o toggle funcionando. O rodapé é estático no HTML e o
+  // i18n.js cuida da tradução pelos atributos data-i18n.
   function setupPageChrome() {
-    initTheme();
-    // Recriado a cada chamada para o texto acompanhar a troca de idioma.
-    const rodapeAntigo = document.querySelector('.site-footer');
-    if (rodapeAntigo) rodapeAntigo.remove();
-    const f = {
-      desc: I18N.t('footer.desc'), explore: I18N.t('footer.explore'), players: I18N.t('nav.players'),
-      comments: I18N.t('comments.title'), contact: I18N.t('footer.contact'), credit: I18N.t('footer.credit'),
-    };
-    $('toast').insertAdjacentHTML('beforebegin', `<footer class="site-footer"><div class="footer-brand"><a class="logo" href="index.html"><span class="logo-dot">A</span>Aim<span>Base</span></a><p>${esc(f.desc)}</p></div><div><h3>${esc(f.explore)}</h3><a href="index.html#players">${esc(f.players)}</a><a href="#comments">${esc(f.comments)}</a></div><div><h3>${esc(f.contact)}</h3><a href="mailto:contato@aimbase.gg">contato@aimbase.gg</a></div><div class="footer-credit"><span>© 2026 AIMBASE</span><span>${esc(f.credit)}</span></div></footer>`);
+    try { initTheme(); } catch (e) {}
   }
 
   function openCardModal(player) {
@@ -268,86 +317,4 @@ if (document.body.dataset.page === 'profile') {
     modal.addEventListener('cancel', () => modal.close());
   }
 
-  function setupComments($, player, apiActive) {
-    const isDb = apiActive && /^\d+$/.test(String(player.id));
-    const commentsKey = `val-tactical-comments-${player.id}`;
-    let comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-    const playerId = isDb ? Number(player.id) : null;
-
-    // Quem está logado (necessário porque o autor do comentário vem da sessão).
-    let currentUser = null;
-    if (isDb) {
-      API.me()
-        .then(res => { currentUser = (res.data && res.data.user) || null; })
-        .catch(() => { currentUser = null; })
-        .finally(mountForm);
-    } else {
-      mountForm();
-    }
-
-    function mountForm() {
-      // Sem API (modo demonstração) o formulário continua igual, com o campo de nome.
-      // Com API, só quem está logado pode comentar — e o nome vem da sessão.
-      const form = isDb
-        ? (currentUser
-            ? '<form class="comment-form" id="commentForm"><div class="comment-fields"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submitAs', { username: currentUser.username })) + '</button></form>'
-            : '<p class="empty-comments">' + esc(I18N.t('comments.loginRequired')) + ' <a href="index.html">' + esc(I18N.t('comments.goHome')) + '</a></p>')
-        : '<form class="comment-form" id="commentForm"><div class="comment-fields"><input name="author" maxlength="32" required placeholder="' + esc(I18N.t('comments.authorPlaceholder')) + '"><textarea name="message" maxlength="500" required placeholder="' + esc(I18N.t('comments.placeholder')) + '"></textarea></div><button type="submit">' + esc(I18N.t('comments.submit')) + '</button></form>';
-
-      // A seção é remontada a cada troca de idioma: a anterior sai antes para
-      // não duplicar (o id #comments é único).
-      const anterior = $('comments');
-      if (anterior) anterior.remove();
-      $('toast').insertAdjacentHTML('beforebegin', '<section class="comments-section profile-comments" id="comments"><div class="comments-intro"><p class="kicker">' + esc(I18N.t('comments.kicker')) + '</p><h2>' + esc(I18N.t('comments.title')) + '</h2><p>' + esc(I18N.t('comments.intro')) + '</p></div><div class="comments-panel">' + form + '<div class="comment-list" id="commentList"></div></div></section>');
-
-      reload();
-
-      const formEl = $('commentForm');
-      if (formEl) {
-        formEl.addEventListener('submit', async event => {
-          event.preventDefault();
-          const data = Object.fromEntries(new FormData(event.currentTarget));
-          if (isDb) {
-            try {
-              await API.createComment({ player_id: playerId, message: data.message.trim() });
-              event.currentTarget.reset();
-              await reload();
-              showToast(I18N.t('toast.commentPublished'));
-            } catch (err) {
-              showToast(err.message || I18N.t('toast.commentFailed'));
-            }
-          } else {
-            comments.unshift({ author: (data.author || I18N.t('common.visitor')).trim(), message: data.message.trim(), date: new Date().toISOString() });
-            localStorage.setItem(commentsKey, JSON.stringify(comments));
-            event.currentTarget.reset();
-            renderComments();
-            showToast(I18N.t('toast.commentPublished'));
-          }
-        });
-      }
-    }
-
-    async function reload() {
-      if (isDb) {
-        try {
-          const res = await API.listComments(playerId);
-          comments = (res.data && res.data.comments) || [];
-        } catch { /* mantém vazio */ }
-      }
-      renderComments();
-    }
-    const renderComments = () => {
-      const list = $('commentList');
-      if (!list) return;
-      if (!comments.length) {
-        list.innerHTML = '<p class="empty-comments">' + esc(I18N.t('comments.empty')) + '</p>';
-        return;
-      }
-      list.innerHTML = comments.map(comment => {
-        const author = comment.author || comment.username || '?';
-        const date = comment.created_at || comment.date || '';
-        return `<article class="comment-item"><span class="comment-avatar">${esc(String(author).slice(0, 2).toUpperCase())}</span><div><strong>${esc(author)}</strong><time datetime="${esc(date)}">${esc(formatDate(date))}</time><p>${esc(comment.message || '')}</p></div></article>`;
-      }).join('');
-    };
-  }
 }

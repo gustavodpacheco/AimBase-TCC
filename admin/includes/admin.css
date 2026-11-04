@@ -296,12 +296,6 @@
   color: var(--text-muted);
 }
 
-.admin-table td.comment-msg {
-  max-width: 420px;
-  white-space: normal;
-  color: var(--text-secondary);
-}
-
 .admin-table tr:hover td {
   background: rgba(255, 90, 54, 0.05);
 }

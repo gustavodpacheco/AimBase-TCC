@@ -19,8 +19,6 @@
 .form-grid input,
 .form-grid select,
 .auth-field input,
-.comment-form input,
-.comment-form textarea,
 .admin-form input,
 .admin-form select,
 .admin-form textarea {
@@ -42,8 +40,6 @@ textarea {
 .form-grid input:focus,
 .form-grid select:focus,
 .auth-field:focus-within,
-.comment-form input:focus,
-.comment-form textarea:focus,
 .admin-form input:focus,
 .admin-form select:focus,
 .admin-form textarea:focus {

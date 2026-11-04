@@ -54,6 +54,7 @@
   "hero.card.focus": "ENFOQUE",
   "hero.card.focusValue": "AJUSTES DE JUEGOS",
   "hero.card.games": "TODOS",
+  "hero.discordCta": "Entrar al Discord de AimBase",
   "directory.kicker": "DIRECTORIO",
   "directory.title": "Jugadores",
   "directory.addLabel": "Añadir jugador",
@@ -148,6 +149,8 @@
   "footer.playersLink": "Ver jugadores",
   "footer.lineupsLink": "Ver lineups",
   "footer.credit": "HECHO PARA COMPETIR",
+  "footer.community": "Comunidad",
+  "footer.backToTop": "Volver arriba",
   "gear.monitor": "Monitor",
   "gear.mouse": "Ratón",
   "gear.keyboard": "Teclado",
@@ -216,5 +219,15 @@
   "lineups.legend.orange": "Hecha/aprendida por mí",
   "lineups.legend.purple": "VCT",
   "lineups.legend.black": "Guía de Tseeky",
-  "lineups.legend.yellow": "YouTube (comunidad)"
+  "lineups.legend.yellow": "YouTube (comunidad)",
+  "comments.count": "Comentarios ({{count}})",
+  "comments.firstToComment": "Se el primero en comentar",
+  "comments.label.message": "Comentario",
+  "comments.label.author": "Nombre",
+  "comments.error.required": "Campo obligatorio",
+  "comments.error.maxLength": "Maximo {{max}} caracteres",
+  "comments.loading": "Cargando...",
+  "comments.success": "Comentario enviado con exito",
+  "comments.error": "Error al enviar comentario",
+  "comments.tableMissing": "Comentarios temporalmente no disponibles"
 }
